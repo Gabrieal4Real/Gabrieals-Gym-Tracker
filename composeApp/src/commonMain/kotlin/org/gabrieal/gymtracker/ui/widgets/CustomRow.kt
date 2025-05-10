@@ -14,16 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.Navigator
 
 @Composable
 fun BackButtonRow(text: String) {
+    val navigator = LocalNavigator.currentOrThrow
+
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { Navigator.navigateBack() }) {
+        IconButton(onClick = { navigator.pop() }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",

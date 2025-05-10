@@ -43,6 +43,10 @@ interface StringResources {
     val recommendedSplit: String
     fun xAmountOfSplit(split: String): String
     val redsIndicateRest: String
+    val makeAPlan: String
+    val heresHowItWorks: String
+    val letsPlanIt: String
+    fun xDayWorkoutxDayRest(workout: Int, rest: Int): String
 }
 
 class EnglishStringResources : StringResources {
@@ -54,6 +58,10 @@ class EnglishStringResources : StringResources {
     override val recommendedSplit: String = "Based on your selected days, here's a recommended split just for you:"
     override fun xAmountOfSplit(split: String) = "$split-day split"
     override val redsIndicateRest: String = "Reds indicate rest days"
+    override val makeAPlan: String = "Make a plan"
+    override val heresHowItWorks: String = "Here's how it works:"
+    override val letsPlanIt: String = "Let's Go Plan It!"
+    override fun xDayWorkoutxDayRest(workout: Int, rest: Int) = "$workout-day workout, $rest-day rest"
 }
 
 class MalayStringResources : StringResources {
@@ -65,6 +73,10 @@ class MalayStringResources : StringResources {
     override val recommendedSplit: String = "Berdasarkan hari yang dipilih, ini adalah split yang sesuai untuk anda:"
     override fun xAmountOfSplit(split: String) = "Split $split-hari"
     override val redsIndicateRest: String = "Merah menunjukkan hari rehat"
+    override val makeAPlan: String = "Buat plan"
+    override val heresHowItWorks: String = "Inilah cara kerja:"
+    override val letsPlanIt: String = "Mari Kita Plan It!"
+    override fun xDayWorkoutxDayRest(workout: Int, rest: Int) = "$workout-hari latihan, $rest-hari istirahat"
 }
 
 class TamilStringResources : StringResources {
@@ -76,4 +88,8 @@ class TamilStringResources : StringResources {
     override val recommendedSplit: String = "உங்கள் தேர்ந்தெடுத்த நாட்களுக்கு ஏற்ப, இங்கே உங்கள் சிறப்பு பிரிப்பு:"
     override fun xAmountOfSplit(split: String) = "$split-நாள் பிரிப்பு"
     override val redsIndicateRest: String = "சிகப்புகள் ஓய்வு நாட்களை குறிக்கின்றன"
+    override val makeAPlan: String = "பிரிப்பு உருவாக்கவும்"
+    override val heresHowItWorks: String = "இங்கே எதுவும் செய்யப்படுகிறது:"
+    override val letsPlanIt: String = "பிரிப்பு உருவாக்கவும்!"
+    override fun xDayWorkoutxDayRest(workout: Int, rest: Int) = "$workout-நாள் பிரிப்பு, $rest-நாள் ஓய்வு"
 }

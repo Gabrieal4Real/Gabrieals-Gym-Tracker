@@ -10,7 +10,43 @@ import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 
 class Workout {
+    // Enum for muscle groups
+    enum class MuscleGroup(val displayName: String) {
+        Abs("Abs"),
+        Arms("Arms"),
+        Back("Back"),
+        Biceps("Biceps"),
+        Chest("Chest"),
+        FrontDelt("Front Delt"),
+        Glutes("Glutes"),
+        Hamstrings("Hamstrings"),
+        Legs("Legs"),
+        MiddleDelt("Middle Delt"),
+        Quads("Quads"),
+        RearDelt("Rear Delt"),
+        Shoulders("Shoulders"),
+        Traps("Traps"),
+        Triceps("Triceps")
+    }
+
+    // Enum for exercise tiers
+    enum class ExerciseTier(val displayName: String) {
+        SPlus("S+ Tier"),
+        S("S Tier"),
+        APlus("A+ Tier"),
+        A("A Tier")
+    }
+
     companion object {
+        val days = listOf("M", "T", "W", "T", "F", "S", "S")
+        val fullDays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+        val plans = listOf(
+            listOf("Full Body"),
+            listOf("Full Body (Strength Focus)", "Rest", "Full Body (Hypertrophy Focus)"),
+            listOf("Push (Chest, Shoulders, Triceps)", "Rest", "Pull (Back, Biceps)", "Rest", "Legs"),
+            listOf("Push (Chest Focus, Shoulders, Triceps)", "Pull (Back Focus, Biceps)", "Legs", "Rest", "Arms (Shoulders, Triceps, Biceps)"),
+            listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs", "Rest", "Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)")
+        )
 
         fun selectDays(sliderValue: Float): List<Boolean> {
             val activeIndices = listOf(
@@ -28,57 +64,29 @@ class Workout {
         }
 
         @Composable
-        fun getWorkoutSplit(selectedDays: List<Boolean>) {
+        fun WorkoutSplit(selectedDays: List<Boolean>) {
             TinyItalicText(
-                text = "${selectedDays.count { it }}-Day Workout, ${selectedDays.count { !it }}-Day Rest",
+                text = Resources.strings.xDayWorkoutxDayRest(selectedDays.count { it }, selectedDays.count { !it }),
             )
             Spacer(modifier = Modifier.height(8.dp))
-            when (selectedDays.count { it }) {
-                1 -> {
-                    DescriptionText(text = "Day 1: Full Body")
-                    DescriptionItalicText(text = "Day 2: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 3: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 4: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 5: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 6: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
+            WorkoutPlan(selectedDays)
+        }
+
+        @Composable
+        fun WorkoutPlan(selectedDays: List<Boolean>) {
+            val workoutPlan = plans.getOrNull(selectedDays.count { it } - 1) ?: emptyList()
+
+            workoutPlan.forEachIndexed { index, workout ->
+                if (workout != "Rest") {
+                    DescriptionText(text = "Day ${index + 1}: $workout")
+                } else {
+                    DescriptionItalicText(text = "Day ${index + 1}: Rest", color = Colors.LightMaroon)
                 }
-                2 -> {
-                    DescriptionText(text = "Day 1: Full Body (Strength Focus)")
-                    DescriptionItalicText(text = "Day 2: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 3: Rest", color = Colors.LightMaroon)
-                    DescriptionText(text = "Day 4: Full Body (Hypertrophy Focus)")
-                    DescriptionItalicText(text = "Day 5: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 6: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
-                }
-                3 -> {
-                    DescriptionText(text = "Day 1: Push (Chest, Shoulders, Triceps)")
-                    DescriptionItalicText(text = "Day 2: Rest", color = Colors.LightMaroon)
-                    DescriptionText(text = "Day 3: Pull (Back, Biceps)")
-                    DescriptionItalicText(text = "Day 4: Rest", color = Colors.LightMaroon)
-                    DescriptionText(text = "Day 5: Legs")
-                    DescriptionItalicText(text = "Day 6: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
-                }
-                4 -> {
-                    DescriptionText(text = "Day 1: Push (Chest Focus, Shoulders, Triceps)")
-                    DescriptionText(text = "Day 2: Pull (Back Focus, Biceps)")
-                    DescriptionText(text = "Day 3: Legs")
-                    DescriptionItalicText(text = "Day 4: Rest", color = Colors.LightMaroon)
-                    DescriptionText(text = "Day 5: Arms (Shoulders, Triceps, Biceps)")
-                    DescriptionItalicText(text = "Day 6: Rest", color = Colors.LightMaroon)
-                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
-                }
-                5 -> {
-                    DescriptionText(text = "Day 1: Push (Chest, Shoulders, Triceps)")
-                    DescriptionText(text = "Day 2: Pull (Back, Biceps)")
-                    DescriptionText(text = "Day 3: Legs")
-                    DescriptionItalicText(text = "Day 4: Rest", color = Colors.LightMaroon)
-                    DescriptionText(text = "Day 5: Push (Chest, Shoulders, Triceps)")
-                    DescriptionText(text = "Day 6: Pull (Back, Biceps)")
-                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
-                }
+            }
+
+            // Fill remaining days with rest
+            repeat(7 - workoutPlan.size) {
+                DescriptionItalicText(text = "Day ${it + workoutPlan.size + 1}: Rest", color = Colors.LightMaroon)
             }
         }
     }

@@ -49,6 +49,7 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.landscapist.coil3)
+            implementation("cafe.adriel.voyager:voyager-navigator:1.1.0-beta02")
         }
     }
 }
