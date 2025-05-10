@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.gabrieal.gymtracker.ui.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 
@@ -31,43 +32,53 @@ class Workout {
             TinyItalicText(
                 text = "${selectedDays.count { it }}-Day Workout, ${selectedDays.count { !it }}-Day Rest",
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
             when (selectedDays.count { it }) {
-                1 -> DescriptionText(text = "Monday: Full Body\n" +
-                        "Tuesday: Rest\n" +
-                        "Wednesday: Rest\n" +
-                        "Thursday: Rest\n" +
-                        "Friday: Rest\n" +
-                        "Saturday: Rest\n" +
-                        "Sunday: Rest")
-                2 -> DescriptionText(text = "Monday: Full Body\n" +
-                        "Tuesday: Rest\n" +
-                        "Wednesday: Rest\n" +
-                        "Thursday: Full Body\n" +
-                        "Friday: Rest\n" +
-                        "Saturday: Rest\n" +
-                        "Sunday: Rest")
-                3 -> DescriptionText(text = "Monday: Push (Chest, Shoulders, Triceps)\n" +
-                        "Tuesday: Rest\n" +
-                        "Wednesday: Pull (Back, Biceps)\n" +
-                        "Thursday: Rest\n" +
-                        "Friday: Legs\n" +
-                        "Saturday: Rest\n" +
-                        "Sunday: Rest")
-                4 -> DescriptionText(text = "Monday: Push (Main Chest, Shoulders, Triceps)\n" +
-                        "Tuesday: Rest\n" +
-                        "Wednesday: Pull (Main Back, Biceps)\n" +
-                        "Thursday: Legs\n" +
-                        "Friday: Arms (Shoulders, Triceps, Biceps)\n" +
-                        "Saturday: Rest\n" +
-                        "Sunday: Rest")
-                5 -> DescriptionText(text = "Monday: Push (Chest, Shoulders, Triceps)\n" +
-                        "Tuesday: Pull (Back, Biceps)\n" +
-                        "Wednesday: Legs\n" +
-                        "Thursday: Rest\n" +
-                        "Friday: Push (Chest, Shoulders, Triceps)\n" +
-                        "Saturday: Pull (Back, Biceps)\n" +
-                        "Sunday: Rest")
+                1 -> {
+                    DescriptionText(text = "Day 1: Full Body")
+                    DescriptionItalicText(text = "Day 2: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 3: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 4: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 5: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 6: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
+                }
+                2 -> {
+                    DescriptionText(text = "Day 1: Full Body (Strength Focus)")
+                    DescriptionItalicText(text = "Day 2: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 3: Rest", color = Colors.LightMaroon)
+                    DescriptionText(text = "Day 4: Full Body (Hypertrophy Focus)")
+                    DescriptionItalicText(text = "Day 5: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 6: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
+                }
+                3 -> {
+                    DescriptionText(text = "Day 1: Push (Chest, Shoulders, Triceps)")
+                    DescriptionItalicText(text = "Day 2: Rest", color = Colors.LightMaroon)
+                    DescriptionText(text = "Day 3: Pull (Back, Biceps)")
+                    DescriptionItalicText(text = "Day 4: Rest", color = Colors.LightMaroon)
+                    DescriptionText(text = "Day 5: Legs")
+                    DescriptionItalicText(text = "Day 6: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
+                }
+                4 -> {
+                    DescriptionText(text = "Day 1: Push (Chest Focus, Shoulders, Triceps)")
+                    DescriptionText(text = "Day 2: Pull (Back Focus, Biceps)")
+                    DescriptionText(text = "Day 3: Legs")
+                    DescriptionItalicText(text = "Day 4: Rest", color = Colors.LightMaroon)
+                    DescriptionText(text = "Day 5: Arms (Shoulders, Triceps, Biceps)")
+                    DescriptionItalicText(text = "Day 6: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
+                }
+                5 -> {
+                    DescriptionText(text = "Day 1: Push (Chest, Shoulders, Triceps)")
+                    DescriptionText(text = "Day 2: Pull (Back, Biceps)")
+                    DescriptionText(text = "Day 3: Legs")
+                    DescriptionItalicText(text = "Day 4: Rest", color = Colors.LightMaroon)
+                    DescriptionText(text = "Day 5: Push (Chest, Shoulders, Triceps)")
+                    DescriptionText(text = "Day 6: Pull (Back, Biceps)")
+                    DescriptionItalicText(text = "Day 7: Rest", color = Colors.LightMaroon)
+                }
             }
         }
     }

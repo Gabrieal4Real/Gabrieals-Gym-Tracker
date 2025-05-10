@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
@@ -26,40 +27,50 @@ fun TitleText(text: String) {
 }
 
 @Composable
-fun SubtitleText(text: String, modifier: Modifier = Modifier) {
+fun SubtitleText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
     Text(text,
         style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 22.sp),
-        color = Colors.TextSecondary,
+        color = color,
         fontSize = 16.sp,
         modifier = modifier
     )
 }
 
 @Composable
-fun DescriptionText(text: String, modifier: Modifier = Modifier) {
+fun DescriptionText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextPrimary) {
     Text(text,
         style = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp),
-        color = Colors.TextPrimary,
+        color = color,
         fontSize = 14.sp,
         modifier = modifier
     )
 }
 
 @Composable
-fun TinyText(text: String, modifier: Modifier = Modifier) {
+fun DescriptionItalicText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextPrimary) {
+    Text(text,
+        style = TextStyle(fontFamily = MediumText(), fontStyle = FontStyle.Italic, lineHeight = 20.sp),
+        color = color,
+        fontSize = 14.sp,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextPrimary) {
     Text(text,
         style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
-        color = Colors.TextPrimary,
+        color = color,
         fontSize = 12.sp,
         modifier = modifier
     )
 }
 
 @Composable
-fun TinyItalicText(text: String, modifier: Modifier = Modifier) {
+fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextPrimary) {
     Text(text,
         style = TextStyle(fontFamily = RegularText(), fontStyle = FontStyle.Italic, lineHeight = 18.sp),
-        color = Colors.TextPrimary,
+        color = color,
         fontSize = 12.sp,
         modifier = modifier
     )
@@ -69,7 +80,7 @@ fun TinyItalicText(text: String, modifier: Modifier = Modifier) {
 fun LinkText(text: String, modifier: Modifier = Modifier) {
     Text(text,
         style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
-        color = Colors.Link,
+        color = Colors.LinkBlue,
         fontSize = 12.sp,
         modifier = modifier
     )
