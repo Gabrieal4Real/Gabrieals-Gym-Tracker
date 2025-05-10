@@ -5,10 +5,14 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.gabrieal.gymtracker.util.BoldText
 import org.gabrieal.gymtracker.util.Colors
+import org.gabrieal.gymtracker.util.MediumText
+import org.gabrieal.gymtracker.util.RegularText
+import org.gabrieal.gymtracker.util.SemiBoldText
 
 @Composable
 fun TitleText(text: String) {
@@ -18,5 +22,55 @@ fun TitleText(text: String) {
         color = Colors.TextPrimary,
         fontSize = 18.sp,
         modifier = Modifier.padding(16.dp)
+    )
+}
+
+@Composable
+fun SubtitleText(text: String, modifier: Modifier = Modifier) {
+    Text(text,
+        style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 22.sp),
+        color = Colors.TextSecondary,
+        fontSize = 16.sp,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun DescriptionText(text: String, modifier: Modifier = Modifier) {
+    Text(text,
+        style = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp),
+        color = Colors.TextPrimary,
+        fontSize = 14.sp,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun TinyText(text: String, modifier: Modifier = Modifier) {
+    Text(text,
+        style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
+        color = Colors.TextPrimary,
+        fontSize = 12.sp,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun TinyItalicText(text: String, modifier: Modifier = Modifier) {
+    Text(text,
+        style = TextStyle(fontFamily = RegularText(), fontStyle = FontStyle.Italic, lineHeight = 18.sp),
+        color = Colors.TextPrimary,
+        fontSize = 12.sp,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun LinkText(text: String, modifier: Modifier = Modifier) {
+    Text(text,
+        style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
+        color = Colors.Link,
+        fontSize = 12.sp,
+        modifier = modifier
     )
 }

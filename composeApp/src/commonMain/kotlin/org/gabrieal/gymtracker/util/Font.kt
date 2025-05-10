@@ -28,4 +28,3 @@ fun RegularText(): FontFamily {
 fun SemiBoldText(): FontFamily {
     return FontFamily(Font(Res.font.Poppins_SemiBold))
 }
-

@@ -10,4 +10,8 @@ object Colors {
     val TextPrimary = Color(0xFFE3E3E3)
     val TextSecondary = Color(0xFFDFD0B8)
     val Link = Color(0xFF1E88E5)
+
+    val White = Color(0xFFFFFFFF)
+    val Black = Color(0xFF000000)
+    val Maroon = Color(0xFF670D2F)
 }
