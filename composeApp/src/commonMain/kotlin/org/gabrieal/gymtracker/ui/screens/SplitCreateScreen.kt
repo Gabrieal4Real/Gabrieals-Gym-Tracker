@@ -132,7 +132,7 @@ object SplitCreateScreen : Screen {
                             days.forEachIndexed { index, day ->
                                 Box(
                                     modifier = Modifier
-                                        .size(34.dp)
+                                        .size(36.dp)
                                         .background(
                                             color = if (!selectedDays[index]) Colors.Maroon else Colors.White,
                                             shape = RoundedCornerShape(4.dp)

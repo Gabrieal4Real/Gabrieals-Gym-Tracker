@@ -27,11 +27,12 @@ fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = Color
         modifier = modifier
     )
 }
+
 @Composable
 fun BigText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
     Text(
         text = text,
-        style = TextStyle(fontFamily = SemiBoldText(), letterSpacing = 10.sp, lineHeight = 28.sp),
+        style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 28.sp),
         color = color,
         fontSize = 20.sp,
         modifier = modifier

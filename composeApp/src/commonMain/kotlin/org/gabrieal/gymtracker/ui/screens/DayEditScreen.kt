@@ -33,18 +33,19 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
 import gymtracker.composeapp.generated.resources.search
+import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
+import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
 import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.ui.allExistingExerciseList
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromLeftVisibility
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
-import org.gabrieal.gymtracker.ui.widgets.BigText
 import org.gabrieal.gymtracker.ui.widgets.BiggerText
 import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
+import org.gabrieal.gymtracker.ui.widgets.CustomAlertDialog
 import org.gabrieal.gymtracker.ui.widgets.CustomTextField
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.IncrementDecrementButton
 import org.gabrieal.gymtracker.ui.widgets.RepRangePicker
-import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
 import org.gabrieal.gymtracker.ui.widgets.popOut
@@ -54,6 +55,7 @@ import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.Workout.Companion.repRanges
 
 data class DayEditScreen(val selectedDay: String) : Screen {
+    @OptIn(ExperimentalCupertinoApi::class, ExperimentalAdaptiveApi::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -61,11 +63,14 @@ data class DayEditScreen(val selectedDay: String) : Screen {
         var defaultListSize by rememberSaveable { mutableStateOf(3) }
         var defaultExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
 
+
         var selectedExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
         var selectedExerciseSetList by rememberSaveable { mutableStateOf(List(defaultListSize) { 3 }) }
         var selectedExerciseRepRangeList by rememberSaveable { mutableStateOf(List(defaultListSize) { repRanges.random() }) }
 
         var animationVisibility by rememberSaveable { mutableStateOf(false) }
+
+        var showRemoveDialog by rememberSaveable { mutableStateOf(false) }
 
         val scrollState = rememberScrollState()
         var hasScrolled by rememberSaveable { mutableStateOf(false) }
@@ -171,20 +176,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                                     )
                                     Spacer(modifier = Modifier.height(16.dp))
                                     Box (modifier = Modifier.align(Alignment.CenterHorizontally).clickable {
-                                        animationVisibility = false
-                                        defaultListSize--
-                                        defaultExerciseList = defaultExerciseList.toMutableList().apply {
-                                            this.removeAt(position)
-                                        }
-                                        selectedExerciseList = selectedExerciseList.toMutableList().apply {
-                                            this.removeAt(position)
-                                        }
-                                        selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
-                                            this.removeAt(position)
-                                        }
-                                        selectedExerciseRepRangeList = selectedExerciseRepRangeList.toMutableList().apply {
-                                            this.removeAt(position)
-                                        }
+                                        showRemoveDialog = true
                                     }.background(
                                         color = Colors.Red,
                                         shape = RoundedCornerShape(8.dp)
@@ -224,11 +216,39 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                         onClick = {
                             animationVisibility = false
                         },
-                        enabled = false
+                        enabled = selectedExerciseList.all { it.isNotBlank() }
                     )
                 }
                 AnimatedImageFromLeftVisibility(animationVisibility, Res.drawable.cant_decide)
             }
-        }
+
+            if (showRemoveDialog && defaultListSize > 1) {
+                animationVisibility = false
+                    CustomAlertDialog(
+                        titleMessage = Pair("Remove exercise?", "Are you sure you want to remove this exercise?"),
+                        positiveButton = Pair("Remove") {
+                            showRemoveDialog = false
+                            defaultListSize--
+                            defaultExerciseList = defaultExerciseList.toMutableList().apply {
+                                this.removeAt(defaultListSize)
+                            }
+                            selectedExerciseList = selectedExerciseList.toMutableList().apply {
+                                this.removeAt(defaultListSize)
+                            }
+                            selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
+                                this.removeAt(defaultListSize)
+                            }
+                            selectedExerciseRepRangeList =
+                                selectedExerciseRepRangeList.toMutableList().apply {
+                                    this.removeAt(defaultListSize)
+                                }
+                        },
+                        negativeButton = Pair("Cancel") {
+                            showRemoveDialog = false
+                        }
+                    )
+                }
+            }
+
     }
 }
