@@ -12,7 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import io.github.alexzhirkevich.cupertino.adaptive.AdaptiveTheme
+import io.github.alexzhirkevich.cupertino.adaptive.CupertinoThemeSpec
 import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
+import io.github.alexzhirkevich.cupertino.adaptive.MaterialThemeSpec
 import io.github.alexzhirkevich.cupertino.adaptive.Theme
 import org.gabrieal.gymtracker.data.Exercise
 import org.gabrieal.gymtracker.data.decodeExercises
@@ -25,21 +27,23 @@ import org.gabrieal.gymtracker.util.language
 import org.gabrieal.gymtracker.util.readFile
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-expect fun determineTheme(): Theme
+expect fun isIOS(): Boolean
 
 var allExistingExerciseList = mutableListOf<Exercise>()
 
 @OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 @Preview
-fun App(stringResources: StringResources = remember { StringFactory.createStrings(language) }, theme: Theme = determineTheme()) {
+fun App(stringResources: StringResources = remember { StringFactory.createStrings(language) }) {
     CompositionLocalProvider(
         LocalStringResources provides stringResources
     ) {
         allExistingExerciseList = decodeExercises(readFile("exercises.json"))
 
         AdaptiveTheme(
-            target = theme,
+            target = if (isIOS()) Theme.Cupertino else Theme.Material3,
+            material = MaterialThemeSpec.Default(),
+            cupertino = CupertinoThemeSpec.Default(),
             content = {
                 Surface(
                     modifier = Modifier.fillMaxSize().background(Colors.Background).windowInsetsPadding(WindowInsets.safeDrawing),

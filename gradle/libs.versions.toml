@@ -19,7 +19,7 @@ landscapistCoil3 = "2.4.7"
 voyagerNavigator = "1.1.0-beta02"
 
 [libraries]
-cupertino = { module = "io.github.alexzhirkevich:cupertino-adaptive", version = "0.1.0-alpha03" }
+cupertino = { module = "io.github.alexzhirkevich:cupertino-adaptive", version = "0.1.0-alpha04" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
