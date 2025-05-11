@@ -12,13 +12,18 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
+import org.gabrieal.gymtracker.data.Exercise
+import org.gabrieal.gymtracker.data.decodeExercises
 import org.gabrieal.gymtracker.ui.screens.HomeScreen
 import org.gabrieal.gymtracker.util.Colors
 import org.gabrieal.gymtracker.util.LocalStringResources
 import org.gabrieal.gymtracker.util.StringFactory
 import org.gabrieal.gymtracker.util.StringResources
 import org.gabrieal.gymtracker.util.language
+import org.gabrieal.gymtracker.util.readFile
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+var allExistingExerciseList = mutableListOf<Exercise>()
 
 @Composable
 @Preview
@@ -26,6 +31,8 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
     CompositionLocalProvider(
         LocalStringResources provides stringResources
     ) {
+        allExistingExerciseList = decodeExercises(readFile("exercises.json"))
+
         MaterialTheme {
             Surface(
                 modifier = Modifier.fillMaxSize().background(Colors.Background).windowInsetsPadding(WindowInsets.safeDrawing),

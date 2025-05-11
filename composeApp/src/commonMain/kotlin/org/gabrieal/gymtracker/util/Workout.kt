@@ -21,6 +21,13 @@ class Workout {
             listOf("Push (Chest Focus, Shoulders, Triceps)", "Pull (Back Focus, Biceps)", "Legs", "Rest", "Arms (Shoulders, Triceps, Biceps)"),
             listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs", "Rest", "Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)")
         )
+        val repRanges = listOf(
+            1 to 5,
+            6 to 10,
+            8 to 12,
+            12 to 15,
+            15 to 20
+        )
 
         fun selectDays(sliderValue: Float): List<Boolean> {
             val activeIndices = listOf(

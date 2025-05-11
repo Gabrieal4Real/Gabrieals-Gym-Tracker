@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,9 +28,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -40,6 +37,7 @@ import gymtracker.composeapp.generated.resources.new_to_workout
 import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromRightVisibility
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
+import org.gabrieal.gymtracker.ui.widgets.BigText
 import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
@@ -59,13 +57,9 @@ object SplitCreateScreen : Screen {
 
         var animationVisibility by rememberSaveable { mutableStateOf(false) }
         var sliderValue by rememberSaveable { mutableStateOf(3f) }
+
         val scrollState = rememberScrollState()
         var hasScrolled by rememberSaveable { mutableStateOf(false) }
-
-        LaunchedEffect(Unit) {
-            delay(200)
-            animationVisibility = true
-        }
 
         LaunchedEffect(scrollState.value) {
             if (scrollState.value != 0 && !hasScrolled) {
@@ -75,6 +69,11 @@ object SplitCreateScreen : Screen {
             if (hasScrolled) {
                 animationVisibility = false
             }
+        }
+
+        LaunchedEffect(Unit) {
+            delay(200)
+            animationVisibility = true
         }
 
         var selectedDays by remember { mutableStateOf(Workout.selectDays(sliderValue)) }
@@ -133,17 +132,15 @@ object SplitCreateScreen : Screen {
                             days.forEachIndexed { index, day ->
                                 Box(
                                     modifier = Modifier
-                                        .size(32.dp)
+                                        .size(34.dp)
                                         .background(
                                             color = if (!selectedDays[index]) Colors.Maroon else Colors.White,
                                             shape = RoundedCornerShape(4.dp)
                                         ),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(
+                                    BigText(
                                         text = day,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold,
                                         color = if (!selectedDays[index]) Colors.White else Colors.Black
                                     )
                                 }
@@ -169,7 +166,7 @@ object SplitCreateScreen : Screen {
                         onClick = {
                             animationVisibility = false
                             navigator.push(SplitEditScreen(selectedDays.count { it }))
-                        }
+                        },
                     )
                 }
                 AnimatedImageFromRightVisibility(animationVisibility, Res.drawable.new_to_workout)

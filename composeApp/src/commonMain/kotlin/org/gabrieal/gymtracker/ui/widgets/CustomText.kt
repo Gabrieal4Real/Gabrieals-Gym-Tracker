@@ -12,16 +12,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.gabrieal.gymtracker.util.BoldText
 import org.gabrieal.gymtracker.util.Colors
+import org.gabrieal.gymtracker.util.ExtraBoldText
 import org.gabrieal.gymtracker.util.MediumText
 import org.gabrieal.gymtracker.util.RegularText
 import org.gabrieal.gymtracker.util.SemiBoldText
 
 @Composable
-fun TitleText(text: String) {
+fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
+    Text(
+        text = text.uppercase(),
+        style = TextStyle(fontFamily = ExtraBoldText(), letterSpacing = 10.sp, lineHeight = 30.sp),
+        color = color,
+        fontSize = 24.sp,
+        modifier = modifier
+    )
+}
+@Composable
+fun BigText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
+    Text(
+        text = text,
+        style = TextStyle(fontFamily = SemiBoldText(), letterSpacing = 10.sp, lineHeight = 28.sp),
+        color = color,
+        fontSize = 20.sp,
+        modifier = modifier
+    )
+}
+
+
+@Composable
+fun TitleText(text: String, color: Color = Colors.TextPrimary) {
     Text(
         text = text.uppercase(),
         style = TextStyle(fontFamily = BoldText(), letterSpacing = 4.sp, lineHeight = 24.sp),
-        color = Colors.TextPrimary,
+        color = color,
         fontSize = 18.sp,
         modifier = Modifier.padding(16.dp)
     )

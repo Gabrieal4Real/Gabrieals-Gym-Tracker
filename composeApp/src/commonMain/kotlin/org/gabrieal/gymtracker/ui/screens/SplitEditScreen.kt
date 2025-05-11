@@ -58,6 +58,19 @@ data class SplitEditScreen(val selectedDays: Int) : Screen {
 
         var animationVisibility by rememberSaveable { mutableStateOf(false) }
 
+        val scrollState = rememberScrollState()
+        var hasScrolled by rememberSaveable { mutableStateOf(false) }
+
+        LaunchedEffect(scrollState.value) {
+            if (scrollState.value != 0 && !hasScrolled) {
+                hasScrolled = true
+            }
+
+            if (hasScrolled) {
+                animationVisibility = false
+            }
+        }
+
         LaunchedEffect(Unit) {
             delay(200)
             animationVisibility = true
@@ -78,17 +91,18 @@ data class SplitEditScreen(val selectedDays: Int) : Screen {
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Column (modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                    Column (modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
                         repeat(7) {
                             Card (shape = RoundedCornerShape(8.dp),
                                 backgroundColor = if(currentPlan[it]) Colors.CardBackground else Colors.Maroon,
-                                border = BorderStroke(1.dp, Colors.BorderStroke),
+                                border = BorderStroke(2.dp, Colors.BorderStroke),
                                 modifier = Modifier.padding(bottom = 8.dp).fillMaxSize().clickable(
                                     indication = if(currentPlan[it]) LocalIndication.current else null,
                                     interactionSource = remember { MutableInteractionSource() },
                                     onClick = {
                                         animationVisibility = false
-                                        navigator.push(DayEditScreen(plans[activeDays - 1][it]))
+                                        if (currentPlan[it])
+                                            navigator.push(DayEditScreen(plans[activeDays - 1][it]))
                                     },
                                 )) {
                                 Column (modifier = Modifier.padding(16.dp)) {
@@ -97,12 +111,12 @@ data class SplitEditScreen(val selectedDays: Int) : Screen {
                                             DescriptionText(fullDays[it])
                                             if (currentPlan[it]) {
                                                 TinyItalicText(plans[activeDays - 1][it], color = Colors.TextSecondary)
-                                                TinyText("Not edited yet")
+                                                TinyText(Resources.strings.notEditedYet)
                                             }
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
                                         if (!currentPlan[it]) {
-                                            TinyItalicText(text = "Rest day")
+                                            TinyItalicText(text = Resources.strings.restDay)
                                         } else {
                                             Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Colors.TextPrimary)
                                         }

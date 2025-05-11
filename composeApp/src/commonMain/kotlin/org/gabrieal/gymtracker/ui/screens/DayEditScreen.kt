@@ -1,53 +1,233 @@
 package org.gabrieal.gymtracker.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.gabrieal.gymtracker.data.decodeExercises
+import gymtracker.composeapp.generated.resources.Res
+import gymtracker.composeapp.generated.resources.cant_decide
+import gymtracker.composeapp.generated.resources.search
+import kotlinx.coroutines.delay
+import org.gabrieal.gymtracker.ui.allExistingExerciseList
+import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromLeftVisibility
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
+import org.gabrieal.gymtracker.ui.widgets.BigText
+import org.gabrieal.gymtracker.ui.widgets.BiggerText
+import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
+import org.gabrieal.gymtracker.ui.widgets.CustomTextField
+import org.gabrieal.gymtracker.ui.widgets.DescriptionText
+import org.gabrieal.gymtracker.ui.widgets.IncrementDecrementButton
+import org.gabrieal.gymtracker.ui.widgets.RepRangePicker
+import org.gabrieal.gymtracker.ui.widgets.SubtitleText
+import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
+import org.gabrieal.gymtracker.ui.widgets.TinyText
+import org.gabrieal.gymtracker.ui.widgets.popOut
 import org.gabrieal.gymtracker.util.Colors
+import org.gabrieal.gymtracker.util.Resources
 import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
-import org.gabrieal.gymtracker.util.readFile
+import org.gabrieal.gymtracker.util.Workout.Companion.repRanges
 
 data class DayEditScreen(val selectedDay: String) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val exerciseList = decodeExercises(readFile("exercises.json"))
+
+        var defaultListSize by rememberSaveable { mutableStateOf(3) }
+        var defaultExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
+
+        var selectedExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
+        var selectedExerciseSetList by rememberSaveable { mutableStateOf(List(defaultListSize) { 3 }) }
+        var selectedExerciseRepRangeList by rememberSaveable { mutableStateOf(List(defaultListSize) { repRanges.random() }) }
+
+        var animationVisibility by rememberSaveable { mutableStateOf(false) }
+
+        val scrollState = rememberScrollState()
+        var hasScrolled by rememberSaveable { mutableStateOf(false) }
+
+        LaunchedEffect(scrollState.value) {
+            if (scrollState.value != 0 && !hasScrolled) {
+                hasScrolled = true
+            }
+
+            if (hasScrolled) {
+                animationVisibility = false
+            }
+        }
+
+
+        LaunchedEffect(Unit) {
+            delay(200)
+            animationVisibility = true
+        }
+
+        LaunchedEffect(Unit) {
+            repeat(defaultListSize) { position ->
+                defaultExerciseList = defaultExerciseList.toMutableList().apply {
+                    this[position] = allExistingExerciseList.random().name
+                }
+            }
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val selectedDay = planTitles.find { selectedDay.contains(it) }
-            BackButtonRow(text = "$selectedDay Day")
+            BackButtonRow(text = "Edit Plan")
             Box {
-                Column(
-                    modifier = Modifier.fillMaxSize().background(Colors.LighterBackground)
-                        .padding(16.dp).verticalScroll(rememberScrollState()).clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = {
+                Column (modifier = Modifier.fillMaxSize().background(Colors.LighterBackground)
+                    .padding(16.dp)) {
+                    Column(
+                        modifier = Modifier.fillMaxHeight(0.9f).verticalScroll(scrollState).clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = {
+                                animationVisibility = false
+                            },
+                        )
+                    ) {
+                        TinyText(
+                            "Let's start editing your",
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                        BiggerText(
+                            "$selectedDay Day",
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                                .scale(popOut().value)
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Box(
+                            modifier = Modifier.background(Colors.BorderStroke).fillMaxWidth(0.8f)
+                                .height(2.dp).align(Alignment.CenterHorizontally)
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                        },
-                    )
-                ) {
-
+                        repeat(defaultListSize) { position ->
+                            Card(
+                                shape = RoundedCornerShape(8.dp),
+                                backgroundColor = Colors.CardBackground,
+                                border = BorderStroke(2.dp, Colors.BorderStroke),
+                                modifier = Modifier.padding(bottom = 8.dp).fillMaxSize()
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    TinyItalicText("Name your exercise")
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    CustomTextField(
+                                        value = selectedExerciseList[position],
+                                        onValueChange = {
+                                            animationVisibility = false
+                                            selectedExerciseList = selectedExerciseList.toMutableList()
+                                                .apply { this[position] = it }
+                                        },
+                                        placeholderText = defaultExerciseList[position],
+                                        resource = Pair(Res.drawable.search, {
+                                            animationVisibility = false
+                                        })
+                                    )
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    TinyItalicText("How many sets per exercise?")
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    selectedExerciseSetList = selectedExerciseSetList.toMutableList()
+                                        .apply { this[position] = IncrementDecrementButton(selectedExerciseSetList[position], 1, 20) {
+                                            animationVisibility = false
+                                        } }
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    TinyItalicText("How many reps per set?")
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    RepRangePicker(
+                                        ranges = repRanges,
+                                        selectedRange = selectedExerciseRepRangeList[position],
+                                        onRangeSelected = {
+                                            selectedExerciseRepRangeList = selectedExerciseRepRangeList.toMutableList()
+                                                .apply { this[position] = it }
+                                            animationVisibility = false
+                                        }
+                                    )
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Box (modifier = Modifier.align(Alignment.CenterHorizontally).clickable {
+                                        animationVisibility = false
+                                        defaultListSize--
+                                        defaultExerciseList = defaultExerciseList.toMutableList().apply {
+                                            this.removeAt(position)
+                                        }
+                                        selectedExerciseList = selectedExerciseList.toMutableList().apply {
+                                            this.removeAt(position)
+                                        }
+                                        selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
+                                            this.removeAt(position)
+                                        }
+                                        selectedExerciseRepRangeList = selectedExerciseRepRangeList.toMutableList().apply {
+                                            this.removeAt(position)
+                                        }
+                                    }.background(
+                                        color = Colors.Red,
+                                        shape = RoundedCornerShape(8.dp)
+                                    ).padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)) {
+                                        DescriptionText("Remove")
+                                    }
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        DescriptionText(
+                            text = "Add more exercises to your plan +",
+                            modifier = Modifier.align(Alignment.CenterHorizontally).align(Alignment.CenterHorizontally).clickable {
+                                animationVisibility = false
+                                defaultListSize++
+                                defaultExerciseList = defaultExerciseList.toMutableList().apply {
+                                    this.add(allExistingExerciseList.random().name)
+                                }
+                                selectedExerciseList = selectedExerciseList.toMutableList().apply {
+                                    this.add("")
+                                }
+                                selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
+                                    this.add(3)
+                                }
+                                selectedExerciseRepRangeList = selectedExerciseRepRangeList.toMutableList().apply {
+                                    this.add(repRanges.random())
+                                }
+                            },
+                            color = Colors.LinkBlue
+                        )
+                    }
                 }
+                Box(contentAlignment = Alignment.BottomEnd,
+                    modifier = Modifier.fillMaxSize().padding(16.dp)) {
+                    ConfirmButton(
+                        text = Resources.strings.letsPlanIt,
+                        onClick = {
+                            animationVisibility = false
+                        },
+                        enabled = false
+                    )
+                }
+                AnimatedImageFromLeftVisibility(animationVisibility, Res.drawable.cant_decide)
             }
         }
     }

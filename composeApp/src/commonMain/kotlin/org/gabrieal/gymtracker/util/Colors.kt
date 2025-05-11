@@ -11,9 +11,11 @@ object Colors {
     val TextSecondary = Color(0xFFDFD0B8)
     val LinkBlue = Color(0xFF1E88E5)
     val SlightlyDarkerLinkBlue = Color(0xFF156DB6)
+    val PlaceholderColor = Color(0x996C757D)
 
     val White = Color(0xFFFFFFFF)
     val Black = Color(0xFF000000)
     val Maroon = Color(0xFF670D2F)
     val LightMaroon = Color(0xFFAB4567)
+    val Red = Color(0xFFB22222)
 }

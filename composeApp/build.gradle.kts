@@ -52,6 +52,7 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.voyager.navigator)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.cupertino)
         }
     }
 }

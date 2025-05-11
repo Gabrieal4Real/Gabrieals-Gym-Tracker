@@ -7,8 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import gymtracker.composeapp.generated.resources.Res.readBytes
-import kotlinx.serialization.json.Json
-import okio.Path
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
