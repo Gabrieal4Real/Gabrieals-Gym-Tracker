@@ -168,7 +168,7 @@ object SplitCreateScreen : Screen {
                         text = Resources.strings.letsPlanIt,
                         onClick = {
                             animationVisibility = false
-                            navigator.push(SplitEditScreen(selectedDays))
+                            navigator.push(SplitEditScreen(selectedDays.count { it }))
                         }
                     )
                 }

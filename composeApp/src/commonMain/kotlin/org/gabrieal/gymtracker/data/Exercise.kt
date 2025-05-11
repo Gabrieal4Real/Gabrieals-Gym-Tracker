@@ -56,7 +56,6 @@ fun decodeExercises(exercise: String): MutableList<Exercise> {
     val exerciseList: MutableList<Exercise> = mutableListOf()
     try {
         Json.decodeFromString<List<Exercise>>(exercise.trim()).forEachIndexed { _, it ->
-            println()
             exerciseList.add(it)
         }
     } catch (e: Exception) {

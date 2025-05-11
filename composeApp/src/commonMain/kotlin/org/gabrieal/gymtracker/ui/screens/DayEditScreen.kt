@@ -20,10 +20,10 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.gabrieal.gymtracker.data.decodeExercises
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.Resources
+import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.readFile
 
-data class DayEditScreen(val selectedDay: Boolean) : Screen {
+data class DayEditScreen(val selectedDay: String) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -33,7 +33,8 @@ data class DayEditScreen(val selectedDay: Boolean) : Screen {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BackButtonRow(text = Resources.strings.makeAPlan)
+            val selectedDay = planTitles.find { selectedDay.contains(it) }
+            BackButtonRow(text = "$selectedDay Day")
             Box {
                 Column(
                     modifier = Modifier.fillMaxSize().background(Colors.LighterBackground)
@@ -45,7 +46,7 @@ data class DayEditScreen(val selectedDay: Boolean) : Screen {
                         },
                     )
                 ) {
-                    
+
                 }
             }
         }

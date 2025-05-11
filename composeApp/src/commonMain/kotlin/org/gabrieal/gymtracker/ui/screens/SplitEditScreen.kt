@@ -44,13 +44,17 @@ import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
 import org.gabrieal.gymtracker.util.Colors
 import org.gabrieal.gymtracker.util.Resources
+import org.gabrieal.gymtracker.util.Workout
 import org.gabrieal.gymtracker.util.Workout.Companion.fullDays
 import org.gabrieal.gymtracker.util.Workout.Companion.plans
 
-data class SplitEditScreen(val selectedDays: List<Boolean>) : Screen {
+data class SplitEditScreen(val selectedDays: Int) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+
+        val currentPlan = Workout.selectDays(selectedDays.toFloat())
+        val activeDays = currentPlan.count { it }
 
         var animationVisibility by rememberSaveable { mutableStateOf(false) }
 
@@ -70,34 +74,34 @@ data class SplitEditScreen(val selectedDays: List<Boolean>) : Screen {
                     },
                 )) {
                     SubtitleText(
-                        text = Resources.strings.xDayWorkoutxDayRest(selectedDays.count { it }, selectedDays.count { !it }),
+                        text = Resources.strings.xDayWorkoutxDayRest(selectedDays, 7 - selectedDays),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Column (modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-                        repeat(7) { it ->
+                        repeat(7) {
                             Card (shape = RoundedCornerShape(8.dp),
-                                backgroundColor = if(selectedDays[it]) Colors.CardBackground else Colors.Maroon,
+                                backgroundColor = if(currentPlan[it]) Colors.CardBackground else Colors.Maroon,
                                 border = BorderStroke(1.dp, Colors.BorderStroke),
                                 modifier = Modifier.padding(bottom = 8.dp).fillMaxSize().clickable(
-                                    indication = if(selectedDays[it]) LocalIndication.current else null,
+                                    indication = if(currentPlan[it]) LocalIndication.current else null,
                                     interactionSource = remember { MutableInteractionSource() },
                                     onClick = {
                                         animationVisibility = false
-                                        navigator.push(DayEditScreen(selectedDays[it]))
+                                        navigator.push(DayEditScreen(plans[activeDays - 1][it]))
                                     },
                                 )) {
                                 Column (modifier = Modifier.padding(16.dp)) {
                                     Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                                         Column {
                                             DescriptionText(fullDays[it])
-                                            if (selectedDays[it]) {
-                                                TinyItalicText(plans[selectedDays.count { it } - 1][it], color = Colors.TextSecondary)
+                                            if (currentPlan[it]) {
+                                                TinyItalicText(plans[activeDays - 1][it], color = Colors.TextSecondary)
                                                 TinyText("Not edited yet")
                                             }
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
-                                        if (!selectedDays[it]) {
+                                        if (!currentPlan[it]) {
                                             TinyItalicText(text = "Rest day")
                                         } else {
                                             Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Colors.TextPrimary)

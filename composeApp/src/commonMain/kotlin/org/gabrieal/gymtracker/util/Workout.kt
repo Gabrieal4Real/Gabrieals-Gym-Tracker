@@ -13,9 +13,10 @@ class Workout {
     companion object {
         val days = listOf("M", "T", "W", "T", "F", "S", "S")
         val fullDays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+        val planTitles = listOf("Full Body", "Push", "Pull", "Leg", "Arm")
         val plans = listOf(
             listOf("Full Body"),
-            listOf("Full Body (Strength Focus)", "Rest", "Full Body (Hypertrophy Focus)"),
+            listOf("Full Body (Strength Focus)", "Rest", "Rest", "Full Body (Hypertrophy Focus)"),
             listOf("Push (Chest, Shoulders, Triceps)", "Rest", "Pull (Back, Biceps)", "Rest", "Legs"),
             listOf("Push (Chest Focus, Shoulders, Triceps)", "Pull (Back Focus, Biceps)", "Legs", "Rest", "Arms (Shoulders, Triceps, Biceps)"),
             listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs", "Rest", "Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)")
