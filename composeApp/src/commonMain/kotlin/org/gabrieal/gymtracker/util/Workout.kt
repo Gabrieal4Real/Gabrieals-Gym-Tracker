@@ -10,33 +10,6 @@ import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 
 class Workout {
-    // Enum for muscle groups
-    enum class MuscleGroup(val displayName: String) {
-        Abs("Abs"),
-        Arms("Arms"),
-        Back("Back"),
-        Biceps("Biceps"),
-        Chest("Chest"),
-        FrontDelt("Front Delt"),
-        Glutes("Glutes"),
-        Hamstrings("Hamstrings"),
-        Legs("Legs"),
-        MiddleDelt("Middle Delt"),
-        Quads("Quads"),
-        RearDelt("Rear Delt"),
-        Shoulders("Shoulders"),
-        Traps("Traps"),
-        Triceps("Triceps")
-    }
-
-    // Enum for exercise tiers
-    enum class ExerciseTier(val displayName: String) {
-        SPlus("S+ Tier"),
-        S("S Tier"),
-        APlus("A+ Tier"),
-        A("A Tier")
-    }
-
     companion object {
         val days = listOf("M", "T", "W", "T", "F", "S", "S")
         val fullDays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")

@@ -44,7 +44,7 @@ object HomeScreen : Screen {
                     )
                     Column (
                         modifier = Modifier.padding(8.dp).clickable {
-                            navigator.push(WorkoutSplitScreen)
+                            navigator.push(SplitCreateScreen)
                         },
                         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
                     )

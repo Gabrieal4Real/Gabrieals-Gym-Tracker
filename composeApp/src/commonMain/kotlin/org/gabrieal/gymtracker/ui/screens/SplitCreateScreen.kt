@@ -37,6 +37,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
+import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromRightVisibility
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
@@ -48,7 +49,7 @@ import org.gabrieal.gymtracker.util.Resources
 import org.gabrieal.gymtracker.util.Workout
 import org.gabrieal.gymtracker.util.Workout.Companion.days
 
-object WorkoutSplitScreen : Screen {
+object SplitCreateScreen : Screen {
     val minWorkouts = 1f
     val maxWorkouts = 5f
 
@@ -56,10 +57,15 @@ object WorkoutSplitScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        var animationVisibility by rememberSaveable { mutableStateOf(true) }
+        var animationVisibility by rememberSaveable { mutableStateOf(false) }
         var sliderValue by rememberSaveable { mutableStateOf(3f) }
         val scrollState = rememberScrollState()
         var hasScrolled by rememberSaveable { mutableStateOf(false) }
+
+        LaunchedEffect(Unit) {
+            delay(200)
+            animationVisibility = true
+        }
 
         LaunchedEffect(scrollState.value) {
             if (scrollState.value != 0 && !hasScrolled) {
@@ -162,7 +168,7 @@ object WorkoutSplitScreen : Screen {
                         text = Resources.strings.letsPlanIt,
                         onClick = {
                             animationVisibility = false
-                            navigator.push(WorkoutPlanScreen(selectedDays))
+                            navigator.push(SplitEditScreen(selectedDays))
                         }
                     )
                 }

@@ -21,6 +21,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,8 +34,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
-import gymtracker.composeapp.generated.resources.new_to_workout
 import gymtracker.composeapp.generated.resources.start_editing
+import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromLeftVisibility
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
@@ -46,12 +47,17 @@ import org.gabrieal.gymtracker.util.Resources
 import org.gabrieal.gymtracker.util.Workout.Companion.fullDays
 import org.gabrieal.gymtracker.util.Workout.Companion.plans
 
-data class WorkoutPlanScreen(val selectedDays: List<Boolean>) : Screen {
+data class SplitEditScreen(val selectedDays: List<Boolean>) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        var animationVisibility by rememberSaveable { mutableStateOf(true) }
+        var animationVisibility by rememberSaveable { mutableStateOf(false) }
+
+        LaunchedEffect(Unit) {
+            delay(200)
+            animationVisibility = true
+        }
 
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             BackButtonRow(text = Resources.strings.makeAPlan)
@@ -78,6 +84,7 @@ data class WorkoutPlanScreen(val selectedDays: List<Boolean>) : Screen {
                                     interactionSource = remember { MutableInteractionSource() },
                                     onClick = {
                                         animationVisibility = false
+                                        navigator.push(DayEditScreen(selectedDays[it]))
                                     },
                                 )) {
                                 Column (modifier = Modifier.padding(16.dp)) {
