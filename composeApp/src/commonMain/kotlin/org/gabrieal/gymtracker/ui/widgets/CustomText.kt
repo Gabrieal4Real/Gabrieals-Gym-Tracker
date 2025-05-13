@@ -1,6 +1,5 @@
 package org.gabrieal.gymtracker.ui.widgets
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -8,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.gabrieal.gymtracker.util.BoldText
@@ -16,29 +16,6 @@ import org.gabrieal.gymtracker.util.ExtraBoldText
 import org.gabrieal.gymtracker.util.MediumText
 import org.gabrieal.gymtracker.util.RegularText
 import org.gabrieal.gymtracker.util.SemiBoldText
-
-@Composable
-fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
-    Text(
-        text = text.uppercase(),
-        style = TextStyle(fontFamily = ExtraBoldText(), letterSpacing = 10.sp, lineHeight = 30.sp),
-        color = color,
-        fontSize = 24.sp,
-        modifier = modifier
-    )
-}
-
-@Composable
-fun BigText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
-    Text(
-        text = text,
-        style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 28.sp),
-        color = color,
-        fontSize = 20.sp,
-        modifier = modifier
-    )
-}
-
 
 @Composable
 fun TitleText(text: String, color: Color = Colors.TextPrimary) {
@@ -52,12 +29,38 @@ fun TitleText(text: String, color: Color = Colors.TextPrimary) {
 }
 
 @Composable
-fun SubtitleText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
+fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
+    Text(
+        text = text.uppercase(),
+        style = TextStyle(fontFamily = ExtraBoldText(), letterSpacing = 10.sp, lineHeight = 30.sp),
+        color = color,
+        fontSize = 24.sp,
+        modifier = modifier
+    )
+}
+
+@Composable
+fun BigText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary, maxLines: Int = Int.MAX_VALUE) {
+    Text(
+        text = text,
+        style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 28.sp),
+        color = color,
+        fontSize = 20.sp,
+        modifier = modifier,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
+@Composable
+fun SubtitleText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary, maxLines: Int = Int.MAX_VALUE) {
     Text(text,
         style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 22.sp),
         color = color,
         fontSize = 16.sp,
-        modifier = modifier
+        modifier = modifier,
+        maxLines = maxLines,
+        overflow = TextOverflow.Ellipsis
     )
 }
 

@@ -28,3 +28,6 @@ fun readFile(path: String): String {
 
     return bytes.decodeToString()
 }
+
+@Composable
+expect fun openURL(url: String)

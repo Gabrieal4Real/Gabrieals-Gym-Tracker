@@ -79,7 +79,7 @@ object SplitCreateScreen : Screen {
         var selectedDays by remember { mutableStateOf(Workout.selectDays(sliderValue)) }
 
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            BackButtonRow(text = Resources.strings.createSplit)
+            BackButtonRow(Resources.strings.createSplit)
             Box {
                 Column (
                     modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp).clickable(
@@ -140,7 +140,7 @@ object SplitCreateScreen : Screen {
                                     contentAlignment = Alignment.Center
                                 ) {
                                     BigText(
-                                        text = day,
+                                        day,
                                         color = if (!selectedDays[index]) Colors.White else Colors.Black
                                     )
                                 }
@@ -162,7 +162,7 @@ object SplitCreateScreen : Screen {
                 Box(contentAlignment = Alignment.BottomEnd,
                     modifier = Modifier.fillMaxSize().padding(16.dp)) {
                     ConfirmButton(
-                        text = Resources.strings.letsPlanIt,
+                        Resources.strings.letsPlanIt,
                         onClick = {
                             animationVisibility = false
                             navigator.push(SplitEditScreen(selectedDays.count { it }))

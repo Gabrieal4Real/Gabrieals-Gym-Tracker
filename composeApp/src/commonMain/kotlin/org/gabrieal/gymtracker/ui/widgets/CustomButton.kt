@@ -67,10 +67,10 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int, fu
                 },
             contentAlignment = Alignment.Center
         ) {
-            DescriptionText(text = "-", color = Colors.White)
+            DescriptionText("-", color = Colors.White)
         }
         Spacer(modifier = Modifier.width(16.dp))
-        DescriptionText(text = selectedValue.toString(), modifier = Modifier.align(Alignment.CenterVertically))
+        DescriptionText(selectedValue.toString(), modifier = Modifier.align(Alignment.CenterVertically))
         Spacer(modifier = Modifier.width(16.dp))
         Box(
             modifier = Modifier
@@ -84,7 +84,7 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int, fu
                 },
             contentAlignment = Alignment.Center
         ) {
-            DescriptionText(text = "+", color = Colors.White)
+            DescriptionText("+", color = Colors.White)
         }
     }
 

@@ -47,7 +47,7 @@ class Workout {
         @Composable
         fun WorkoutSplit(selectedDays: List<Boolean>) {
             TinyItalicText(
-                text = Resources.strings.xDayWorkoutxDayRest(selectedDays.count { it }, selectedDays.count { !it }),
+                Resources.strings.xDayWorkoutxDayRest(selectedDays.count { it }, selectedDays.count { !it }),
             )
             Spacer(modifier = Modifier.height(8.dp))
             WorkoutPlan(selectedDays)
@@ -59,15 +59,15 @@ class Workout {
 
             workoutPlan.forEachIndexed { index, workout ->
                 if (workout != "Rest") {
-                    DescriptionText(text = "Day ${index + 1}: $workout")
+                    DescriptionText("Day ${index + 1}: $workout")
                 } else {
-                    DescriptionItalicText(text = "Day ${index + 1}: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText("Day ${index + 1}: Rest", color = Colors.LightMaroon)
                 }
             }
 
             // Fill remaining days with rest
             repeat(7 - workoutPlan.size) {
-                DescriptionItalicText(text = "Day ${it + workoutPlan.size + 1}: Rest", color = Colors.LightMaroon)
+                DescriptionItalicText("Day ${it + workoutPlan.size + 1}: Rest", color = Colors.LightMaroon)
             }
         }
     }

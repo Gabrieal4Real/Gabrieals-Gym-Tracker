@@ -19,7 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -77,7 +77,7 @@ data class SplitEditScreen(val selectedDays: Int) : Screen {
         }
 
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            BackButtonRow(text = Resources.strings.makeAPlan)
+            BackButtonRow(Resources.strings.makeAPlan)
             Box {
                 Column(modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp).clickable(
                     indication = null,
@@ -87,7 +87,7 @@ data class SplitEditScreen(val selectedDays: Int) : Screen {
                     },
                 )) {
                     SubtitleText(
-                        text = Resources.strings.xDayWorkoutxDayRest(selectedDays, 7 - selectedDays),
+                        Resources.strings.xDayWorkoutxDayRest(selectedDays, 7 - selectedDays),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -116,9 +116,9 @@ data class SplitEditScreen(val selectedDays: Int) : Screen {
                                         }
                                         Spacer(modifier = Modifier.weight(1f))
                                         if (!currentPlan[it]) {
-                                            TinyItalicText(text = Resources.strings.restDay)
+                                            TinyItalicText(Resources.strings.restDay)
                                         } else {
-                                            Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Colors.TextPrimary)
+                                            Icon(imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight, contentDescription = null, tint = Colors.TextPrimary)
                                         }
                                     }
                                 }

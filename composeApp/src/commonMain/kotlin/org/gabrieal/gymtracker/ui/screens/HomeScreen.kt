@@ -33,7 +33,7 @@ object HomeScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-            TitleText(text = Resources.strings.appName)
+            TitleText(Resources.strings.appName)
             Box(modifier = Modifier.background(Colors.BorderStroke).fillMaxWidth().height(1.dp))
             Box(modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp)) {
                 Column (modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {

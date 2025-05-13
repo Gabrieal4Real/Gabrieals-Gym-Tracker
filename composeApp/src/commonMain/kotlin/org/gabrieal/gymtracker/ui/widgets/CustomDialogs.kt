@@ -2,14 +2,14 @@ package org.gabrieal.gymtracker.ui.widgets
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import io.github.alexzhirkevich.cupertino.adaptive.AdaptiveAlertDialog
 import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
 import io.github.alexzhirkevich.cupertino.cancel
 import io.github.alexzhirkevich.cupertino.default
+import org.gabrieal.gymtracker.ui.isIOS
+import org.gabrieal.gymtracker.util.Colors
 
 
 @OptIn(ExperimentalAdaptiveApi::class)
@@ -24,21 +24,37 @@ fun CustomAlertDialog(
             negativeButton.second.invoke()
         },
         title = {
-            Text(titleMessage.first)
+            if (isIOS())
+                Text(titleMessage.first, fontSize = 16.sp)
+            else {
+                Text(titleMessage.first, fontSize = 22.sp)
+            }
         },
         message = {
-            Text(titleMessage.second)
+            if (isIOS())
+                Text(titleMessage.second, fontSize = 14.sp, lineHeight = 18.sp)
+            else {
+                Text(titleMessage.second, fontSize = 16.sp, lineHeight = 20.sp)
+            }
         }
     ) {
         cancel(onClick = {
             negativeButton.second.invoke()
         }) {
-            Text(negativeButton.first)
+            if (isIOS()) {
+                Text(negativeButton.first, color = Colors.LinkBlue)
+            } else {
+                Text(negativeButton.first, color = Colors.Black, fontWeight = FontWeight.Medium)
+            }
         }
         default(onClick = {
             positiveButton.second.invoke()
         }) {
-            Text(positiveButton.first)
+            if (isIOS()) {
+                Text(positiveButton.first, color = Colors.LinkBlue, fontWeight = FontWeight.SemiBold)
+            } else {
+                Text(positiveButton.first, color = Colors.White, fontWeight = FontWeight.Medium)
+            }
         }
     }
 }

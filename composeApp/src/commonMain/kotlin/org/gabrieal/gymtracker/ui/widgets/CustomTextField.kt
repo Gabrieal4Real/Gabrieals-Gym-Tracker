@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -19,17 +21,17 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.gabrieal.gymtracker.util.Colors
 import org.gabrieal.gymtracker.util.MediumText
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 
 @Composable
-fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderText: String, resource: Pair<DrawableResource, () -> Unit>? = null) {
+fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderText: String, resource: Pair<ImageVector, () -> Unit>? = null) {
     val customSelectionColors = TextSelectionColors(
         handleColor = Colors.SlightlyDarkerLinkBlue,
         backgroundColor = Colors.LinkBlue
@@ -59,15 +61,15 @@ fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderT
                 ),
             )
             if (resource != null) {
-                Image(
-                    painter = painterResource(resource.first),
-                    contentDescription = resource.toString(),
-                    modifier = Modifier.size(48.dp).align(Alignment.CenterEnd).padding(start = 8.dp, end = 20.dp).clickable(
-                        indication = null,
+                Icon(
+                    imageVector = resource.first,
+                    contentDescription = resource.first.name,
+                    tint = Colors.Black,
+                    modifier = Modifier.size(48.dp).align(Alignment.CenterEnd).padding(start = 8.dp, end = 8.dp).clickable(
                         interactionSource = remember { MutableInteractionSource() },
-                    ) {
-                        resource.second.invoke()
-                    }
+                        indication = null,
+                        onClick = resource.second
+                    )
                 )
             }
         }

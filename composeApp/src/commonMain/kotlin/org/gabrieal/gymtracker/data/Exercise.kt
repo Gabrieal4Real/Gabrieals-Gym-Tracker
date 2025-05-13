@@ -32,13 +32,13 @@ class Routine {
         A("A Tier");
 
         companion object {
-            fun fromString(tier: Int): ExerciseTier? {
+            fun fromString(tier: Int): ExerciseTier {
                 return when (tier) {
                     0 -> SPlus
                     1 -> S
                     2 -> APlus
                     3 -> A
-                    else -> null
+                    else -> A
                 }
             }
         }

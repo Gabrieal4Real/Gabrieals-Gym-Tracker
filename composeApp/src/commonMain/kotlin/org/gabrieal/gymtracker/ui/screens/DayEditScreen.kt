@@ -16,6 +16,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,9 +34,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
-import gymtracker.composeapp.generated.resources.search
-import io.github.alexzhirkevich.cupertino.ExperimentalCupertinoApi
-import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
 import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.ui.allExistingExerciseList
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromLeftVisibility
@@ -55,7 +54,6 @@ import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.Workout.Companion.repRanges
 
 data class DayEditScreen(val selectedDay: String) : Screen {
-    @OptIn(ExperimentalCupertinoApi::class, ExperimentalAdaptiveApi::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -104,7 +102,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             val selectedDay = planTitles.find { selectedDay.contains(it) }
-            BackButtonRow(text = "Edit Plan")
+            BackButtonRow("Edit Plan")
             Box {
                 Column (modifier = Modifier.fillMaxSize().background(Colors.LighterBackground)
                     .padding(16.dp)) {
@@ -151,8 +149,9 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                                                 .apply { this[position] = it }
                                         },
                                         placeholderText = defaultExerciseList[position],
-                                        resource = Pair(Res.drawable.search, {
+                                        resource = Pair(Icons.Rounded.Search, {
                                             animationVisibility = false
+                                            navigator.push(ViewAllWorkoutScreen)
                                         })
                                     )
                                     Spacer(modifier = Modifier.height(24.dp))
@@ -188,7 +187,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         DescriptionText(
-                            text = "Add more exercises to your plan +",
+                            "Add more exercises to your plan +",
                             modifier = Modifier.align(Alignment.CenterHorizontally).align(Alignment.CenterHorizontally).clickable {
                                 animationVisibility = false
                                 defaultListSize++
@@ -212,7 +211,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                 Box(contentAlignment = Alignment.BottomEnd,
                     modifier = Modifier.fillMaxSize().padding(16.dp)) {
                     ConfirmButton(
-                        text = Resources.strings.letsPlanIt,
+                        "Confirm $selectedDay Day",
                         onClick = {
                             animationVisibility = false
                         },
