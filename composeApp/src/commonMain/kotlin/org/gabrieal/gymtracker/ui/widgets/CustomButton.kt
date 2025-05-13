@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.gabrieal.gymtracker.util.Colors
+import org.gabrieal.gymtracker.util.appUtil.Colors
 
 
 @Composable

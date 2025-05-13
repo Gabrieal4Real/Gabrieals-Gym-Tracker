@@ -38,10 +38,10 @@ import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
-import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.Resources
-import org.gabrieal.gymtracker.util.Workout
-import org.gabrieal.gymtracker.util.Workout.Companion.days
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.util.appUtil.Workout
+import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
 
 object SplitCreateScreen : Screen {
     val minWorkouts = 1f

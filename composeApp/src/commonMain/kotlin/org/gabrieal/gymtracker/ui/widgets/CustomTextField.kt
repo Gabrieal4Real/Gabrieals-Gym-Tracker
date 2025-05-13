@@ -1,6 +1,5 @@
 package org.gabrieal.gymtracker.ui.widgets
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -13,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -25,9 +23,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.MediumText
-import org.jetbrains.compose.resources.painterResource
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.appUtil.MediumText
 
 
 @Composable

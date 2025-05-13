@@ -36,11 +36,11 @@ import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
-import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.Resources
-import org.gabrieal.gymtracker.util.Workout
-import org.gabrieal.gymtracker.util.Workout.Companion.fullDays
-import org.gabrieal.gymtracker.util.Workout.Companion.plans
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.util.appUtil.Workout
+import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
+import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.plans
 
 data class SplitEditScreen(val selectedDays: Int) : Screen {
     @Composable

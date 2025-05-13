@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.util
+package org.gabrieal.gymtracker.util.systemUtil
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +27,9 @@ fun readFile(path: String): String {
 
 @Composable
 expect fun OpenURL(url: String)
+
+@Composable
+expect fun getCurrentContext() : Any?
 
 @Composable
 expect fun ShowAlertDialog(

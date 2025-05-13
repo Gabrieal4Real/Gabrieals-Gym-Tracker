@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.util
+package org.gabrieal.gymtracker.util.appUtil
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily

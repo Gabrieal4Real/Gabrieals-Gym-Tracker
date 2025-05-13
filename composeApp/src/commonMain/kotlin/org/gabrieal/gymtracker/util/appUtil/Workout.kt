@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.util
+package org.gabrieal.gymtracker.util.appUtil
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 import org.gabrieal.gymtracker.ui.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
+import org.gabrieal.gymtracker.util.systemUtil.Resources
 
 class Workout {
     companion object {

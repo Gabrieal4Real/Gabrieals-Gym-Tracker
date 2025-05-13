@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.util
+package org.gabrieal.gymtracker.util.systemUtil
 
 import androidx.compose.runtime.Composable
 
@@ -17,6 +17,11 @@ actual fun OpenURL(url: String) {
             }
         )
     }
+}
+
+@Composable
+actual fun getCurrentContext(): Any? {
+    return null
 }
 
 @Composable

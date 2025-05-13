@@ -10,12 +10,12 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.gabrieal.gymtracker.util.BoldText
-import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.ExtraBoldText
-import org.gabrieal.gymtracker.util.MediumText
-import org.gabrieal.gymtracker.util.RegularText
-import org.gabrieal.gymtracker.util.SemiBoldText
+import org.gabrieal.gymtracker.util.appUtil.BoldText
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.appUtil.ExtraBoldText
+import org.gabrieal.gymtracker.util.appUtil.MediumText
+import org.gabrieal.gymtracker.util.appUtil.RegularText
+import org.gabrieal.gymtracker.util.appUtil.SemiBoldText
 
 @Composable
 fun TitleText(text: String, color: Color = Colors.TextPrimary) {

@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.util
+package org.gabrieal.gymtracker.util.systemUtil
 
 import platform.Foundation.NSLocale
 import platform.Foundation.currentLocale

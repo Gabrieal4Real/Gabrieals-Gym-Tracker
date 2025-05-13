@@ -41,8 +41,8 @@ import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.DropDownFilter
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
-import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.OpenURL
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.jetbrains.compose.resources.painterResource
 
 object ViewAllWorkoutScreen : Screen {

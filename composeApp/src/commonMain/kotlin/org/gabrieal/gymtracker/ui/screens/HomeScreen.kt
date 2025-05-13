@@ -23,12 +23,12 @@ import gymtracker.composeapp.generated.resources.nothing_here
 import org.gabrieal.gymtracker.ui.widgets.LinkText
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TitleText
-import org.gabrieal.gymtracker.ui.widgets.loadLottie
-import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.Resources
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.jetbrains.compose.resources.painterResource
 
 object HomeScreen : Screen {
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -53,6 +53,8 @@ object HomeScreen : Screen {
                         SubtitleText(Resources.strings.nothingHereYet)
                         LinkText(Resources.strings.startTrackingWorkout, modifier = Modifier.padding(top = 4.dp))
                     }
+
+
                 }
             }
         }

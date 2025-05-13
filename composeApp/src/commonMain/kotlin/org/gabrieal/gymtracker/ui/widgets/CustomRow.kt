@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.gabrieal.gymtracker.util.Colors
+import org.gabrieal.gymtracker.util.appUtil.Colors
 
 @Composable
 fun BackButtonRow(text: String) {

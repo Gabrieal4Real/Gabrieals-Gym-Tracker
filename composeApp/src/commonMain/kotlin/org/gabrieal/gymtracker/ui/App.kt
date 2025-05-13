@@ -15,12 +15,12 @@ import cafe.adriel.voyager.navigator.Navigator
 import org.gabrieal.gymtracker.data.Exercise
 import org.gabrieal.gymtracker.data.decodeExercises
 import org.gabrieal.gymtracker.ui.screens.HomeScreen
-import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.LocalStringResources
-import org.gabrieal.gymtracker.util.StringFactory
-import org.gabrieal.gymtracker.util.StringResources
-import org.gabrieal.gymtracker.util.language
-import org.gabrieal.gymtracker.util.readFile
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.systemUtil.LocalStringResources
+import org.gabrieal.gymtracker.util.systemUtil.StringFactory
+import org.gabrieal.gymtracker.util.systemUtil.StringResources
+import org.gabrieal.gymtracker.util.systemUtil.language
+import org.gabrieal.gymtracker.util.systemUtil.readFile
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 expect fun isIOS(): Boolean

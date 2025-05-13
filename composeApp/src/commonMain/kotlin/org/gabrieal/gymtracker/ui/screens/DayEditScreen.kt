@@ -44,11 +44,11 @@ import org.gabrieal.gymtracker.ui.widgets.RepRangePicker
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
 import org.gabrieal.gymtracker.ui.widgets.popOut
-import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.ShowAlertDialog
-import org.gabrieal.gymtracker.util.ShowToast
-import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
-import org.gabrieal.gymtracker.util.Workout.Companion.repRanges
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.util.systemUtil.ShowToast
+import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.planTitles
+import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
 
 data class DayEditScreen(val selectedDay: String) : Screen {
     @Composable
@@ -218,7 +218,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                             "Remove exercise?",
                             "Are you sure you want to remove this exercise?"
                         ),
-                        positiveButton = Pair("Remove") {
+                        positiveButton = Pair("Proceed") {
                             showRemoveDialog = false
                             defaultListSize--
                             defaultExerciseList = defaultExerciseList.toMutableList().apply {

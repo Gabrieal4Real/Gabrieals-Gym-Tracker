@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.util
+package org.gabrieal.gymtracker.util.systemUtil
 
 import android.content.Intent
 import android.widget.Toast
@@ -18,7 +18,10 @@ actual fun OpenURL(url: String) {
     LocalContext.current.startActivity(browserIntent)
 }
 
-
+@Composable
+actual fun getCurrentContext(): Any? {
+    return LocalContext.current
+}
 
 @Composable
 actual fun ShowAlertDialog(
