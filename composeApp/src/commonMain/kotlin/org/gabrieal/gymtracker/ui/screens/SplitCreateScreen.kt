@@ -1,8 +1,6 @@
 package org.gabrieal.gymtracker.ui.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +18,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Slider
 import androidx.compose.material.SliderDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,8 +31,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
-import kotlinx.coroutines.delay
-import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromRightVisibility
+import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.BigText
 import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
@@ -53,43 +49,18 @@ object SplitCreateScreen : Screen {
 
     @Composable
     override fun Content() {
+        var showImage = true
         val navigator = LocalNavigator.currentOrThrow
 
-        var animationVisibility by rememberSaveable { mutableStateOf(false) }
         var sliderValue by rememberSaveable { mutableStateOf(3f) }
-
-        val scrollState = rememberScrollState()
-        var hasScrolled by rememberSaveable { mutableStateOf(false) }
-
-        LaunchedEffect(scrollState.value) {
-            if (scrollState.value != 0 && !hasScrolled) {
-                hasScrolled = true
-            }
-
-            if (hasScrolled) {
-                animationVisibility = false
-            }
-        }
-
-        LaunchedEffect(Unit) {
-            delay(200)
-            animationVisibility = true
-        }
-
         var selectedDays by remember { mutableStateOf(Workout.selectDays(sliderValue)) }
 
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             BackButtonRow(Resources.strings.createSplit)
             Box {
                 Column (
-                    modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp).clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() },
-                        onClick = {
-                            animationVisibility = false
-                        },
-                    )){
-                    Column (modifier = Modifier.fillMaxHeight(0.9f).verticalScroll(scrollState)){
+                    modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp)){
+                    Column (modifier = Modifier.fillMaxHeight(0.9f).verticalScroll(rememberScrollState())){
                         SubtitleText(Resources.strings.howManyDays)
                         Spacer(modifier = Modifier.height(8.dp))
                         Slider(
@@ -97,7 +68,6 @@ object SplitCreateScreen : Screen {
                             onValueChange = {
                                 sliderValue = it
                                 selectedDays = Workout.selectDays(sliderValue)
-                                animationVisibility = false
                             },
                             valueRange = minWorkouts..maxWorkouts,
                             steps = 3,
@@ -164,12 +134,11 @@ object SplitCreateScreen : Screen {
                     ConfirmButton(
                         Resources.strings.letsPlanIt,
                         onClick = {
-                            animationVisibility = false
                             navigator.push(SplitEditScreen(selectedDays.count { it }))
                         },
                     )
                 }
-                AnimatedImageFromRightVisibility(animationVisibility, Res.drawable.new_to_workout)
+                showImage = AnimatedImage(showImage, Res.drawable.new_to_workout, false)
             }
         }
     }

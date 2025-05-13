@@ -50,7 +50,7 @@ fun ConfirmButton(
 }
 
 @Composable
-fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int, function: () -> Unit): Int {
+fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): Int {
     var selectedValue by remember { mutableStateOf(initialValue) }
     Row {
         val minusBackgroundColor = if (selectedValue > minValue) Colors.SlightlyDarkerLinkBlue else Colors.Background
@@ -62,7 +62,6 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int, fu
                 .clickable(enabled = selectedValue > minValue) {
                     if (selectedValue > minValue) {
                         selectedValue--
-                        function.invoke()
                     }
                 },
             contentAlignment = Alignment.Center
@@ -79,7 +78,6 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int, fu
                 .clickable(enabled = selectedValue < maxValue) {
                     if (selectedValue < maxValue) {
                         selectedValue++
-                        function.invoke()
                     }
                 },
             contentAlignment = Alignment.Center

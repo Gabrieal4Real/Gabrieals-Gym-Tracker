@@ -21,12 +21,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,8 +30,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
-import kotlinx.coroutines.delay
-import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromLeftVisibility
+import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
@@ -51,47 +45,22 @@ import org.gabrieal.gymtracker.util.Workout.Companion.plans
 data class SplitEditScreen(val selectedDays: Int) : Screen {
     @Composable
     override fun Content() {
+        var showImage = true
         val navigator = LocalNavigator.currentOrThrow
 
         val currentPlan = Workout.selectDays(selectedDays.toFloat())
         val activeDays = currentPlan.count { it }
 
-        var animationVisibility by rememberSaveable { mutableStateOf(false) }
-
-        val scrollState = rememberScrollState()
-        var hasScrolled by rememberSaveable { mutableStateOf(false) }
-
-        LaunchedEffect(scrollState.value) {
-            if (scrollState.value != 0 && !hasScrolled) {
-                hasScrolled = true
-            }
-
-            if (hasScrolled) {
-                animationVisibility = false
-            }
-        }
-
-        LaunchedEffect(Unit) {
-            delay(200)
-            animationVisibility = true
-        }
-
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             BackButtonRow(Resources.strings.makeAPlan)
             Box {
-                Column(modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp).clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = {
-                        animationVisibility = false
-                    },
-                )) {
+                Column(modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp)) {
                     SubtitleText(
                         Resources.strings.xDayWorkoutxDayRest(selectedDays, 7 - selectedDays),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Column (modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
+                    Column (modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
                         repeat(7) {
                             Card (shape = RoundedCornerShape(8.dp),
                                 backgroundColor = if(currentPlan[it]) Colors.CardBackground else Colors.Maroon,
@@ -100,7 +69,6 @@ data class SplitEditScreen(val selectedDays: Int) : Screen {
                                     indication = if(currentPlan[it]) LocalIndication.current else null,
                                     interactionSource = remember { MutableInteractionSource() },
                                     onClick = {
-                                        animationVisibility = false
                                         if (currentPlan[it])
                                             navigator.push(DayEditScreen(plans[activeDays - 1][it]))
                                     },
@@ -126,7 +94,7 @@ data class SplitEditScreen(val selectedDays: Int) : Screen {
                         }
                     }
                 }
-                AnimatedImageFromLeftVisibility(animationVisibility, Res.drawable.start_editing)
+                showImage = AnimatedImage(showImage, Res.drawable.start_editing, true)
             }
         }
     }

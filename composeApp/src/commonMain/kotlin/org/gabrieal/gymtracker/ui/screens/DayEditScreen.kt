@@ -3,7 +3,6 @@ package org.gabrieal.gymtracker.ui.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,9 +32,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
-import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.ui.allExistingExerciseList
-import org.gabrieal.gymtracker.ui.widgets.AnimatedImageFromLeftVisibility
+import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.BiggerText
 import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
@@ -48,46 +45,26 @@ import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
 import org.gabrieal.gymtracker.ui.widgets.popOut
 import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
-import org.gabrieal.gymtracker.util.Workout.Companion.repRanges
 import org.gabrieal.gymtracker.util.ShowAlertDialog
 import org.gabrieal.gymtracker.util.ShowToast
+import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
+import org.gabrieal.gymtracker.util.Workout.Companion.repRanges
 
 data class DayEditScreen(val selectedDay: String) : Screen {
     @Composable
     override fun Content() {
+        var showImage = true
         val navigator = LocalNavigator.currentOrThrow
 
         var defaultListSize by rememberSaveable { mutableStateOf(3) }
         var defaultExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
 
-
         var selectedExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
         var selectedExerciseSetList by rememberSaveable { mutableStateOf(List(defaultListSize) { 3 }) }
         var selectedExerciseRepRangeList by rememberSaveable { mutableStateOf(List(defaultListSize) { repRanges.random() }) }
 
-        var animationVisibility by rememberSaveable { mutableStateOf(false) }
-
         var showRemoveDialog by rememberSaveable { mutableStateOf(false) }
-
-        val scrollState = rememberScrollState()
-        var hasScrolled by rememberSaveable { mutableStateOf(false) }
-
-        LaunchedEffect(scrollState.value) {
-            if (scrollState.value != 0 && !hasScrolled) {
-                hasScrolled = true
-            }
-
-            if (hasScrolled) {
-                animationVisibility = false
-            }
-        }
-
-
-        LaunchedEffect(Unit) {
-            delay(200)
-            animationVisibility = true
-        }
+        var currentClickedPosition by rememberSaveable { mutableStateOf(0) }
 
         LaunchedEffect(Unit) {
             repeat(defaultListSize) { position ->
@@ -108,16 +85,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                     modifier = Modifier.fillMaxSize().background(Colors.LighterBackground)
                         .padding(16.dp)
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight(0.9f).verticalScroll(scrollState)
-                            .clickable(
-                                indication = null,
-                                interactionSource = remember { MutableInteractionSource() },
-                                onClick = {
-                                    animationVisibility = false
-                                },
-                            )
-                    ) {
+                    Column(modifier = Modifier.fillMaxHeight(0.9f).verticalScroll(rememberScrollState())) {
                         TinyText(
                             "Let's start editing your",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -147,14 +115,12 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                                     CustomTextField(
                                         value = selectedExerciseList[position],
                                         onValueChange = {
-                                            animationVisibility = false
                                             selectedExerciseList =
                                                 selectedExerciseList.toMutableList()
                                                     .apply { this[position] = it }
                                         },
                                         placeholderText = defaultExerciseList[position],
                                         resource = Pair(Icons.Rounded.Search, {
-                                            animationVisibility = false
                                             navigator.push(ViewAllWorkoutScreen)
                                         })
                                     )
@@ -168,9 +134,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                                                     selectedExerciseSetList[position],
                                                     1,
                                                     20
-                                                ) {
-                                                    animationVisibility = false
-                                                }
+                                                )
                                             }
                                     Spacer(modifier = Modifier.height(24.dp))
                                     TinyItalicText("How many reps per set?")
@@ -182,7 +146,6 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                                             selectedExerciseRepRangeList =
                                                 selectedExerciseRepRangeList.toMutableList()
                                                     .apply { this[position] = it }
-                                            animationVisibility = false
                                         }
                                     )
                                     Spacer(modifier = Modifier.height(16.dp))
@@ -190,6 +153,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                                         modifier = Modifier.align(Alignment.CenterHorizontally)
                                             .clickable {
                                                 showRemoveDialog = true
+                                                currentClickedPosition = position
                                             }.background(
                                                 color = Colors.Red,
                                                 shape = RoundedCornerShape(8.dp)
@@ -210,7 +174,6 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                             "Add more exercises to your plan +",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                 .align(Alignment.CenterHorizontally).clickable {
-                                    animationVisibility = false
                                     defaultListSize++
                                     defaultExerciseList =
                                         defaultExerciseList.toMutableList().apply {
@@ -240,17 +203,16 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                     ConfirmButton(
                         "Confirm $selectedDay Day",
                         onClick = {
-                            animationVisibility = false
+
                         },
                         enabled = selectedExerciseList.all { it.isNotBlank() }
                     )
                 }
-                AnimatedImageFromLeftVisibility(animationVisibility, Res.drawable.cant_decide)
+                showImage = AnimatedImage(showImage, Res.drawable.cant_decide, true)
             }
 
             if (showRemoveDialog) {
-                animationVisibility = false
-                if (defaultListSize > 1)
+                if (defaultListSize > 1 && selectedExerciseList[currentClickedPosition].isNotBlank()) {
                     ShowAlertDialog(
                         titleMessage = Pair(
                             "Remove exercise?",
@@ -260,25 +222,43 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                             showRemoveDialog = false
                             defaultListSize--
                             defaultExerciseList = defaultExerciseList.toMutableList().apply {
-                                this.removeAt(defaultListSize)
+                                this.removeAt(currentClickedPosition)
                             }
                             selectedExerciseList = selectedExerciseList.toMutableList().apply {
-                                this.removeAt(defaultListSize)
+                                this.removeAt(currentClickedPosition)
                             }
                             selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
-                                this.removeAt(defaultListSize)
+                                this.removeAt(currentClickedPosition)
                             }
                             selectedExerciseRepRangeList =
                                 selectedExerciseRepRangeList.toMutableList().apply {
-                                    this.removeAt(defaultListSize)
+                                    this.removeAt(currentClickedPosition)
                                 }
                         },
                         negativeButton = Pair("Cancel") {
                             showRemoveDialog = false
                         }
                     )
-                else
+                } else if (defaultListSize > 1) {
+                    showRemoveDialog = false
+                    defaultListSize--
+                    defaultExerciseList = defaultExerciseList.toMutableList().apply {
+                        this.removeAt(currentClickedPosition)
+                    }
+                    selectedExerciseList = selectedExerciseList.toMutableList().apply {
+                        this.removeAt(currentClickedPosition)
+                    }
+                    selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
+                        this.removeAt(currentClickedPosition)
+                    }
+                    selectedExerciseRepRangeList =
+                        selectedExerciseRepRangeList.toMutableList().apply {
+                            this.removeAt(currentClickedPosition)
+                        }
+                }  else {
                     ShowToast("Need to have at least 1 workout")
+                    showRemoveDialog = false
+                }
             }
         }
     }
