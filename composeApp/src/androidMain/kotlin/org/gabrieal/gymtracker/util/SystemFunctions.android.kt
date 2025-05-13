@@ -1,6 +1,7 @@
 package org.gabrieal.gymtracker.util
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -16,6 +17,8 @@ actual fun OpenURL(url: String) {
     )
     LocalContext.current.startActivity(browserIntent)
 }
+
+
 
 @Composable
 actual fun ShowAlertDialog(
@@ -36,4 +39,9 @@ actual fun ShowAlertDialog(
             TextButton(onClick = { negativeButton.second.invoke() }) { Text(negativeButton.first) }
         }
     )
+}
+
+@Composable
+actual fun ShowToast(message: String) {
+    Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
 }

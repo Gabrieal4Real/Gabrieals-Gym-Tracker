@@ -48,7 +48,26 @@ actual fun ShowAlertDialog(
     }
     alertController.addAction(negativeAction)
 
-    // Present the dialog
+    val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+    rootViewController?.presentViewController(alertController, animated = true, completion = null)
+}
+
+@Composable
+actual fun ShowToast(message: String) {
+    val alertController = UIAlertController.alertControllerWithTitle(
+        title = "Alert",
+        message = message,
+        preferredStyle = UIAlertControllerStyleAlert
+    )
+
+    val positiveAction = UIAlertAction.actionWithTitle(
+        title = "OK",
+        style = UIAlertActionStyleDefault,
+        handler = null
+    )
+
+    alertController.addAction(positiveAction)
+
     val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
     rootViewController?.presentViewController(alertController, animated = true, completion = null)
 }

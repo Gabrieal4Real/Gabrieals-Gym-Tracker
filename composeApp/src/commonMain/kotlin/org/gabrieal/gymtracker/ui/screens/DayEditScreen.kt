@@ -51,6 +51,7 @@ import org.gabrieal.gymtracker.util.Colors
 import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.Workout.Companion.repRanges
 import org.gabrieal.gymtracker.util.ShowAlertDialog
+import org.gabrieal.gymtracker.util.ShowToast
 
 data class DayEditScreen(val selectedDay: String) : Screen {
     @Composable
@@ -247,34 +248,37 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                 AnimatedImageFromLeftVisibility(animationVisibility, Res.drawable.cant_decide)
             }
 
-            if (showRemoveDialog && defaultListSize > 1) {
+            if (showRemoveDialog) {
                 animationVisibility = false
-                ShowAlertDialog(
-                    titleMessage = Pair(
-                        "Remove exercise?",
-                        "Are you sure you want to remove this exercise?"
-                    ),
-                    positiveButton = Pair("Remove") {
-                        showRemoveDialog = false
-                        defaultListSize--
-                        defaultExerciseList = defaultExerciseList.toMutableList().apply {
-                            this.removeAt(defaultListSize)
-                        }
-                        selectedExerciseList = selectedExerciseList.toMutableList().apply {
-                            this.removeAt(defaultListSize)
-                        }
-                        selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
-                            this.removeAt(defaultListSize)
-                        }
-                        selectedExerciseRepRangeList =
-                            selectedExerciseRepRangeList.toMutableList().apply {
+                if (defaultListSize > 1)
+                    ShowAlertDialog(
+                        titleMessage = Pair(
+                            "Remove exercise?",
+                            "Are you sure you want to remove this exercise?"
+                        ),
+                        positiveButton = Pair("Remove") {
+                            showRemoveDialog = false
+                            defaultListSize--
+                            defaultExerciseList = defaultExerciseList.toMutableList().apply {
                                 this.removeAt(defaultListSize)
                             }
-                    },
-                    negativeButton = Pair("Cancel") {
-                        showRemoveDialog = false
-                    }
-                )
+                            selectedExerciseList = selectedExerciseList.toMutableList().apply {
+                                this.removeAt(defaultListSize)
+                            }
+                            selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
+                                this.removeAt(defaultListSize)
+                            }
+                            selectedExerciseRepRangeList =
+                                selectedExerciseRepRangeList.toMutableList().apply {
+                                    this.removeAt(defaultListSize)
+                                }
+                        },
+                        negativeButton = Pair("Cancel") {
+                            showRemoveDialog = false
+                        }
+                    )
+                else
+                    ShowToast("Need to have at least 1 workout")
             }
         }
     }

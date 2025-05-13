@@ -34,3 +34,6 @@ expect fun ShowAlertDialog(
     positiveButton: Pair<String, () -> Unit>,
     negativeButton: Pair<String, () -> Unit>
 )
+
+@Composable
+expect fun ShowToast(message: String)
