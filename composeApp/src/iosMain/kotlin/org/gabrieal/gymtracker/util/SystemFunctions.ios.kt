@@ -6,14 +6,7 @@ import platform.UIKit.*
 import platform.Foundation.*
 
 @Composable
-actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
-    // iOS doesn't have a direct equivalent to Android's back button
-    // This is a no-op implementation as iOS uses swipe gestures or navigation buttons
-    // that are handled by the OS
-}
-
-@Composable
-actual fun openURL(url: String) {
+actual fun OpenURL(url: String) {
     val nsUrl = NSURL.URLWithString(url)
     if (nsUrl != null && UIApplication.sharedApplication.canOpenURL(nsUrl)) {
         UIApplication.sharedApplication.openURL(
@@ -27,7 +20,7 @@ actual fun openURL(url: String) {
 }
 
 @Composable
-actual fun showAlertDialog(
+actual fun ShowAlertDialog(
     titleMessage: Pair<String, String>,
     positiveButton: Pair<String, () -> Unit>,
     negativeButton: Pair<String, () -> Unit>

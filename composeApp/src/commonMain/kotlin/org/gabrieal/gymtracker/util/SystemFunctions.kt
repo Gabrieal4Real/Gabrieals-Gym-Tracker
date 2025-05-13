@@ -9,10 +9,6 @@ import androidx.compose.runtime.setValue
 import gymtracker.composeapp.generated.resources.Res.readBytes
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
-
-@Composable
-expect fun BackHandler(enabled: Boolean = true, onBack: () -> Unit)
-
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun readFile(path: String): String {
@@ -30,10 +26,10 @@ fun readFile(path: String): String {
 }
 
 @Composable
-expect fun openURL(url: String)
+expect fun OpenURL(url: String)
 
 @Composable
-expect fun showAlertDialog(
+expect fun ShowAlertDialog(
     titleMessage: Pair<String, String>,
     positiveButton: Pair<String, () -> Unit>,
     negativeButton: Pair<String, () -> Unit>

@@ -50,7 +50,7 @@ import org.gabrieal.gymtracker.ui.widgets.popOut
 import org.gabrieal.gymtracker.util.Colors
 import org.gabrieal.gymtracker.util.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.Workout.Companion.repRanges
-import org.gabrieal.gymtracker.util.showAlertDialog
+import org.gabrieal.gymtracker.util.ShowAlertDialog
 
 data class DayEditScreen(val selectedDay: String) : Screen {
     @Composable
@@ -249,7 +249,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
 
             if (showRemoveDialog && defaultListSize > 1) {
                 animationVisibility = false
-                showAlertDialog(
+                ShowAlertDialog(
                     titleMessage = Pair(
                         "Remove exercise?",
                         "Are you sure you want to remove this exercise?"

@@ -8,14 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
 
-
 @Composable
-actual fun BackHandler(enabled: Boolean, onBack: () -> Unit) {
-    androidx.activity.compose.BackHandler(enabled = enabled, onBack = onBack)
-}
-
-@Composable
-actual fun openURL(url: String) {
+actual fun OpenURL(url: String) {
     val browserIntent = Intent(
         Intent.ACTION_VIEW,
         url.toUri()
@@ -24,7 +18,7 @@ actual fun openURL(url: String) {
 }
 
 @Composable
-actual fun showAlertDialog(
+actual fun ShowAlertDialog(
     titleMessage: Pair<String, String>,
     positiveButton: Pair<String, () -> Unit>,
     negativeButton: Pair<String, () -> Unit>

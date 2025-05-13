@@ -42,7 +42,7 @@ import org.gabrieal.gymtracker.ui.widgets.DropDownFilter
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.Colors
-import org.gabrieal.gymtracker.util.openURL
+import org.gabrieal.gymtracker.util.OpenURL
 import org.jetbrains.compose.resources.painterResource
 
 object ViewAllWorkoutScreen : Screen {
@@ -127,7 +127,7 @@ object ViewAllWorkoutScreen : Screen {
 
                                     if (isClicked) {
                                         isClicked = false
-                                        openURL(currentUrl)
+                                        OpenURL(currentUrl)
                                     }
                                 }
                             }
