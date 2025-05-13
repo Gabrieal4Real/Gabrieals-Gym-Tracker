@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +39,7 @@ import gymtracker.composeapp.generated.resources.youtube
 import org.gabrieal.gymtracker.data.Routine
 import org.gabrieal.gymtracker.ui.allExistingExerciseList
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
+import org.gabrieal.gymtracker.ui.widgets.CustomTextField
 import org.gabrieal.gymtracker.ui.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.DropDownFilter
@@ -43,21 +47,24 @@ import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.OpenURL
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.jetbrains.compose.resources.painterResource
 
-object ViewAllWorkoutScreen : Screen {
+data class ViewAllWorkoutScreen(val onMessageSent: (String) -> Unit) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
         val allMuscleGroups = Routine.MuscleGroup.entries.map { it.displayName }
 
+        var searchFilter by remember { mutableStateOf("") }
         var selectedFilters by remember { mutableStateOf(setOf<String>()) }
-        var defaultFilter by remember { mutableStateOf("Showing all workouts") }
 
         var allWorkouts by remember { mutableStateOf(allExistingExerciseList) }
         var isClicked by remember { mutableStateOf(false) }
         var currentUrl by remember { mutableStateOf("") }
+
+        var showConfirmAddToRoutineDialog by remember { mutableStateOf(false) }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -78,34 +85,32 @@ object ViewAllWorkoutScreen : Screen {
                             selectedFilters + filter
                         }
 
-                        allWorkouts = allExistingExerciseList.filter { it.muscleGroup.containsAll(selectedFilters) }.toMutableList()
-
-                        defaultFilter = if (selectedFilters.isNotEmpty())
-                            selectedFilters.joinToString(", ")
-                        else
-                            "Showing all workouts"
+                        allWorkouts = allExistingExerciseList.filter { it.name.contains(searchFilter, ignoreCase = true) && it.muscleGroup.containsAll(selectedFilters) }.toMutableList()
                     },
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                ) {
+                Column(modifier = Modifier.fillMaxSize()) {
                     SubtitleText("All Workouts")
-                    Spacer(modifier = Modifier.padding(4.dp))
                     DescriptionItalicText("Select muscle groups to filter by")
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    CustomTextField(
+                        value = searchFilter,
+                        onValueChange = { search ->
+                            allWorkouts = allExistingExerciseList.filter { it.name.contains(search, ignoreCase = true) && it.muscleGroup.containsAll(selectedFilters) }.toMutableList()
+                            searchFilter = search
+                        },
+                        placeholderText = allExistingExerciseList.random().name
+                    )
                     Spacer(modifier = Modifier.padding(8.dp))
-
-                    Column(
-                        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-                    ) {
-                        repeat(allWorkouts.size) {
+                    LazyColumn {
+                        items(allWorkouts.size) {
                             Card(
                                 shape = RoundedCornerShape(8.dp),
                                 backgroundColor = Colors.CardBackground,
                                 border = BorderStroke(2.dp, Colors.BorderStroke),
                                 modifier = Modifier.padding(bottom = 8.dp).fillMaxSize().clickable(
                                     onClick = {
-
+                                        showConfirmAddToRoutineDialog = true
                                     },
                                 )
                             ) {
@@ -130,6 +135,23 @@ object ViewAllWorkoutScreen : Screen {
                                         OpenURL(currentUrl)
                                     }
                                 }
+                            }
+
+                            if (showConfirmAddToRoutineDialog) {
+                                ShowAlertDialog(
+                                    titleMessage = Pair(
+                                        "Add Workout?",
+                                        "Do you want to add ${allWorkouts[it].name} to your routine?"
+                                    ),
+                                    positiveButton = Pair("Proceed") {
+                                        onMessageSent(allWorkouts[it].name)
+                                        navigator.pop()
+                                        showConfirmAddToRoutineDialog = false
+                                    },
+                                    negativeButton = Pair("Cancel") {
+                                        showConfirmAddToRoutineDialog = false
+                                    }
+                                )
                             }
                         }
                     }

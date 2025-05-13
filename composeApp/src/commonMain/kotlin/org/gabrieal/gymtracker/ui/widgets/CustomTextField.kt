@@ -38,7 +38,7 @@ fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderT
         Box {
             OutlinedTextField(
                 value = value,
-                placeholder = { TinyItalicText(placeholderText, color = Colors.PlaceholderColor, modifier = Modifier.fillMaxHeight()) },
+                placeholder = { TinyItalicText(placeholderText, color = Colors.PlaceholderColor, modifier = Modifier.align(Alignment.CenterStart)) },
                 onValueChange = onValueChange,
                 textStyle = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp, color = Colors.Black),
                 singleLine = true,

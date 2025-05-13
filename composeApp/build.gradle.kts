@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.landscapist.coil3)
             implementation(compose.components.resources)
             implementation(libs.voyager.navigator)
+            implementation(libs.voyager.transitions)
             implementation(libs.kotlinx.serialization.json)
             // This module can cause binary incompatibilities. Please read its description first
             implementation(libs.compottie.resources)

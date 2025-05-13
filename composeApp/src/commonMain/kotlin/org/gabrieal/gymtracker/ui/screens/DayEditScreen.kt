@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
@@ -85,7 +87,7 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                     modifier = Modifier.fillMaxSize().background(Colors.LighterBackground)
                         .padding(16.dp)
                 ) {
-                    Column(modifier = Modifier.fillMaxHeight(0.9f).verticalScroll(rememberScrollState())) {
+                    Column(modifier = Modifier.fillMaxHeight(0.9f).align(Alignment.CenterHorizontally)) {
                         TinyText(
                             "Let's start editing your",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -102,98 +104,105 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                         )
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        repeat(defaultListSize) { position ->
-                            Card(
-                                shape = RoundedCornerShape(8.dp),
-                                backgroundColor = Colors.CardBackground,
-                                border = BorderStroke(2.dp, Colors.BorderStroke),
-                                modifier = Modifier.padding(bottom = 8.dp).fillMaxSize()
-                            ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    TinyItalicText("Name your exercise")
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    CustomTextField(
-                                        value = selectedExerciseList[position],
-                                        onValueChange = {
-                                            selectedExerciseList =
-                                                selectedExerciseList.toMutableList()
-                                                    .apply { this[position] = it }
-                                        },
-                                        placeholderText = defaultExerciseList[position],
-                                        resource = Pair(Icons.Rounded.Search, {
-                                            navigator.push(ViewAllWorkoutScreen)
-                                        })
-                                    )
-                                    Spacer(modifier = Modifier.height(24.dp))
-                                    TinyItalicText("How many sets per exercise?")
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    selectedExerciseSetList =
-                                        selectedExerciseSetList.toMutableList()
-                                            .apply {
-                                                this[position] = IncrementDecrementButton(
-                                                    selectedExerciseSetList[position],
-                                                    1,
-                                                    20
-                                                )
+                        LazyColumn (horizontalAlignment = Alignment.CenterHorizontally) {
+                            items(defaultListSize) { position ->
+                                Card(
+                                    shape = RoundedCornerShape(8.dp),
+                                    backgroundColor = Colors.CardBackground,
+                                    border = BorderStroke(2.dp, Colors.BorderStroke),
+                                    modifier = Modifier.padding(bottom = 8.dp).fillMaxSize()
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        TinyItalicText("Name your exercise")
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        CustomTextField(
+                                            value = selectedExerciseList[position],
+                                            onValueChange = {
+                                                selectedExerciseList =
+                                                    selectedExerciseList.toMutableList()
+                                                        .apply { this[position] = it }
+                                            },
+                                            placeholderText = defaultExerciseList[position],
+                                            resource = Icons.Rounded.Search to {
+                                                navigator.push(ViewAllWorkoutScreen {
+                                                    selectedExerciseList =
+                                                        selectedExerciseList.toMutableList()
+                                                            .apply { this[position] = it }
+                                                })
                                             }
-                                    Spacer(modifier = Modifier.height(24.dp))
-                                    TinyItalicText("How many reps per set?")
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    RepRangePicker(
-                                        ranges = repRanges,
-                                        selectedRange = selectedExerciseRepRangeList[position],
-                                        onRangeSelected = {
-                                            selectedExerciseRepRangeList =
-                                                selectedExerciseRepRangeList.toMutableList()
-                                                    .apply { this[position] = it }
+                                        )
+                                        Spacer(modifier = Modifier.height(24.dp))
+                                        TinyItalicText("How many sets per exercise?")
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        selectedExerciseSetList =
+                                            selectedExerciseSetList.toMutableList()
+                                                .apply {
+                                                    this[position] = IncrementDecrementButton(
+                                                        selectedExerciseSetList[position],
+                                                        1,
+                                                        20
+                                                    )
+                                                }
+                                        Spacer(modifier = Modifier.height(24.dp))
+                                        TinyItalicText("How many reps per set?")
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        RepRangePicker(
+                                            ranges = repRanges,
+                                            selectedRange = selectedExerciseRepRangeList[position],
+                                            onRangeSelected = {
+                                                selectedExerciseRepRangeList =
+                                                    selectedExerciseRepRangeList.toMutableList()
+                                                        .apply { this[position] = it }
+                                            }
+                                        )
+                                        Spacer(modifier = Modifier.height(16.dp))
+                                        Box(
+                                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                                                .clickable {
+                                                    showRemoveDialog = true
+                                                    currentClickedPosition = position
+                                                }.background(
+                                                    color = Colors.Red,
+                                                    shape = RoundedCornerShape(8.dp)
+                                                ).padding(
+                                                    start = 8.dp,
+                                                    end = 8.dp,
+                                                    top = 4.dp,
+                                                    bottom = 4.dp
+                                                )
+                                        ) {
+                                            DescriptionText("Remove")
                                         }
-                                    )
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    Box(
-                                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                                            .clickable {
-                                                showRemoveDialog = true
-                                                currentClickedPosition = position
-                                            }.background(
-                                                color = Colors.Red,
-                                                shape = RoundedCornerShape(8.dp)
-                                            ).padding(
-                                                start = 8.dp,
-                                                end = 8.dp,
-                                                top = 4.dp,
-                                                bottom = 4.dp
-                                            )
-                                    ) {
-                                        DescriptionText("Remove")
                                     }
+                                }
+                                if (position == defaultListSize - 1) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    DescriptionText(
+                                        "Add more exercises to your plan +",
+                                        modifier = Modifier.clickable {
+                                                defaultListSize++
+                                                defaultExerciseList =
+                                                    defaultExerciseList.toMutableList().apply {
+                                                        this.add(allExistingExerciseList.random().name)
+                                                    }
+                                                selectedExerciseList =
+                                                    selectedExerciseList.toMutableList().apply {
+                                                        this.add("")
+                                                    }
+                                                selectedExerciseSetList =
+                                                    selectedExerciseSetList.toMutableList().apply {
+                                                        this.add(3)
+                                                    }
+                                                selectedExerciseRepRangeList =
+                                                    selectedExerciseRepRangeList.toMutableList().apply {
+                                                        this.add(repRanges.random())
+                                                    }
+                                            },
+                                        color = Colors.LinkBlue
+                                    )
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        DescriptionText(
-                            "Add more exercises to your plan +",
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                .align(Alignment.CenterHorizontally).clickable {
-                                    defaultListSize++
-                                    defaultExerciseList =
-                                        defaultExerciseList.toMutableList().apply {
-                                            this.add(allExistingExerciseList.random().name)
-                                        }
-                                    selectedExerciseList =
-                                        selectedExerciseList.toMutableList().apply {
-                                            this.add("")
-                                        }
-                                    selectedExerciseSetList =
-                                        selectedExerciseSetList.toMutableList().apply {
-                                            this.add(3)
-                                        }
-                                    selectedExerciseRepRangeList =
-                                        selectedExerciseRepRangeList.toMutableList().apply {
-                                            this.add(repRanges.random())
-                                        }
-                                },
-                            color = Colors.LinkBlue
-                        )
                     }
                 }
                 Box(
