@@ -55,7 +55,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(libs.voyager.navigator)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.cupertino)
+            // This module can cause binary incompatibilities. Please read its description first
+            implementation(libs.compottie.resources)
         }
     }
 }

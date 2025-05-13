@@ -5,17 +5,13 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
-import io.github.alexzhirkevich.cupertino.adaptive.AdaptiveTheme
-import io.github.alexzhirkevich.cupertino.adaptive.CupertinoThemeSpec
-import io.github.alexzhirkevich.cupertino.adaptive.ExperimentalAdaptiveApi
-import io.github.alexzhirkevich.cupertino.adaptive.MaterialThemeSpec
-import io.github.alexzhirkevich.cupertino.adaptive.Theme
 import org.gabrieal.gymtracker.data.Exercise
 import org.gabrieal.gymtracker.data.decodeExercises
 import org.gabrieal.gymtracker.ui.screens.HomeScreen
@@ -30,8 +26,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 expect fun isIOS(): Boolean
 
 var allExistingExerciseList = mutableListOf<Exercise>()
-
-@OptIn(ExperimentalAdaptiveApi::class)
 @Composable
 @Preview
 fun App(stringResources: StringResources = remember { StringFactory.createStrings(language) }) {
@@ -40,19 +34,13 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
     ) {
         allExistingExerciseList = decodeExercises(readFile("exercises.json"))
 
-        AdaptiveTheme(
-            target = if (isIOS()) Theme.Cupertino else Theme.Material3,
-            material = MaterialThemeSpec.Default(),
-            cupertino = CupertinoThemeSpec.Default(),
-            content = {
+        MaterialTheme{
                 Surface(
                     modifier = Modifier.fillMaxSize().background(Colors.Background).windowInsetsPadding(WindowInsets.safeDrawing),
                     color = Colors.Background
                 ) {
-                    // Use the navigation system to determine which screen to show
                     Navigator(HomeScreen)
                 }
             }
-        )
     }
 }

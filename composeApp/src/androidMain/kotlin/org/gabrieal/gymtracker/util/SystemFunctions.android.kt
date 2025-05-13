@@ -1,7 +1,9 @@
 package org.gabrieal.gymtracker.util
 
 import android.content.Intent
-import android.net.Uri
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
@@ -19,4 +21,25 @@ actual fun openURL(url: String) {
         url.toUri()
     )
     LocalContext.current.startActivity(browserIntent)
+}
+
+@Composable
+actual fun showAlertDialog(
+    titleMessage: Pair<String, String>,
+    positiveButton: Pair<String, () -> Unit>,
+    negativeButton: Pair<String, () -> Unit>
+) {
+    AlertDialog(
+        onDismissRequest = {
+            negativeButton.second.invoke()
+        },
+        title = { Text(text = titleMessage.first) },
+        text = { Text(text = titleMessage.second) },
+        confirmButton = {
+            TextButton(onClick = { positiveButton.second.invoke() }) { Text(positiveButton.first) }
+        },
+        dismissButton = {
+            TextButton(onClick = { negativeButton.second.invoke() }) { Text(negativeButton.first) }
+        }
+    )
 }

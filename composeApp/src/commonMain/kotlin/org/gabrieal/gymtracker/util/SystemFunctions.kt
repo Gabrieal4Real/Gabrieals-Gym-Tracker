@@ -31,3 +31,10 @@ fun readFile(path: String): String {
 
 @Composable
 expect fun openURL(url: String)
+
+@Composable
+expect fun showAlertDialog(
+    titleMessage: Pair<String, String>,
+    positiveButton: Pair<String, () -> Unit>,
+    negativeButton: Pair<String, () -> Unit>
+)
