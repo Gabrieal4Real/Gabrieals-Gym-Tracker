@@ -94,8 +94,6 @@ data class SplitEditScreen(val selectedDays: List<Boolean>) : Screen {
                                                         exercises = selectedExerciseList
                                                     )
                                                 )
-
-                                                println(selectedRoutineList)
                                             }
                                             navigator.push(DayEditScreen)
                                         }

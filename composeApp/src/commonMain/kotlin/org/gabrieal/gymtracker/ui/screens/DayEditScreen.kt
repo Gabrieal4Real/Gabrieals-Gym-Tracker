@@ -45,7 +45,6 @@ import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
 import org.gabrieal.gymtracker.ui.widgets.popOut
 import org.gabrieal.gymtracker.util.appUtil.Colors
-import org.gabrieal.gymtracker.util.appUtil.Workout
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
@@ -65,20 +64,13 @@ object DayEditScreen : Screen {
     }
 
     fun setExercises(exercises: List<SelectedExercise>?) {
-        exerciseList = exercises?.toMutableList() ?: mutableListOf(
+        exerciseList = exercises?.toMutableList() ?: List(3) {
             SelectedExercise(
                 name = "",
                 reps = repRanges.random(),
-                sets = 3),
-            SelectedExercise(
-                name = "",
-                reps = repRanges.random(),
-                sets = 3),
-            SelectedExercise(
-                name = "",
-                reps = repRanges.random(),
-                sets = 3)
-        )
+                sets = 3
+            )
+        }.toMutableList()
     }
 
     @Composable

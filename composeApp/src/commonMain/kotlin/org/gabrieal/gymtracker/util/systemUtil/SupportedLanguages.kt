@@ -54,7 +54,7 @@ interface StringResources {
 
 class EnglishStringResources : StringResources {
     override val appName: String = "Gabrieal's Gym Tracker"
-    override val nothingHereYet: String = "It's so lonely here"
+    override val nothingHereYet: String = "Nothing here yet"
     override val startTrackingWorkout: String = "Let's start tracking your workouts >"
     override val createSplit: String = "Create split"
     override val howManyDays: String = "How many days are you planning to workout?"
