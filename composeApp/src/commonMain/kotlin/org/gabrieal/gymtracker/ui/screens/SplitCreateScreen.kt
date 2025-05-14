@@ -1,6 +1,7 @@
 package org.gabrieal.gymtracker.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,16 +45,12 @@ import org.gabrieal.gymtracker.util.appUtil.Workout
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
 
 object SplitCreateScreen : Screen {
-    val minWorkouts = 1f
-    val maxWorkouts = 5f
-
     @Composable
     override fun Content() {
         var showImage = true
         val navigator = LocalNavigator.currentOrThrow
 
-        var sliderValue by rememberSaveable { mutableStateOf(3f) }
-        var selectedDays by remember { mutableStateOf(Workout.selectDays(sliderValue)) }
+        var selectedDays by remember { mutableStateOf(listOf(true, false, true, false, true, false, false)) }
 
         Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
             BackButtonRow(Resources.strings.createSplit)
@@ -62,35 +59,6 @@ object SplitCreateScreen : Screen {
                     modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp)){
                     Column (modifier = Modifier.fillMaxHeight(0.9f).verticalScroll(rememberScrollState())){
                         SubtitleText(Resources.strings.howManyDays)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Slider(
-                            value = sliderValue,
-                            onValueChange = {
-                                sliderValue = it
-                                selectedDays = Workout.selectDays(sliderValue)
-                            },
-                            valueRange = minWorkouts..maxWorkouts,
-                            steps = 3,
-                            colors = SliderDefaults.colors(
-                                thumbColor = Colors.LinkBlue,
-                                activeTrackColor = Colors.TextPrimary,
-                                inactiveTrackColor = Colors.BorderStroke
-                            )
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TinyText(minWorkouts.toInt().toString())
-                            DescriptionText(
-                                Resources.strings.xAmountOfSplit(
-                                    sliderValue.toInt().toString()
-                                )
-                            )
-                            TinyText(maxWorkouts.toInt().toString())
-                        }
-                        Spacer(modifier = Modifier.height(40.dp))
-                        SubtitleText(Resources.strings.recommendedSplit)
                         Spacer(modifier = Modifier.height(8.dp))
                         Row(
                             modifier = Modifier
@@ -106,7 +74,24 @@ object SplitCreateScreen : Screen {
                                         .background(
                                             color = if (!selectedDays[index]) Colors.Maroon else Colors.White,
                                             shape = RoundedCornerShape(4.dp)
-                                        ),
+                                        ).clickable {
+                                            if (selectedDays.count { it } >= 5 && !selectedDays[index]) {
+                                                selectedDays.find { it }?.let {
+                                                    selectedDays = selectedDays.toMutableList().apply {
+                                                        this[selectedDays.indexOf(it)] = false
+                                                    }
+                                                }
+
+                                                selectedDays = selectedDays.toMutableList().apply {
+                                                    this[index] = !selectedDays[index]
+                                                }
+
+                                                return@clickable
+                                            }
+                                            selectedDays = selectedDays.toMutableList().apply {
+                                                this[index] = !selectedDays[index]
+                                            }
+                                        },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     BigText(
@@ -123,8 +108,8 @@ object SplitCreateScreen : Screen {
                             DescriptionText(Resources.strings.redsIndicateRest)
                         }
                         Spacer(modifier = Modifier.height(40.dp))
-                        SubtitleText(Resources.strings.heresHowItWorks)
-                        Spacer(modifier = Modifier.height(4.dp))
+                        SubtitleText(Resources.strings.recommendedSplit)
+                        Spacer(modifier = Modifier.height(8.dp))
                         Workout.WorkoutSplit(selectedDays)
                         Spacer(modifier = Modifier.height(4.dp))
                     }
@@ -134,8 +119,9 @@ object SplitCreateScreen : Screen {
                     ConfirmButton(
                         Resources.strings.letsPlanIt,
                         onClick = {
-                            navigator.push(SplitEditScreen(selectedDays.count { it }))
+                            navigator.push(SplitEditScreen(selectedDays))
                         },
+                        enabled = selectedDays.count { it } >= 1,
                     )
                 }
                 showImage = AnimatedImage(showImage, Res.drawable.new_to_workout, false)

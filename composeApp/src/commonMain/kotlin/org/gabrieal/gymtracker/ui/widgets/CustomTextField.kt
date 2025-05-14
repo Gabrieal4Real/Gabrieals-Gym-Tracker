@@ -56,19 +56,21 @@ fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderT
                     textColor = Colors.Black,
                     placeholderColor = Colors.PlaceholderColor
                 ),
+                trailingIcon = {
+                    if (resource != null) {
+                        Icon(
+                            imageVector = resource.first,
+                            contentDescription = resource.first.name,
+                            tint = Colors.Black,
+                            modifier = Modifier.size(48.dp).align(Alignment.CenterEnd).padding(start = 8.dp, end = 8.dp).clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = resource.second
+                            )
+                        )
+                    }
+                }
             )
-            if (resource != null) {
-                Icon(
-                    imageVector = resource.first,
-                    contentDescription = resource.first.name,
-                    tint = Colors.Black,
-                    modifier = Modifier.size(48.dp).align(Alignment.CenterEnd).padding(start = 8.dp, end = 8.dp).clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = resource.second
-                    )
-                )
-            }
         }
     }
 }

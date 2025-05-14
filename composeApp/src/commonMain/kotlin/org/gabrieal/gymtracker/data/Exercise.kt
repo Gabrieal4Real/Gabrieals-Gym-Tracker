@@ -26,10 +26,10 @@ class Routine {
 
     // Enum for exercise tiers, with S+ Tier as 0
     enum class ExerciseTier(val displayName: String) {
-        SPlus("S+ Tier"),
-        S("S Tier"),
-        APlus("A+ Tier"),
-        A("A Tier");
+        SPlus("S+"),
+        S("S"),
+        APlus("A+"),
+        A("A");
 
         companion object {
             fun fromString(tier: Int): ExerciseTier {

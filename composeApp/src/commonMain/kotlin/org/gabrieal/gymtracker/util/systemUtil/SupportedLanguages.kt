@@ -49,11 +49,12 @@ interface StringResources {
     fun xDayWorkoutxDayRest(workout: Int, rest: Int): String
     val notEditedYet: String
     val restDay: String
+    val edited: String
 }
 
 class EnglishStringResources : StringResources {
     override val appName: String = "Gabrieal's Gym Tracker"
-    override val nothingHereYet: String = "Nothing here yet"
+    override val nothingHereYet: String = "It's so lonely here"
     override val startTrackingWorkout: String = "Let's start tracking your workouts >"
     override val createSplit: String = "Create split"
     override val howManyDays: String = "How many days are you planning to workout?"
@@ -66,6 +67,7 @@ class EnglishStringResources : StringResources {
     override fun xDayWorkoutxDayRest(workout: Int, rest: Int) = "$workout-day workout, $rest-day rest"
     override val notEditedYet: String = "Not edited yet"
     override val restDay: String = "Rest day"
+    override val edited: String = "Edited"
 }
 
 class MalayStringResources : StringResources {
@@ -83,6 +85,7 @@ class MalayStringResources : StringResources {
     override fun xDayWorkoutxDayRest(workout: Int, rest: Int) = "$workout-hari latihan, $rest-hari istirahat"
     override val notEditedYet: String = "Belum diubah"
     override val restDay: String = "Hari rehat"
+    override val edited: String = "Diubah"
 }
 
 class TamilStringResources : StringResources {
@@ -100,4 +103,5 @@ class TamilStringResources : StringResources {
     override fun xDayWorkoutxDayRest(workout: Int, rest: Int) = "$workout-நாள் பிரிப்பு, $rest-நாள் ஓய்வு"
     override val notEditedYet: String = "முதல் மாற்றப்பட்டது"
     override val restDay: String = "ஓய்வு நாட்கள்"
+    override val edited: String = "மாற்றப்பட்டது"
 }

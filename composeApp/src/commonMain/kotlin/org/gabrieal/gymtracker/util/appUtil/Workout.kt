@@ -15,13 +15,15 @@ class Workout {
         val days = listOf("M", "T", "W", "T", "F", "S", "S")
         val fullDays = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
         val planTitles = listOf("Full Body", "Push", "Pull", "Leg", "Accessory")
-        val plans = listOf(
+
+        private val plans = listOf(
             listOf("Full Body"),
-            listOf("Full Body (Strength Focus)", "Rest", "Rest", "Full Body (Hypertrophy Focus)"),
-            listOf("Push (Chest, Shoulders, Triceps)", "Rest", "Pull (Back, Biceps)", "Rest", "Legs"),
-            listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs", "Rest", "Accessory (Target muscle of your choosing)"),
-            listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs", "Rest", "Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)")
+            listOf("Full Body (Strength Focus)", "Full Body (Hypertrophy Focus)"),
+            listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs"),
+            listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs", "Accessory (Target muscle of your choosing)"),
+            listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs", "Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)")
         )
+
         val repRanges = listOf(
             1 to 5,
             6 to 10,
@@ -31,18 +33,24 @@ class Workout {
         )
 
         fun selectDays(sliderValue: Float): List<Boolean> {
-            val activeIndices = listOf(
-                listOf(0),
-                listOf(0, 3),
-                listOf(0, 2, 4),
-                listOf(0, 1, 2, 4),
-                listOf(0, 1, 2, 4, 5)
-            )
-
-            return List(7) { index ->
-                sliderValue.toInt().takeIf { it in 1..5 }
-                    ?.let { index in activeIndices[it - 1] } ?: false
+            return List(7) {
+                it < sliderValue
             }
+        }
+
+        fun getCurrentPlan(selectedDays: List<Boolean>): List<String> {
+            val currentPlan = mutableListOf<String>()
+            var position = 0
+            selectedDays.forEachIndexed { index, isSelected ->
+                if (isSelected) {
+                    currentPlan.add(plans[selectedDays.count { it } - 1][position])
+                    position += 1
+                } else {
+                    currentPlan.add("")
+                }
+            }
+
+            return currentPlan
         }
 
         @Composable
@@ -56,19 +64,14 @@ class Workout {
 
         @Composable
         fun WorkoutPlan(selectedDays: List<Boolean>) {
-            val workoutPlan = plans.getOrNull(selectedDays.count { it } - 1) ?: emptyList()
-
-            workoutPlan.forEachIndexed { index, workout ->
-                if (workout != "Rest") {
-                    DescriptionText("Day ${index + 1}: $workout")
+            var position = 0
+            selectedDays.forEachIndexed { index, isSelected ->
+                if (isSelected) {
+                    DescriptionText("Day ${index + 1}: ${plans[selectedDays.count { it } - 1][position]}")
+                    position += 1
                 } else {
                     DescriptionItalicText("Day ${index + 1}: Rest", color = Colors.LightMaroon)
                 }
-            }
-
-            // Fill remaining days with rest
-            repeat(7 - workoutPlan.size) {
-                DescriptionItalicText("Day ${it + workoutPlan.size + 1}: Rest", color = Colors.LightMaroon)
             }
         }
     }

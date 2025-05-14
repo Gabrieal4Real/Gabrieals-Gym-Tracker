@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
@@ -30,10 +28,10 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
+import org.gabrieal.gymtracker.data.SelectedExercise
 import org.gabrieal.gymtracker.ui.allExistingExerciseList
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
@@ -47,23 +45,53 @@ import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
 import org.gabrieal.gymtracker.ui.widgets.popOut
 import org.gabrieal.gymtracker.util.appUtil.Colors
-import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
-import org.gabrieal.gymtracker.util.systemUtil.ShowToast
+import org.gabrieal.gymtracker.util.appUtil.Workout
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 
-data class DayEditScreen(val selectedDay: String) : Screen {
+object DayEditScreen : Screen {
+    private var selectedDay: String = ""
+    private var callback: ((MutableList<SelectedExercise>) -> Unit)? = null
+    private var exerciseList: MutableList<SelectedExercise> = mutableListOf()
+
+    fun setCallback(onMessageSent: (MutableList<SelectedExercise>) -> Unit) {
+        callback = onMessageSent
+    }
+
+    fun setSelectedDay(day: String) {
+        selectedDay = day
+    }
+
+    fun setExercises(exercises: List<SelectedExercise>?) {
+        exerciseList = exercises?.toMutableList() ?: mutableListOf(
+            SelectedExercise(
+                name = "",
+                reps = repRanges.random(),
+                sets = 3),
+            SelectedExercise(
+                name = "",
+                reps = repRanges.random(),
+                sets = 3),
+            SelectedExercise(
+                name = "",
+                reps = repRanges.random(),
+                sets = 3)
+        )
+    }
+
     @Composable
     override fun Content() {
         var showImage = true
         val navigator = LocalNavigator.currentOrThrow
 
-        var defaultListSize by rememberSaveable { mutableStateOf(3) }
+        var defaultListSize by rememberSaveable { mutableStateOf(exerciseList.size) }
         var defaultExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
 
-        var selectedExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
-        var selectedExerciseSetList by rememberSaveable { mutableStateOf(List(defaultListSize) { 3 }) }
-        var selectedExerciseRepRangeList by rememberSaveable { mutableStateOf(List(defaultListSize) { repRanges.random() }) }
+        var selectedExerciseList by rememberSaveable { mutableStateOf(exerciseList.mapNotNull { it.name })}
+        var selectedExerciseSetList by rememberSaveable { mutableStateOf(exerciseList.mapNotNull { it.sets })}
+        var selectedExerciseRepRangeList by rememberSaveable { mutableStateOf(exerciseList.mapNotNull { it.reps })}
 
         var showRemoveDialog by rememberSaveable { mutableStateOf(false) }
         var currentClickedPosition by rememberSaveable { mutableStateOf(0) }
@@ -124,11 +152,13 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                                             },
                                             placeholderText = defaultExerciseList[position],
                                             resource = Icons.Rounded.Search to {
-                                                navigator.push(ViewAllWorkoutScreen {
+                                                ViewAllWorkoutScreen.setCallback {
                                                     selectedExerciseList =
                                                         selectedExerciseList.toMutableList()
                                                             .apply { this[position] = it }
-                                                })
+                                                }
+
+                                                navigator.push(ViewAllWorkoutScreen)
                                             }
                                         )
                                         Spacer(modifier = Modifier.height(24.dp))
@@ -212,9 +242,22 @@ data class DayEditScreen(val selectedDay: String) : Screen {
                     ConfirmButton(
                         "Confirm $selectedDay Day",
                         onClick = {
+                            val tempSelectedExerciseList = mutableListOf<SelectedExercise>()
 
+                            selectedExerciseList.forEach { editedExercise ->
+                                if (editedExercise.isNotBlank()) {
+                                    tempSelectedExerciseList.add(SelectedExercise(
+                                        name = editedExercise,
+                                        reps = selectedExerciseRepRangeList[selectedExerciseList.indexOf(editedExercise)],
+                                        sets = selectedExerciseSetList[selectedExerciseList.indexOf(editedExercise)]
+                                    ))
+                                }
+                            }
+
+                            callback?.invoke(tempSelectedExerciseList)
+                            navigator.pop()
                         },
-                        enabled = selectedExerciseList.all { it.isNotBlank() }
+                        enabled = selectedExerciseList.any { it.isNotBlank() }
                     )
                 }
                 showImage = AnimatedImage(showImage, Res.drawable.cant_decide, true)
