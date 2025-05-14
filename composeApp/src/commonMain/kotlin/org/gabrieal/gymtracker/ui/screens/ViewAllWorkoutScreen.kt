@@ -222,10 +222,6 @@ object ViewAllWorkoutScreen : Screen {
         }
     }
 
-    /**
-     * Shows the tier badge for a workout.
-     * Tier 0 = Beginner, 1 = Intermediate, 2 = Advanced, 3 = Elite.
-     */
     @Composable
     fun TierImage(tier: Int) {
         val drawableResource = when (tier) {

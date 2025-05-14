@@ -3,17 +3,31 @@ package org.gabrieal.gymtracker.ui.widgets
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.unit.dp
 import gymtracker.composeapp.generated.resources.Res
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import kotlinx.coroutines.delay
+import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
@@ -35,7 +49,6 @@ fun popOut(): Animatable<Float, AnimationVector1D> {
     return scale
 }
 
-
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun loadLottie(path: String) {
@@ -51,4 +64,30 @@ fun loadLottie(path: String) {
         ),
         contentDescription = "Lottie animation"
     )
+}
+
+@Composable
+fun AnimatedDividerWithScale() {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    val scale by animateFloatAsState(
+        targetValue = if (isExpanded) 1f else 0f,
+        animationSpec = tween(durationMillis = 800)
+    )
+
+    LaunchedEffect (Unit) {
+        delay(100)
+        isExpanded = true
+    }
+
+    Column (modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(0.8f)
+                .height(2.dp)
+                .scale(scale, 1f)
+                .background(Colors.BorderStroke)
+                .align(Alignment.CenterHorizontally)
+        )
+    }
 }

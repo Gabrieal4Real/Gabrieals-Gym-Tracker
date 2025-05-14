@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -41,9 +40,9 @@ import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.ui.widgets.TinyText
 import org.gabrieal.gymtracker.util.appUtil.Colors
-import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
+import org.gabrieal.gymtracker.util.systemUtil.Resources
 
 data class MakeAPlanScreen(val selectedDays: List<Boolean>) : Screen {
     @Composable
@@ -94,9 +93,9 @@ data class MakeAPlanScreen(val selectedDays: List<Boolean>) : Screen {
                                     enabled = isActive,
                                     onClick = {
                                         val exercises = selectedRoutineList.find { it.day == day }?.exercises
-                                        DayEditScreen.setSelectedDay(getCurrentPlan(selectedDays)[index])
-                                        DayEditScreen.setExercises(exercises)
-                                        DayEditScreen.setCallback { updatedExercises ->
+                                        EditPlanScreen.setSelectedDay(getCurrentPlan(selectedDays)[index])
+                                        EditPlanScreen.setExercises(exercises)
+                                        EditPlanScreen.setCallback { updatedExercises ->
                                             selectedRoutineList = selectedRoutineList
                                                 .filterNot { it.day == day }
                                                 .toMutableList()
@@ -104,7 +103,7 @@ data class MakeAPlanScreen(val selectedDays: List<Boolean>) : Screen {
                                                     add(SelectedExerciseList(day = day, exercises = updatedExercises))
                                                 }
                                         }
-                                        navigator.push(DayEditScreen)
+                                        navigator.push(EditPlanScreen)
                                     }
                                 ).shadow(
                                     elevation = 4.dp,
