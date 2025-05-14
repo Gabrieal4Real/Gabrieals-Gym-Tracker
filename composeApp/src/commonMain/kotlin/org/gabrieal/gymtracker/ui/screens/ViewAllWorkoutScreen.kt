@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -29,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
@@ -82,12 +85,21 @@ object ViewAllWorkoutScreen : Screen {
         var searchFilter by remember { mutableStateOf("") }
         var selectedFilters by remember { mutableStateOf(setOf<String>()) }
         var selectedWorkout by remember { mutableStateOf("") }
-
-        var allWorkouts by remember { mutableStateOf(allExistingExerciseList) }
-        var isClicked by remember { mutableStateOf(false) }
-        var currentUrl by remember { mutableStateOf("") }
-
         var showConfirmAddToRoutineDialog by remember { mutableStateOf(false) }
+        var youtubeUrlToOpen by remember { mutableStateOf<String?>(null) }
+
+        val filteredWorkouts = remember(searchFilter, selectedFilters) {
+            allExistingExerciseList.filter {
+                it.name.contains(searchFilter, ignoreCase = true) &&
+                        it.muscleGroup.containsAll(selectedFilters)
+            }
+        }
+
+        // Open YouTube URL if set (side effect)
+        youtubeUrlToOpen?.let { url ->
+            OpenURL(url)
+            youtubeUrlToOpen = null
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -95,7 +107,9 @@ object ViewAllWorkoutScreen : Screen {
         ) {
             BackButtonRow("All Workouts")
             Box(
-                modifier = Modifier.fillMaxSize().background(Colors.LighterBackground)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Colors.LighterBackground)
                     .padding(16.dp)
             ) {
                 DropDownFilter(
@@ -107,83 +121,111 @@ object ViewAllWorkoutScreen : Screen {
                         } else {
                             selectedFilters + filter
                         }
-
-                        allWorkouts = allExistingExerciseList.filter { it.name.contains(searchFilter, ignoreCase = true) && it.muscleGroup.containsAll(selectedFilters) }.toMutableList()
                     },
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
-                Column(modifier = Modifier.fillMaxSize()) {
+
+                Column {
+                    // Section title and filter instructions
                     SubtitleText("All Workouts")
+                    Spacer(modifier = Modifier.height(8.dp))
                     DescriptionItalicText("Select muscle groups to filter by")
-                    Spacer(modifier = Modifier.padding(4.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Muscle group filter dropdown
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Search field for filtering by workout name
                     CustomTextField(
                         value = searchFilter,
-                        onValueChange = { search ->
-                            allWorkouts = allExistingExerciseList.filter { it.name.contains(search, ignoreCase = true) && it.muscleGroup.containsAll(selectedFilters) }.toMutableList()
-                            searchFilter = search
-                        },
-                        placeholderText = allExistingExerciseList.random().name
+                        onValueChange = { searchFilter = it },
+                        placeholderText = allExistingExerciseList.randomOrNull()?.name.orEmpty()
                     )
-                    Spacer(modifier = Modifier.padding(8.dp))
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // List of filtered workouts
                     LazyColumn {
-                        items(allWorkouts.size) {
+                        items(filteredWorkouts.size) { idx ->
+                            val workout = filteredWorkouts[idx]
                             Card(
                                 shape = RoundedCornerShape(8.dp),
                                 backgroundColor = Colors.CardBackground,
                                 border = BorderStroke(2.dp, Colors.BorderStroke),
-                                modifier = Modifier.padding(bottom = 8.dp).fillMaxSize().clickable(
-                                    onClick = {
+                                modifier = Modifier
+                                    .padding(bottom = 8.dp)
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        // Show confirmation dialog when a workout is selected
                                         showConfirmAddToRoutineDialog = true
-                                        selectedWorkout = allWorkouts[it].name
-                                    },
-                                )
+                                        selectedWorkout = workout.name
+                                    }.shadow(
+                                        elevation = 4.dp,
+                                        shape = RoundedCornerShape(8.dp),
+                                        ambientColor = Colors.Black,
+                                        spotColor = Colors.Black
+                                    )
                             ) {
-                                Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                                    Column(modifier = Modifier.weight(1f).padding(16.dp)) {
-                                        DescriptionText(allWorkouts[it].name)
-                                        TinyItalicText(allWorkouts[it].muscleGroup.joinToString(", "), color = Colors.TextSecondary)
+                                Row(
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .padding(16.dp)
+                                    ) {
+                                        // Workout name and muscle group tags
+                                        DescriptionText(workout.name)
+                                        TinyItalicText(
+                                            workout.muscleGroup.joinToString(", "),
+                                            color = Colors.TextSecondary
+                                        )
+                                        // YouTube icon to search for workout demo
                                         Image(
                                             painter = painterResource(Res.drawable.youtube),
                                             contentDescription = "Youtube",
-                                            modifier = Modifier.size(24.dp).padding(top = 8.dp).clickable {
-                                                currentUrl = "https://www.youtube.com/results?search_query=how+to+do+${allWorkouts[it].name}"
-                                                isClicked = true
-                                            },
+                                            modifier = Modifier
+                                                .size(24.dp)
+                                                .padding(top = 8.dp)
+                                                .clickable {
+                                                    youtubeUrlToOpen =
+                                                        "https://www.youtube.com/results?search_query=how+to+do+${workout.name}"
+                                                }
                                         )
-
                                     }
-                                    TierImage(allWorkouts[it].tier)
-
-                                    if (isClicked) {
-                                        isClicked = false
-                                        OpenURL(currentUrl)
-                                    }
+                                    // Workout tier badge
+                                    TierImage(workout.tier)
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            if (showConfirmAddToRoutineDialog) {
-                ShowAlertDialog(
-                    titleMessage = Pair(
-                        "Add Workout?",
-                        "Do you want to add $selectedWorkout to your routine?"
-                    ),
-                    positiveButton = Pair("Proceed") {
-                        callback?.invoke(selectedWorkout)
-                        navigator.pop()
-                        showConfirmAddToRoutineDialog = false
-                    },
-                    negativeButton = Pair("Cancel") {
-                        showConfirmAddToRoutineDialog = false
-                    }
-                )
+                // Confirmation dialog for adding workout to routine
+                if (showConfirmAddToRoutineDialog) {
+                    ShowAlertDialog(
+                        titleMessage = Pair(
+                            "Add Workout?",
+                            "Do you want to add $selectedWorkout to your routine?"
+                        ),
+                        positiveButton = Pair("Proceed") {
+                            callback?.invoke(selectedWorkout)
+                            navigator.pop()
+                            showConfirmAddToRoutineDialog = false
+                        },
+                        negativeButton = Pair("Cancel") {
+                            showConfirmAddToRoutineDialog = false
+                        }
+                    )
+                }
             }
         }
     }
 
+    /**
+     * Shows the tier badge for a workout.
+     * Tier 0 = Beginner, 1 = Intermediate, 2 = Advanced, 3 = Elite.
+     */
     @Composable
     fun TierImage(tier: Int) {
         val drawableResource = when (tier) {
@@ -193,7 +235,6 @@ object ViewAllWorkoutScreen : Screen {
             3 -> Res.drawable.tier_3
             else -> Res.drawable.tier_3
         }
-
         Image(
             painter = painterResource(drawableResource),
             contentDescription = drawableResource.toString(),

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,28 +34,47 @@ object HomeScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             TitleText(Resources.strings.appName)
-            Box(modifier = Modifier.background(Colors.BorderStroke).fillMaxWidth().height(1.dp))
-            Box(modifier = Modifier.fillMaxSize().background(Colors.LighterBackground).padding(16.dp)) {
-                Column (modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Colors.BorderStroke)
+                    .height(1.dp)
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Colors.LighterBackground)
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Image(
                         painter = painterResource(Res.drawable.nothing_here),
                         contentDescription = "Nothing here yet",
-                        modifier = Modifier.padding(16.dp).size(250.dp),
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .size(250.dp)
                     )
-                    Column (
-                        modifier = Modifier.padding(8.dp).clickable {
-                            navigator.push(SplitCreateScreen)
-                        },
-                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
-                    )
-                    {
+
+                    Column(
+                        modifier = Modifier
+                            .clickable { navigator.push(CreateSplitScreen) }
+                            .padding(8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         SubtitleText(Resources.strings.nothingHereYet)
                         LinkText(Resources.strings.startTrackingWorkout, modifier = Modifier.padding(top = 4.dp))
                     }
-
-
                 }
             }
         }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -57,7 +58,13 @@ fun BackButtonRow(text: String) {
         }
         TitleText(text)
     }
-    Box(modifier = Modifier.background(Colors.BorderStroke).fillMaxWidth().height(1.dp))
+
+    Divider(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Colors.BorderStroke)
+            .height(1.dp)
+    )
 }
 
 @Composable
