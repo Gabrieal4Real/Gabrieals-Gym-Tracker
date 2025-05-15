@@ -3,7 +3,7 @@ package org.gabrieal.gymtracker.viewmodel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.gabrieal.gymtracker.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 class CreateSplitViewModel {
     // Private mutable state flow

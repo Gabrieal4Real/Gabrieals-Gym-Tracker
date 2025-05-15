@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.gabrieal.gymtracker.ui.widgets.DescriptionItalicText
-import org.gabrieal.gymtracker.ui.widgets.DescriptionText
-import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
+import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
+import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 
 class Workout {
@@ -31,12 +31,6 @@ class Workout {
             12 to 15,
             15 to 20
         )
-
-        fun selectDays(sliderValue: Float): List<Boolean> {
-            return List(7) {
-                it < sliderValue
-            }
-        }
 
         fun getCurrentPlan(selectedDays: List<Boolean>): List<String> {
             val currentPlan = mutableListOf<String>()

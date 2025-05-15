@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.data.SelectedExercise
 import org.gabrieal.gymtracker.data.SelectedExerciseList
-import org.gabrieal.gymtracker.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.providePreferences

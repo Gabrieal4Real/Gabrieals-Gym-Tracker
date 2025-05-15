@@ -1,14 +1,12 @@
 package org.gabrieal.gymtracker.viewmodel
 
-import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.gabrieal.gymtracker.data.Exercise
 import org.gabrieal.gymtracker.data.Routine
-import org.gabrieal.gymtracker.navigation.AppNavigator
-import org.gabrieal.gymtracker.ui.allExistingExerciseList
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.views.allExistingExerciseList
 
 class ViewAllWorkoutViewModel {
     // Private mutable state flow

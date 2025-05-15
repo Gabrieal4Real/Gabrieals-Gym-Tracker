@@ -5,8 +5,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.gabrieal.gymtracker.data.SelectedExercise
-import org.gabrieal.gymtracker.navigation.AppNavigator
-import org.gabrieal.gymtracker.ui.allExistingExerciseList
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.views.allExistingExerciseList
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
 
 class EditPlanViewModel {
