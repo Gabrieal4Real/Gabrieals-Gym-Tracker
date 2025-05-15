@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.ui
+package org.gabrieal.gymtracker.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import org.gabrieal.gymtracker.data.Exercise
 import org.gabrieal.gymtracker.data.decodeExercises
-import org.gabrieal.gymtracker.navigation.NavigationComponent
+import org.gabrieal.gymtracker.util.navigation.NavigationComponent
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.LocalStringResources
 import org.gabrieal.gymtracker.util.systemUtil.StringFactory

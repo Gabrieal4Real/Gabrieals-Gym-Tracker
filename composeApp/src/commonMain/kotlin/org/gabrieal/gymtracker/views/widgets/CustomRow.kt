@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.ui.widgets
+package org.gabrieal.gymtracker.views.widgets
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.gabrieal.gymtracker.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.appUtil.Colors
 
 @Composable

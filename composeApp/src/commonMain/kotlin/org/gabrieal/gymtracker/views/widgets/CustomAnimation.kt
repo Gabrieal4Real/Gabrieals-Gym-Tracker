@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.ui.widgets
+package org.gabrieal.gymtracker.views.widgets
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D

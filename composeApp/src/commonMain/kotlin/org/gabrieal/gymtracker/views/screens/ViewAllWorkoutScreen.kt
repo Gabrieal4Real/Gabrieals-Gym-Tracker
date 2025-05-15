@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.ui.screens
+package org.gabrieal.gymtracker.views.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -27,15 +26,14 @@ import gymtracker.composeapp.generated.resources.tier_1
 import gymtracker.composeapp.generated.resources.tier_2
 import gymtracker.composeapp.generated.resources.tier_3
 import gymtracker.composeapp.generated.resources.youtube
-import org.gabrieal.gymtracker.navigation.AppNavigator
-import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
-import org.gabrieal.gymtracker.ui.widgets.CustomCard
-import org.gabrieal.gymtracker.ui.widgets.CustomTextField
-import org.gabrieal.gymtracker.ui.widgets.DescriptionItalicText
-import org.gabrieal.gymtracker.ui.widgets.DescriptionText
-import org.gabrieal.gymtracker.ui.widgets.DropDownFilter
-import org.gabrieal.gymtracker.ui.widgets.SubtitleText
-import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
+import org.gabrieal.gymtracker.views.widgets.BackButtonRow
+import org.gabrieal.gymtracker.views.widgets.CustomCard
+import org.gabrieal.gymtracker.views.widgets.CustomTextField
+import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
+import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.DropDownFilter
+import org.gabrieal.gymtracker.views.widgets.SubtitleText
+import org.gabrieal.gymtracker.views.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog

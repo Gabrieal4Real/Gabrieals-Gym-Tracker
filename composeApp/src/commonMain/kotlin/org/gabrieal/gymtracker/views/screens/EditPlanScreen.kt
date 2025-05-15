@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.ui.screens
+package org.gabrieal.gymtracker.views.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -25,20 +24,19 @@ import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
 import org.gabrieal.gymtracker.data.SelectedExercise
-import org.gabrieal.gymtracker.navigation.AppNavigator
-import org.gabrieal.gymtracker.ui.widgets.AnimatedDividerWithScale
-import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
-import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
-import org.gabrieal.gymtracker.ui.widgets.BiggerText
-import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
-import org.gabrieal.gymtracker.ui.widgets.CustomCard
-import org.gabrieal.gymtracker.ui.widgets.CustomTextField
-import org.gabrieal.gymtracker.ui.widgets.DescriptionText
-import org.gabrieal.gymtracker.ui.widgets.IncrementDecrementButton
-import org.gabrieal.gymtracker.ui.widgets.RepRangePicker
-import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
-import org.gabrieal.gymtracker.ui.widgets.TinyText
-import org.gabrieal.gymtracker.ui.widgets.popOut
+import org.gabrieal.gymtracker.views.widgets.AnimatedDividerWithScale
+import org.gabrieal.gymtracker.views.widgets.AnimatedImage
+import org.gabrieal.gymtracker.views.widgets.BackButtonRow
+import org.gabrieal.gymtracker.views.widgets.BiggerText
+import org.gabrieal.gymtracker.views.widgets.ConfirmButton
+import org.gabrieal.gymtracker.views.widgets.CustomCard
+import org.gabrieal.gymtracker.views.widgets.CustomTextField
+import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.IncrementDecrementButton
+import org.gabrieal.gymtracker.views.widgets.RepRangePicker
+import org.gabrieal.gymtracker.views.widgets.TinyItalicText
+import org.gabrieal.gymtracker.views.widgets.TinyText
+import org.gabrieal.gymtracker.views.widgets.popOut
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges

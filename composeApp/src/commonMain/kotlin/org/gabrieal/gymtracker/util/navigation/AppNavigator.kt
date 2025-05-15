@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.navigation
+package org.gabrieal.gymtracker.util.navigation
 
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
@@ -6,12 +6,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.gabrieal.gymtracker.data.SelectedExercise
-import org.gabrieal.gymtracker.data.SelectedExerciseList
-import org.gabrieal.gymtracker.ui.screens.CreateSplitScreen
-import org.gabrieal.gymtracker.ui.screens.EditPlanScreen
-import org.gabrieal.gymtracker.ui.screens.HomeScreen
-import org.gabrieal.gymtracker.ui.screens.MakeAPlanScreen
-import org.gabrieal.gymtracker.ui.screens.ViewAllWorkoutScreen
+import org.gabrieal.gymtracker.views.screens.CreateSplitScreen
+import org.gabrieal.gymtracker.views.screens.EditPlanScreen
+import org.gabrieal.gymtracker.views.screens.HomeScreen
+import org.gabrieal.gymtracker.views.screens.MakeAPlanScreen
+import org.gabrieal.gymtracker.views.screens.ViewAllWorkoutScreen
 
 
 object AppNavigator {

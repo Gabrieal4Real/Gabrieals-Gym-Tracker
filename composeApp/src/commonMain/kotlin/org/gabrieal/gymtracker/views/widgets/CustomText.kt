@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.ui.widgets
+package org.gabrieal.gymtracker.views.widgets
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text

@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.ui.widgets
+package org.gabrieal.gymtracker.views.widgets
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

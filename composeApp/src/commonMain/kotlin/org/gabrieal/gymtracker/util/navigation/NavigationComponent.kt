@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.navigation
+package org.gabrieal.gymtracker.util.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -6,7 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
-import org.gabrieal.gymtracker.ui.screens.HomeScreen
+import org.gabrieal.gymtracker.views.screens.HomeScreen
 
 @Composable
 fun NavigationComponent() {

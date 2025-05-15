@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.ui.screens
+package org.gabrieal.gymtracker.views.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,13 +26,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
-import org.gabrieal.gymtracker.navigation.AppNavigator
-import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
-import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
-import org.gabrieal.gymtracker.ui.widgets.BigText
-import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
-import org.gabrieal.gymtracker.ui.widgets.DescriptionText
-import org.gabrieal.gymtracker.ui.widgets.SubtitleText
+import org.gabrieal.gymtracker.views.widgets.AnimatedImage
+import org.gabrieal.gymtracker.views.widgets.BackButtonRow
+import org.gabrieal.gymtracker.views.widgets.BigText
+import org.gabrieal.gymtracker.views.widgets.ConfirmButton
+import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.appUtil.Workout
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
