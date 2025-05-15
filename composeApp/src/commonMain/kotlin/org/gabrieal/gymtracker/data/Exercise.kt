@@ -23,26 +23,6 @@ class Routine {
         Traps("Traps"),
         Triceps("Triceps")
     }
-
-    // Enum for exercise tiers, with S+ Tier as 0
-    enum class ExerciseTier(val displayName: String) {
-        SPlus("S+"),
-        S("S"),
-        APlus("A+"),
-        A("A");
-
-        companion object {
-            fun fromString(tier: Int): ExerciseTier {
-                return when (tier) {
-                    0 -> SPlus
-                    1 -> S
-                    2 -> APlus
-                    3 -> A
-                    else -> A
-                }
-            }
-        }
-    }
 }
 
 @Serializable

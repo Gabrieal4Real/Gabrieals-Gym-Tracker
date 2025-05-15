@@ -1,6 +1,5 @@
 package org.gabrieal.gymtracker.ui.screens
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,33 +9,25 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.tier_0
 import gymtracker.composeapp.generated.resources.tier_1
 import gymtracker.composeapp.generated.resources.tier_2
 import gymtracker.composeapp.generated.resources.tier_3
 import gymtracker.composeapp.generated.resources.youtube
-import org.gabrieal.gymtracker.data.Routine
-import org.gabrieal.gymtracker.ui.allExistingExerciseList
+import org.gabrieal.gymtracker.navigation.AppNavigator
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.CustomCard
 import org.gabrieal.gymtracker.ui.widgets.CustomTextField
@@ -48,38 +39,37 @@ import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.viewmodel.ViewAllWorkoutViewModel
 import org.jetbrains.compose.resources.painterResource
 
 object ViewAllWorkoutScreen : Screen {
-    private var callback: ((String) -> Unit)? = null
-
+    // Create a single instance of the ViewModel
+    private val viewModel = ViewAllWorkoutViewModel()
+    
+    // Set callback to receive selected exercise name
     fun setCallback(onMessageSent: (String) -> Unit) {
-        callback = onMessageSent
+        viewModel.setCallback(onMessageSent)
     }
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+        // Collect the UI state from the ViewModel
+        val uiState by viewModel.uiState.collectAsState()
+        
+        // Extract state values for easier access
+        val searchFilter = uiState.searchFilter
+        val selectedFilters = uiState.selectedFilters
+        val selectedWorkout = uiState.selectedWorkout
+        val showConfirmAddToRoutineDialog = uiState.showConfirmAddToRoutineDialog
+        val filteredWorkouts = uiState.filteredWorkouts
+        
+        // Get all muscle groups for filtering
+        val allMuscleGroups = viewModel.getAllMuscleGroups()
 
-        val allMuscleGroups = Routine.MuscleGroup.entries.map { it.displayName }
-
-        var searchFilter by remember { mutableStateOf("") }
-        var selectedFilters by remember { mutableStateOf(setOf<String>()) }
-        var selectedWorkout by remember { mutableStateOf("") }
-        var showConfirmAddToRoutineDialog by remember { mutableStateOf(false) }
-        var youtubeUrlToOpen by remember { mutableStateOf<String?>(null) }
-
-        val filteredWorkouts = remember(searchFilter, selectedFilters) {
-            allExistingExerciseList.filter {
-                it.name.contains(searchFilter, ignoreCase = true) &&
-                        it.muscleGroup.containsAll(selectedFilters)
-            }
-        }
-
-        // Open YouTube URL if set (side effect)
-        youtubeUrlToOpen?.let { url ->
+        // Handle URL opening
+        uiState.youtubeUrlToOpen?.let { url ->
             OpenURL(url)
-            youtubeUrlToOpen = null
+            viewModel.onUrlOpened()
         }
 
         Column(
@@ -97,11 +87,7 @@ object ViewAllWorkoutScreen : Screen {
                     filterOptions = allMuscleGroups,
                     selectedFilters = selectedFilters,
                     onFilterSelected = { filter ->
-                        selectedFilters = if (filter in selectedFilters) {
-                            selectedFilters - filter
-                        } else {
-                            selectedFilters + filter
-                        }
+                        viewModel.toggleFilter(filter)
                     },
                     modifier = Modifier.align(Alignment.TopEnd)
                 )
@@ -113,14 +99,11 @@ object ViewAllWorkoutScreen : Screen {
                     DescriptionItalicText("Select muscle groups to filter by")
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Muscle group filter dropdown
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     // Search field for filtering by workout name
                     CustomTextField(
                         value = searchFilter,
-                        onValueChange = { searchFilter = it },
-                        placeholderText = allExistingExerciseList.randomOrNull()?.name.orEmpty()
+                        onValueChange = { viewModel.setSearchFilter(it) },
+                        placeholderText = "Search exercises..."
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -131,8 +114,7 @@ object ViewAllWorkoutScreen : Screen {
                             CustomCard(
                                 enabled = true,
                                 onClick = {
-                                    showConfirmAddToRoutineDialog = true
-                                    selectedWorkout = workout.name
+                                    viewModel.setSelectedWorkout(workout.name)
                                 },
                                 content = {
                                 Row(
@@ -158,8 +140,7 @@ object ViewAllWorkoutScreen : Screen {
                                                 .size(24.dp)
                                                 .padding(top = 8.dp)
                                                 .clickable {
-                                                    youtubeUrlToOpen =
-                                                        "https://www.youtube.com/results?search_query=how+to+do+${workout.name}"
+                                                    viewModel.openYoutubeSearch(workout.name)
                                                 }
                                         )
                                     }
@@ -167,6 +148,7 @@ object ViewAllWorkoutScreen : Screen {
                                     TierImage(workout.tier)
                                 }
                             })
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 }
@@ -179,12 +161,10 @@ object ViewAllWorkoutScreen : Screen {
                             "Do you want to add $selectedWorkout to your routine?"
                         ),
                         positiveButton = Pair("Proceed") {
-                            callback?.invoke(selectedWorkout)
-                            navigator.pop()
-                            showConfirmAddToRoutineDialog = false
+                            viewModel.confirmWorkoutSelection()
                         },
                         negativeButton = Pair("Cancel") {
-                            showConfirmAddToRoutineDialog = false
+                            viewModel.dismissConfirmDialog()
                         }
                     )
                 }
@@ -201,10 +181,11 @@ object ViewAllWorkoutScreen : Screen {
             3 -> Res.drawable.tier_3
             else -> Res.drawable.tier_3
         }
+        
         Image(
             painter = painterResource(drawableResource),
-            contentDescription = drawableResource.toString(),
-            modifier = Modifier.size(100.dp).padding(end = 8.dp),
+            contentDescription = "Tier $tier",
+            modifier = Modifier.size(100.dp).padding(end = 8.dp)
         )
     }
 }

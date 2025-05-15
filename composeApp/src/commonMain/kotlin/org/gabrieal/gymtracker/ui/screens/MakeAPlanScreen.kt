@@ -1,40 +1,27 @@
 package org.gabrieal.gymtracker.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
-import kotlinx.serialization.json.Json
-import org.gabrieal.gymtracker.data.SelectedExerciseList
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
@@ -48,36 +35,35 @@ import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
-import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
-import org.gabrieal.gymtracker.util.systemUtil.providePreferences
+import org.gabrieal.gymtracker.viewmodel.MakeAPlanViewModel
 
 object MakeAPlanScreen : Screen {
-    var selectedDays: List<Boolean> = listOf()
-
+    // Create a single instance of the ViewModel
+    private val viewModel = MakeAPlanViewModel()
+    
     // Set the day being edited
     fun setSelectedDay(selectedDays: List<Boolean>) {
-        this.selectedDays = selectedDays
+        viewModel.setSelectedDays(selectedDays)
     }
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-
-        var showImage by rememberSaveable { mutableStateOf(true) }
-        var selectedRoutineList by rememberSaveable { mutableStateOf(mutableListOf<SelectedExerciseList>()) }
-        var showWarningBack by rememberSaveable { mutableStateOf(false) }
-        var saveRoutineList by rememberSaveable { mutableStateOf(false) }
+        // Collect the UI state from the ViewModel
+        val uiState by viewModel.uiState.collectAsState()
+        
+        // Extract state values for easier access
+        val selectedDays = uiState.selectedDays
+        val selectedRoutineList = uiState.selectedRoutineList
+        var showImage = uiState.showImage
+        val showWarningBack = uiState.showWarningBack
+        val saveRoutineList = uiState.saveRoutineList
 
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BackButtonRow(Resources.strings.makeAPlan) {
-                if (selectedRoutineList.isNotEmpty()) {
-                    showWarningBack = true
-                } else {
-                    navigator.pop()
-                }
+                viewModel.setShowWarningBack(true)
             }
 
             Box(
@@ -107,18 +93,9 @@ object MakeAPlanScreen : Screen {
                         CustomCard(
                             enabled = isActive,
                             onClick = {
-                                val exercises = selectedRoutineList.find { it.day == day }?.exercises
-                                EditPlanScreen.setSelectedDay(getCurrentPlan(selectedDays)[index])
-                                EditPlanScreen.setExercises(exercises)
-                                EditPlanScreen.setCallback { updatedExercises ->
-                                    selectedRoutineList = selectedRoutineList
-                                        .filterNot { it.day == day }
-                                        .toMutableList()
-                                        .apply {
-                                            add(SelectedExerciseList(position = index, day = day, exercises = updatedExercises))
-                                        }
+                                if (isActive) {
+                                    viewModel.navigateToEditPlan(index, day)
                                 }
-                                navigator.push(EditPlanScreen)
                             },
                             content = {
                             Column(modifier = Modifier.padding(16.dp)) {
@@ -147,11 +124,11 @@ object MakeAPlanScreen : Screen {
                 }
 
                 // Confirm Button
-                if (selectedDays.count { it } == selectedRoutineList.size) {
+                if (viewModel.areAllActiveDaysEdited()) {
                     ConfirmButton(
                         "Let's Pump It Up",
                         onClick = {
-                            saveRoutineList = true
+                            viewModel.setSaveRoutineList(true)
                         },
                         modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
                     )
@@ -159,6 +136,8 @@ object MakeAPlanScreen : Screen {
 
                 // Animated Image
                 showImage = AnimatedImage(showImage, Res.drawable.start_editing, true)
+                // Update the showImage state in the ViewModel
+                viewModel.setShowImage(showImage)
 
                 if (showWarningBack) {
                     ShowAlertDialog(
@@ -167,23 +146,18 @@ object MakeAPlanScreen : Screen {
                             "You will lose all previous changes"
                         ),
                         positiveButton = Pair("Proceed") {
-                            navigator.pop()
-                            showWarningBack = false
+                            viewModel.setShowWarningBack(false)
+                            viewModel.navigateBack()
                         },
                         negativeButton = Pair("Cancel") {
-                            showWarningBack = false
+                            viewModel.setShowWarningBack(false)
                         }
                     )
                 }
 
+                // Process save routine list
                 if (saveRoutineList) {
-                    selectedRoutineList = selectedRoutineList.sortedBy { it.position }.toMutableList()
-
-                    getCurrentContext().let {
-                        providePreferences(it).putString("selectedRoutineList", Json.encodeToString(selectedRoutineList))
-                        navigator.popUntilRoot()
-                        saveRoutineList = false
-                    }
+                    viewModel.saveRoutineList()
                 }
             }
         }

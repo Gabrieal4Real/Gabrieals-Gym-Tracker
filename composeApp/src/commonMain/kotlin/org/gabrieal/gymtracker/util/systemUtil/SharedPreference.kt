@@ -20,18 +20,16 @@ interface SharedPreferences {
 
 expect fun providePreferences(context: Any?): SharedPreferences
 
-@Composable
-fun getSelectedRoutineList(): MutableList<SelectedExerciseList> {
-    var selectedRoutineList by remember { mutableStateOf(mutableListOf<SelectedExerciseList>()) }
 
-    getCurrentContext().let {
-        try {
-            selectedRoutineList = Json.decodeFromString<MutableList<SelectedExerciseList>>(providePreferences(it).getString("selectedRoutineList"))
-            println("selectedRoutineList: $selectedRoutineList")
-        } catch (ex: Exception) {
-            println("decodeFromStringError: ${ex.message} ")
-        }
+fun getSelectedRoutineListFromViewModel(context: Any?): MutableList<SelectedExerciseList> {
+    var selectedRoutineList = mutableListOf<SelectedExerciseList>()
+    
+    try {
+        selectedRoutineList = Json.decodeFromString<MutableList<SelectedExerciseList>>(providePreferences(context).getString("selectedRoutineList"))
+        println("selectedRoutineList: $selectedRoutineList")
+    } catch (ex: Exception) {
+        println("decodeFromStringError: ${ex.message} ")
     }
-
+    
     return selectedRoutineList
 }

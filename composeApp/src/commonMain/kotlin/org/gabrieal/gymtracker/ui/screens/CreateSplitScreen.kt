@@ -18,19 +18,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
+import org.gabrieal.gymtracker.navigation.AppNavigator
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.BigText
@@ -38,23 +34,29 @@ import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.appUtil.Colors
-import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.appUtil.Workout
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
+import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.viewmodel.CreateSplitViewModel
 
 object CreateSplitScreen : Screen {
+    // Create a single instance of the ViewModel
+    private val viewModel = CreateSplitViewModel()
+    
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        var selectedDays by remember { mutableStateOf(listOf(true, false, true, false, true, false, false)) }
-        var showImage by rememberSaveable { mutableStateOf(true) }
+        // Collect the UI state from the ViewModel
+        val uiState by viewModel.uiState.collectAsState()
+        
+        // Extract state values for easier access
+        val selectedDays = uiState.selectedDays
+        var showImage = uiState.showImage
 
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BackButtonRow(Resources.strings.createSplit)
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -85,13 +87,8 @@ object CreateSplitScreen : Screen {
                                 modifier = Modifier
                                     .size(36.dp)
                                     .clickable {
-                                        selectedDays = selectedDays.toMutableList().apply {
-                                            // Limit to 5 active days
-                                            if (!isSelected && this.count { it } >= 5) {
-                                                this[this.indexOfFirst { it }] = false
-                                            }
-                                            this[index] = !isSelected
-                                        }
+                                        // Use ViewModel to update the selected day
+                                        viewModel.updateSelectedDay(index, !isSelected)
                                     }
                             ) {
                                 Box(
@@ -121,15 +118,15 @@ object CreateSplitScreen : Screen {
                 // Confirm Button
                 ConfirmButton(
                     Resources.strings.letsPlanIt,
-                    onClick = {
-                        MakeAPlanScreen.setSelectedDay(selectedDays)
-                        navigator.push(MakeAPlanScreen) },
-                    enabled = selectedDays.any { it },
+                    onClick = { viewModel.navigateToMakeAPlan() },
+                    enabled = viewModel.isAnyDaySelected(),
                     modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
                 )
 
                 // Animated Image
                 showImage = AnimatedImage(showImage, Res.drawable.new_to_workout, false)
+                // Update the showImage state in the ViewModel
+                viewModel.setShowImage(showImage)
             }
         }
     }

@@ -1,0 +1,12 @@
+package org.gabrieal.gymtracker.viewmodel
+
+import org.gabrieal.gymtracker.data.Exercise
+
+data class ViewAllWorkoutUiState(
+    val searchFilter: String = "",
+    val selectedFilters: Set<String> = emptySet(),
+    val selectedWorkout: String = "",
+    val showConfirmAddToRoutineDialog: Boolean = false,
+    val youtubeUrlToOpen: String? = null,
+    val filteredWorkouts: List<Exercise> = emptyList()
+)

@@ -11,11 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.transitions.SlideTransition
 import org.gabrieal.gymtracker.data.Exercise
 import org.gabrieal.gymtracker.data.decodeExercises
-import org.gabrieal.gymtracker.ui.screens.HomeScreen
+import org.gabrieal.gymtracker.navigation.NavigationComponent
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.LocalStringResources
 import org.gabrieal.gymtracker.util.systemUtil.StringFactory
@@ -40,9 +38,7 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
                     modifier = Modifier.fillMaxSize().background(Colors.Background).windowInsetsPadding(WindowInsets.safeDrawing),
                     color = Colors.Background
                 ) {
-                    Navigator(HomeScreen) { navigator ->
-                        SlideTransition(navigator)
-                    }
+                    NavigationComponent()
                 }
             }
     }

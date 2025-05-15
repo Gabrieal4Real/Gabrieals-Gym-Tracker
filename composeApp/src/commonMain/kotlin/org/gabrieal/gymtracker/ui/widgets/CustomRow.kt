@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import org.gabrieal.gymtracker.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.appUtil.Colors
 
 @Composable
@@ -50,7 +51,7 @@ fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = {
-            backButtonAction?.invoke() ?: navigator.pop()
+            backButtonAction?.invoke() ?: AppNavigator.navigateBack()
         }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
