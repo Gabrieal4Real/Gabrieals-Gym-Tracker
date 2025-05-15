@@ -38,6 +38,7 @@ import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
 import org.gabrieal.gymtracker.ui.widgets.BiggerText
 import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
+import org.gabrieal.gymtracker.ui.widgets.CustomCard
 import org.gabrieal.gymtracker.ui.widgets.CustomTextField
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.IncrementDecrementButton
@@ -87,10 +88,7 @@ object EditPlanScreen : Screen {
         // List sizes and state for exercises
         var defaultListSize by rememberSaveable { mutableStateOf(exerciseList.size) }
         var defaultExerciseList by rememberSaveable { mutableStateOf(List(defaultListSize) { "" }) }
-        var selectedExerciseList by rememberSaveable { mutableStateOf(exerciseList.mapNotNull { it.name }) }
-        var selectedExerciseSetList by rememberSaveable { mutableStateOf(exerciseList.mapNotNull { it.sets }) }
-        var selectedExerciseRepRangeList by rememberSaveable { mutableStateOf(exerciseList.mapNotNull { it.reps }) }
-
+        var selectedExercises by rememberSaveable { mutableStateOf(exerciseList.toList()) }
         var showRemoveDialog by rememberSaveable { mutableStateOf(false) }
         var currentClickedPosition by rememberSaveable { mutableStateOf(0) }
 
@@ -140,36 +138,25 @@ object EditPlanScreen : Screen {
                         // List of exercises
                         LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
                             items(defaultListSize) { position ->
-                                Card(
-                                    shape = RoundedCornerShape(8.dp),
-                                    backgroundColor = Colors.CardBackground,
-                                    border = BorderStroke(2.dp, Colors.BorderStroke),
-                                    modifier = Modifier
-                                        .padding(bottom = 8.dp)
-                                        .fillMaxSize()
-                                        .shadow(
-                                            elevation = 4.dp,
-                                            shape = RoundedCornerShape(8.dp),
-                                            ambientColor = Colors.Black,
-                                            spotColor = Colors.Black
-                                        )
-                                ) {
+                                CustomCard(
+                                    enabled = true,
+                                    content = {
                                     Column(modifier = Modifier.padding(16.dp)) {
                                         // Exercise name input
                                         TinyItalicText("Name your exercise")
                                         Spacer(modifier = Modifier.height(8.dp))
                                         CustomTextField(
-                                            value = selectedExerciseList[position],
-                                            onValueChange = {
-                                                selectedExerciseList = selectedExerciseList.toMutableList().apply {
-                                                    this[position] = it
+                                            value = selectedExercises[position].name ?: "",
+                                            onValueChange = { newName ->
+                                                selectedExercises = selectedExercises.toMutableList().apply {
+                                                    this[position] = this[position].copy(name = newName)
                                                 }
                                             },
                                             placeholderText = defaultExerciseList[position],
                                             resource = Icons.Rounded.Search to {
                                                 ViewAllWorkoutScreen.setCallback { exerciseName ->
-                                                    selectedExerciseList = selectedExerciseList.toMutableList().apply {
-                                                        this[position] = exerciseName
+                                                    selectedExercises = selectedExercises.toMutableList().apply {
+                                                        this[position] = this[position].copy(name = exerciseName)
                                                     }
                                                 }
                                                 navigator.push(ViewAllWorkoutScreen)
@@ -180,11 +167,13 @@ object EditPlanScreen : Screen {
                                         // Sets input
                                         TinyItalicText("How many sets per exercise?")
                                         Spacer(modifier = Modifier.height(8.dp))
-                                        selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
-                                            this[position] = IncrementDecrementButton(
-                                                selectedExerciseSetList[position],
-                                                1,
-                                                20
+                                        selectedExercises = selectedExercises.toMutableList().apply {
+                                            this[position] = this[position].copy(
+                                                sets = IncrementDecrementButton(
+                                                    selectedExercises[position].sets ?: 3,
+                                                    1,
+                                                    20
+                                                )
                                             )
                                         }
                                         Spacer(modifier = Modifier.height(24.dp))
@@ -194,10 +183,10 @@ object EditPlanScreen : Screen {
                                         Spacer(modifier = Modifier.height(8.dp))
                                         RepRangePicker(
                                             ranges = repRanges,
-                                            selectedRange = selectedExerciseRepRangeList[position],
-                                            onRangeSelected = {
-                                                selectedExerciseRepRangeList = selectedExerciseRepRangeList.toMutableList().apply {
-                                                    this[position] = it
+                                            selectedRange = selectedExercises[position].reps ?: repRanges.random(),
+                                            onRangeSelected = { newReps ->
+                                                selectedExercises = selectedExercises.toMutableList().apply {
+                                                    this[position] = this[position].copy(reps = newReps)
                                                 }
                                             }
                                         )
@@ -225,7 +214,7 @@ object EditPlanScreen : Screen {
                                             DescriptionText("Remove")
                                         }
                                     }
-                                }
+                                })
 
                                 // Add more exercises control at the end of the list
                                 if (position == defaultListSize - 1) {
@@ -237,14 +226,12 @@ object EditPlanScreen : Screen {
                                             defaultExerciseList = defaultExerciseList.toMutableList().apply {
                                                 this.add(allExistingExerciseList.random().name)
                                             }
-                                            selectedExerciseList = selectedExerciseList.toMutableList().apply {
-                                                this.add("")
-                                            }
-                                            selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
-                                                this.add(3)
-                                            }
-                                            selectedExerciseRepRangeList = selectedExerciseRepRangeList.toMutableList().apply {
-                                                this.add(repRanges.random())
+                                            selectedExercises = selectedExercises.toMutableList().apply {
+                                                this.add(SelectedExercise(
+                                                    name = "",
+                                                    reps = repRanges.random(),
+                                                    sets = 3
+                                                ))
                                             }
                                         },
                                         color = Colors.LinkBlue
@@ -265,22 +252,11 @@ object EditPlanScreen : Screen {
                     ConfirmButton(
                         "Confirm $planTitle Day",
                         onClick = {
-                            val tempSelectedExerciseList = mutableListOf<SelectedExercise>()
-                            selectedExerciseList.forEach { editedExercise ->
-                                if (editedExercise.isNotBlank()) {
-                                    tempSelectedExerciseList.add(
-                                        SelectedExercise(
-                                            name = editedExercise,
-                                            reps = selectedExerciseRepRangeList[selectedExerciseList.indexOf(editedExercise)],
-                                            sets = selectedExerciseSetList[selectedExerciseList.indexOf(editedExercise)]
-                                        )
-                                    )
-                                }
-                            }
+                            val tempSelectedExerciseList = selectedExercises.filter { it.name?.isNotBlank() == true }.toMutableList()
                             callback?.invoke(tempSelectedExerciseList)
                             navigator.pop()
                         },
-                        enabled = selectedExerciseList.any { it.isNotBlank() }
+                        enabled = selectedExercises.any { it.name?.isNotBlank() == true }
                     )
                 }
                 // Animated image for visual feedback
@@ -289,7 +265,7 @@ object EditPlanScreen : Screen {
 
             // Remove exercise dialog
             if (showRemoveDialog) {
-                if (defaultListSize > 1 && selectedExerciseList[currentClickedPosition].isNotBlank()) {
+                if (defaultListSize > 1 && selectedExercises[currentClickedPosition].name?.isNotBlank() == true) {
                     ShowAlertDialog(
                         titleMessage = Pair(
                             "Remove exercise?",
@@ -301,13 +277,7 @@ object EditPlanScreen : Screen {
                             defaultExerciseList = defaultExerciseList.toMutableList().apply {
                                 this.removeAt(currentClickedPosition)
                             }
-                            selectedExerciseList = selectedExerciseList.toMutableList().apply {
-                                this.removeAt(currentClickedPosition)
-                            }
-                            selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
-                                this.removeAt(currentClickedPosition)
-                            }
-                            selectedExerciseRepRangeList = selectedExerciseRepRangeList.toMutableList().apply {
+                            selectedExercises = selectedExercises.toMutableList().apply {
                                 this.removeAt(currentClickedPosition)
                             }
                         },
@@ -321,13 +291,7 @@ object EditPlanScreen : Screen {
                     defaultExerciseList = defaultExerciseList.toMutableList().apply {
                         this.removeAt(currentClickedPosition)
                     }
-                    selectedExerciseList = selectedExerciseList.toMutableList().apply {
-                        this.removeAt(currentClickedPosition)
-                    }
-                    selectedExerciseSetList = selectedExerciseSetList.toMutableList().apply {
-                        this.removeAt(currentClickedPosition)
-                    }
-                    selectedExerciseRepRangeList = selectedExerciseRepRangeList.toMutableList().apply {
+                    selectedExercises = selectedExercises.toMutableList().apply {
                         this.removeAt(currentClickedPosition)
                     }
                 } else {

@@ -1,5 +1,13 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.serialization.json.Json
+import org.gabrieal.gymtracker.data.SelectedExerciseList
+
 interface SharedPreferences {
     fun putString(key: String, value: String)
     fun getString(key: String, defaultValue: String = ""): String
@@ -12,9 +20,18 @@ interface SharedPreferences {
 
 expect fun providePreferences(context: Any?): SharedPreferences
 
-//getCurrentContext().let {
-//    println(providePreferences(it).getString("username"))
-//    providePreferences(it).putString("username", "Yellow")
-//    println(providePreferences(it).getString("username"))
-//    ShowToast(providePreferences(it).getString("username"))
-//}
+@Composable
+fun getSelectedRoutineList(): MutableList<SelectedExerciseList> {
+    var selectedRoutineList by remember { mutableStateOf(mutableListOf<SelectedExerciseList>()) }
+
+    getCurrentContext().let {
+        try {
+            selectedRoutineList = Json.decodeFromString<MutableList<SelectedExerciseList>>(providePreferences(it).getString("selectedRoutineList"))
+            println("selectedRoutineList: $selectedRoutineList")
+        } catch (ex: Exception) {
+            println("decodeFromStringError: ${ex.message} ")
+        }
+    }
+
+    return selectedRoutineList
+}

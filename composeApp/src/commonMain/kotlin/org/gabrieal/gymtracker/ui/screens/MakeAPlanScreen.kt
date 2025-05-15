@@ -1,5 +1,6 @@
 package org.gabrieal.gymtracker.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,9 +33,12 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
+import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.data.SelectedExerciseList
 import org.gabrieal.gymtracker.ui.widgets.AnimatedImage
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
+import org.gabrieal.gymtracker.ui.widgets.ConfirmButton
+import org.gabrieal.gymtracker.ui.widgets.CustomCard
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
@@ -43,19 +47,38 @@ import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
 import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
+import org.gabrieal.gymtracker.util.systemUtil.providePreferences
 
-data class MakeAPlanScreen(val selectedDays: List<Boolean>) : Screen {
+object MakeAPlanScreen : Screen {
+    var selectedDays: List<Boolean> = listOf()
+
+    // Set the day being edited
+    fun setSelectedDay(selectedDays: List<Boolean>) {
+        this.selectedDays = selectedDays
+    }
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+
         var showImage by rememberSaveable { mutableStateOf(true) }
         var selectedRoutineList by rememberSaveable { mutableStateOf(mutableListOf<SelectedExerciseList>()) }
+        var showWarningBack by rememberSaveable { mutableStateOf(false) }
+        var saveRoutineList by rememberSaveable { mutableStateOf(false) }
 
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BackButtonRow(Resources.strings.makeAPlan)
+            BackButtonRow(Resources.strings.makeAPlan) {
+                if (selectedRoutineList.isNotEmpty()) {
+                    showWarningBack = true
+                } else {
+                    navigator.pop()
+                }
+            }
 
             Box(
                 modifier = Modifier
@@ -81,37 +104,23 @@ data class MakeAPlanScreen(val selectedDays: List<Boolean>) : Screen {
                     fullDays.forEachIndexed { index, day ->
                         val isActive = selectedDays[index]
                         val hasExercises = selectedRoutineList.any { it.day == day }
-
-                        Card(
-                            shape = RoundedCornerShape(8.dp),
-                            backgroundColor = if (isActive) Colors.CardBackground else Colors.Maroon,
-                            border = BorderStroke(2.dp, Colors.BorderStroke),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp)
-                                .clickable(
-                                    enabled = isActive,
-                                    onClick = {
-                                        val exercises = selectedRoutineList.find { it.day == day }?.exercises
-                                        EditPlanScreen.setSelectedDay(getCurrentPlan(selectedDays)[index])
-                                        EditPlanScreen.setExercises(exercises)
-                                        EditPlanScreen.setCallback { updatedExercises ->
-                                            selectedRoutineList = selectedRoutineList
-                                                .filterNot { it.day == day }
-                                                .toMutableList()
-                                                .apply {
-                                                    add(SelectedExerciseList(day = day, exercises = updatedExercises))
-                                                }
+                        CustomCard(
+                            enabled = isActive,
+                            onClick = {
+                                val exercises = selectedRoutineList.find { it.day == day }?.exercises
+                                EditPlanScreen.setSelectedDay(getCurrentPlan(selectedDays)[index])
+                                EditPlanScreen.setExercises(exercises)
+                                EditPlanScreen.setCallback { updatedExercises ->
+                                    selectedRoutineList = selectedRoutineList
+                                        .filterNot { it.day == day }
+                                        .toMutableList()
+                                        .apply {
+                                            add(SelectedExerciseList(position = index, day = day, exercises = updatedExercises))
                                         }
-                                        navigator.push(EditPlanScreen)
-                                    }
-                                ).shadow(
-                                    elevation = 4.dp,
-                                    shape = RoundedCornerShape(8.dp),
-                                    ambientColor = Colors.Black,
-                                    spotColor = Colors.Black
-                                )
-                        ) {
+                                }
+                                navigator.push(EditPlanScreen)
+                            },
+                            content = {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Column {
@@ -133,12 +142,49 @@ data class MakeAPlanScreen(val selectedDays: List<Boolean>) : Screen {
                                     }
                                 }
                             }
-                        }
+                        })
                     }
+                }
+
+                // Confirm Button
+                if (selectedDays.count { it } == selectedRoutineList.size) {
+                    ConfirmButton(
+                        "Let's Pump It Up",
+                        onClick = {
+                            saveRoutineList = true
+                        },
+                        modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                    )
                 }
 
                 // Animated Image
                 showImage = AnimatedImage(showImage, Res.drawable.start_editing, true)
+
+                if (showWarningBack) {
+                    ShowAlertDialog(
+                        titleMessage = Pair(
+                            "Are you sure?",
+                            "You will lose all previous changes"
+                        ),
+                        positiveButton = Pair("Proceed") {
+                            navigator.pop()
+                            showWarningBack = false
+                        },
+                        negativeButton = Pair("Cancel") {
+                            showWarningBack = false
+                        }
+                    )
+                }
+
+                if (saveRoutineList) {
+                    selectedRoutineList = selectedRoutineList.sortedBy { it.position }.toMutableList()
+
+                    getCurrentContext().let {
+                        providePreferences(it).putString("selectedRoutineList", Json.encodeToString(selectedRoutineList))
+                        navigator.popUntilRoot()
+                        saveRoutineList = false
+                    }
+                }
             }
         }
     }

@@ -15,14 +15,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,20 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.PaintingStyle
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -56,7 +38,7 @@ import gymtracker.composeapp.generated.resources.youtube
 import org.gabrieal.gymtracker.data.Routine
 import org.gabrieal.gymtracker.ui.allExistingExerciseList
 import org.gabrieal.gymtracker.ui.widgets.BackButtonRow
-import org.gabrieal.gymtracker.ui.widgets.BiggerText
+import org.gabrieal.gymtracker.ui.widgets.CustomCard
 import org.gabrieal.gymtracker.ui.widgets.CustomTextField
 import org.gabrieal.gymtracker.ui.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.ui.widgets.DescriptionText
@@ -64,7 +46,6 @@ import org.gabrieal.gymtracker.ui.widgets.DropDownFilter
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.appUtil.Colors
-import org.gabrieal.gymtracker.util.appUtil.ExtraBoldText
 import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.jetbrains.compose.resources.painterResource
@@ -147,24 +128,13 @@ object ViewAllWorkoutScreen : Screen {
                     LazyColumn {
                         items(filteredWorkouts.size) { idx ->
                             val workout = filteredWorkouts[idx]
-                            Card(
-                                shape = RoundedCornerShape(8.dp),
-                                backgroundColor = Colors.CardBackground,
-                                border = BorderStroke(2.dp, Colors.BorderStroke),
-                                modifier = Modifier
-                                    .padding(bottom = 8.dp)
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        // Show confirmation dialog when a workout is selected
-                                        showConfirmAddToRoutineDialog = true
-                                        selectedWorkout = workout.name
-                                    }.shadow(
-                                        elevation = 4.dp,
-                                        shape = RoundedCornerShape(8.dp),
-                                        ambientColor = Colors.Black,
-                                        spotColor = Colors.Black
-                                    )
-                            ) {
+                            CustomCard(
+                                enabled = true,
+                                onClick = {
+                                    showConfirmAddToRoutineDialog = true
+                                    selectedWorkout = workout.name
+                                },
+                                content = {
                                 Row(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
@@ -196,7 +166,7 @@ object ViewAllWorkoutScreen : Screen {
                                     // Workout tier badge
                                     TierImage(workout.tier)
                                 }
-                            }
+                            })
                         }
                     }
                 }

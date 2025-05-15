@@ -42,14 +42,16 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import org.gabrieal.gymtracker.util.appUtil.Colors
 
 @Composable
-fun BackButtonRow(text: String) {
+fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
     val navigator = LocalNavigator.currentOrThrow
 
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = { navigator.pop() }) {
+        IconButton(onClick = {
+            backButtonAction?.invoke() ?: navigator.pop()
+        }) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",

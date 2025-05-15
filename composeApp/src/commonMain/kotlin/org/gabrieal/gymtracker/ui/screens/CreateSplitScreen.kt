@@ -25,7 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -122,7 +121,9 @@ object CreateSplitScreen : Screen {
                 // Confirm Button
                 ConfirmButton(
                     Resources.strings.letsPlanIt,
-                    onClick = { navigator.push(MakeAPlanScreen(selectedDays)) },
+                    onClick = {
+                        MakeAPlanScreen.setSelectedDay(selectedDays)
+                        navigator.push(MakeAPlanScreen) },
                     enabled = selectedDays.any { it },
                     modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
                 )

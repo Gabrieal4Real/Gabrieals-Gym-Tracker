@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,11 +25,13 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.nothing_here
+import org.gabrieal.gymtracker.data.SelectedExerciseList
 import org.gabrieal.gymtracker.ui.widgets.LinkText
 import org.gabrieal.gymtracker.ui.widgets.SubtitleText
 import org.gabrieal.gymtracker.ui.widgets.TitleText
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineList
 import org.jetbrains.compose.resources.painterResource
 
 object HomeScreen : Screen {
@@ -33,6 +39,10 @@ object HomeScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+
+        var selectedRoutineList by remember { mutableStateOf(mutableListOf<SelectedExerciseList>()) }
+        selectedRoutineList = getSelectedRoutineList()
+
 
         Column(
             modifier = Modifier.fillMaxSize(),
