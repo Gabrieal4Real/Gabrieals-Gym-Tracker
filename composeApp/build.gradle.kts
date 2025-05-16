@@ -29,11 +29,11 @@ kotlin {
     }
 
     sourceSets {
-
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -45,7 +45,6 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(compose.components.resources)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
             implementation(libs.kotlinx.serialization.json)
