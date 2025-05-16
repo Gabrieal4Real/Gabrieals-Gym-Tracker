@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.viewmodel
+package org.gabrieal.gymtracker.viewmodel.home
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

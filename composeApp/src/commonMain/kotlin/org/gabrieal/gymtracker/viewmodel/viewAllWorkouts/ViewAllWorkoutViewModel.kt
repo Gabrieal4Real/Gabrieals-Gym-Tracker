@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.viewmodel
+package org.gabrieal.gymtracker.viewmodel.viewAllWorkouts
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,9 +9,11 @@ import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.views.allExistingExerciseList
 
 class ViewAllWorkoutViewModel {
-    private val _uiState = MutableStateFlow(ViewAllWorkoutUiState(
+    private val _uiState = MutableStateFlow(
+        ViewAllWorkoutUiState(
         filteredWorkouts = allExistingExerciseList
-    ))
+    )
+    )
 
     val uiState: StateFlow<ViewAllWorkoutUiState> = _uiState.asStateFlow()
 
@@ -44,7 +46,7 @@ class ViewAllWorkoutViewModel {
         
         val filteredList = allExistingExerciseList.filter { exercise ->
             exercise.name.contains(searchFilter, ignoreCase = true) &&
-                    (selectedFilters.isEmpty() || exercise.muscleGroup.containsAll(selectedFilters))
+                    (selectedFilters.isEmpty() || selectedFilters.any{ MuscleGroup.relatedMuscles(it).contains(exercise.targetMuscle) })
         }
         
         _uiState.update { it.copy(filteredWorkouts = filteredList) }

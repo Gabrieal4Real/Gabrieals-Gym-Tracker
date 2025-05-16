@@ -30,7 +30,7 @@ import gymtracker.composeapp.generated.resources.new_to_workout
 import org.gabrieal.gymtracker.util.appUtil.Workout
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
 import org.gabrieal.gymtracker.util.systemUtil.Resources
-import org.gabrieal.gymtracker.viewmodel.CreateSplitViewModel
+import org.gabrieal.gymtracker.viewmodel.createSplit.CreateSplitViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow

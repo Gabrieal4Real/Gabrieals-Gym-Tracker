@@ -26,7 +26,7 @@ import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
-import org.gabrieal.gymtracker.viewmodel.MakeAPlanViewModel
+import org.gabrieal.gymtracker.viewmodel.makeAPlan.MakeAPlanViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow

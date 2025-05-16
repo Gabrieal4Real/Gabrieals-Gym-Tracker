@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.viewmodel
+package org.gabrieal.gymtracker.viewmodel.viewAllWorkouts
 
 import org.gabrieal.gymtracker.model.Exercise
 

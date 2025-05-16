@@ -7,7 +7,8 @@ import kotlinx.serialization.json.Json
 @Serializable
 data class Exercise(
     val name: String,
-    val muscleGroup: List<String>,
+    val targetMuscle: String,
+    val secondaryMuscles: List<String>,
     val tier: Int
 )
 

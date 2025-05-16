@@ -28,7 +28,7 @@ import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
-import org.gabrieal.gymtracker.viewmodel.EditPlanViewModel
+import org.gabrieal.gymtracker.viewmodel.editPlan.EditPlanViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage

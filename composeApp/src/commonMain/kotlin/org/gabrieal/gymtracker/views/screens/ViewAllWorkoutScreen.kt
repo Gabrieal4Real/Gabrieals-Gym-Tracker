@@ -28,7 +28,7 @@ import gymtracker.composeapp.generated.resources.tier_3
 import gymtracker.composeapp.generated.resources.youtube
 import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
-import org.gabrieal.gymtracker.viewmodel.ViewAllWorkoutViewModel
+import org.gabrieal.gymtracker.viewmodel.viewAllWorkouts.ViewAllWorkoutViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.CustomCard
@@ -121,7 +121,7 @@ object ViewAllWorkoutScreen : Screen {
                                         // Workout name and muscle group tags
                                         DescriptionText(workout.name)
                                         TinyItalicText(
-                                            workout.muscleGroup.joinToString(", "),
+                                            workout.targetMuscle,
                                             color = colors.textSecondary
                                         )
                                         // YouTube icon to search for workout demo

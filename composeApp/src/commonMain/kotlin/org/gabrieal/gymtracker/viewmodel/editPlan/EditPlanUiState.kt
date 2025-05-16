@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.viewmodel
+package org.gabrieal.gymtracker.viewmodel.editPlan
 
 import org.gabrieal.gymtracker.model.SelectedExercise
 

@@ -28,12 +28,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 expect fun isIOS(): Boolean
 
 var allExistingExerciseList = mutableListOf<Exercise>()
-var colors: AppColors = LightColors
+var colors: AppColors = DarkColors
 
 @Composable
 @Preview
 fun App(stringResources: StringResources = remember { StringFactory.createStrings(language) }) {
-    colors = if (isSystemInDarkTheme()) DarkColors else LightColors
+//    colors = if (isSystemInDarkTheme()) DarkColors else LightColors
 
     CompositionLocalProvider(
         LocalStringResources provides stringResources

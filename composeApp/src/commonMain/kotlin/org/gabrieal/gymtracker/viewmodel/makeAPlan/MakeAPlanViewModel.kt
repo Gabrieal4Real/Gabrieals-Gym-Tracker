@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.viewmodel
+package org.gabrieal.gymtracker.viewmodel.makeAPlan
 
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.MutableStateFlow

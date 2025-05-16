@@ -23,7 +23,7 @@ import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.nothing_here
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
-import org.gabrieal.gymtracker.viewmodel.HomeViewModel
+import org.gabrieal.gymtracker.viewmodel.home.HomeViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.LinkText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
