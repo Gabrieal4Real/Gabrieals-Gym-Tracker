@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
 import org.gabrieal.gymtracker.views.widgets.TinyItalicText
-import org.gabrieal.gymtracker.util.systemUtil.Resources
 
 class Workout {
     companion object {

@@ -8,10 +8,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,13 +21,13 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.nothing_here
-import org.gabrieal.gymtracker.views.widgets.LinkText
-import org.gabrieal.gymtracker.views.widgets.SubtitleText
-import org.gabrieal.gymtracker.views.widgets.TitleText
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.viewmodel.HomeViewModel
+import org.gabrieal.gymtracker.views.widgets.LinkText
+import org.gabrieal.gymtracker.views.widgets.SubtitleText
+import org.gabrieal.gymtracker.views.widgets.TitleText
 import org.jetbrains.compose.resources.painterResource
 
 object HomeScreen : Screen {
@@ -49,11 +48,10 @@ object HomeScreen : Screen {
         ) {
             TitleText(Resources.strings.appName)
 
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Colors.BorderStroke)
-                    .height(1.dp)
+            HorizontalDivider(
+                color = Colors.BorderStroke,
+                thickness = 1.dp,
+                modifier = Modifier.fillMaxWidth()
             )
 
             Box(

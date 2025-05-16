@@ -9,19 +9,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.FilterAlt
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 @Composable
 fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
@@ -62,11 +61,10 @@ fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
         TitleText(text)
     }
 
-    Divider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Colors.BorderStroke)
-            .height(1.dp)
+    HorizontalDivider(
+        color = Colors.BorderStroke,
+        thickness = 1.dp,
+        modifier = Modifier.fillMaxWidth()
     )
 }
 

@@ -16,7 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,17 +27,17 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.appUtil.Workout
+import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
+import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.viewmodel.CreateSplitViewModel
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.BigText
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
-import org.gabrieal.gymtracker.util.appUtil.Colors
-import org.gabrieal.gymtracker.util.appUtil.Workout
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
-import org.gabrieal.gymtracker.util.systemUtil.Resources
-import org.gabrieal.gymtracker.viewmodel.CreateSplitViewModel
 
 object CreateSplitScreen : Screen {
     private val viewModel = CreateSplitViewModel()
@@ -78,8 +79,12 @@ object CreateSplitScreen : Screen {
                             val isSelected = selectedDays[index]
                             Card(
                                 shape = RoundedCornerShape(4.dp),
-                                backgroundColor = if (isSelected) Colors.White else Colors.Maroon,
-                                elevation = if (isSelected) 8.dp else 4.dp,
+                                colors = CardDefaults.cardColors(
+                                    containerColor = if (isSelected) Colors.White else Colors.Maroon
+                                ),
+                                elevation = CardDefaults.elevatedCardElevation(
+                                    defaultElevation = if (isSelected) 8.dp else 4.dp
+                                ),
                                 modifier = Modifier
                                     .size(36.dp)
                                     .clickable {

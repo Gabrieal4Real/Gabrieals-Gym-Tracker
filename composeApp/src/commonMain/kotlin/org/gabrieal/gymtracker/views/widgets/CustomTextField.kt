@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -48,12 +48,16 @@ fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderT
                         shape = RoundedCornerShape(12.dp)
                     ),
                 shape = RoundedCornerShape(12.dp),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Colors.SlightlyDarkerLinkBlue,
-                    unfocusedBorderColor = Colors.BorderStroke,
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Colors.SlightlyDarkerLinkBlue,
+                    unfocusedIndicatorColor = Colors.BorderStroke,
                     cursorColor = Colors.SlightlyDarkerLinkBlue,
-                    textColor = Colors.Black,
-                    placeholderColor = Colors.PlaceholderColor
+                    focusedTextColor = Colors.Black,
+                    unfocusedTextColor = Colors.Black,
+                    focusedPlaceholderColor = Colors.PlaceholderColor,
+                    unfocusedPlaceholderColor = Colors.PlaceholderColor,
+                    focusedLabelColor = Colors.SlightlyDarkerLinkBlue,
+                    unfocusedLabelColor = Colors.BorderStroke,
                 ),
                 trailingIcon = {
                     if (resource != null) {

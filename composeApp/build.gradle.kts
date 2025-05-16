@@ -29,11 +29,6 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(libs.landscapist.coil3)
-            }
-        }
 
         androidMain.dependencies {
             implementation(compose.preview)
@@ -42,7 +37,6 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -51,13 +45,10 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.landscapist.coil3)
             implementation(compose.components.resources)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
             implementation(libs.kotlinx.serialization.json)
-            // This module can cause binary incompatibilities. Please read its description first
-            implementation(libs.compottie.resources)
         }
     }
 }

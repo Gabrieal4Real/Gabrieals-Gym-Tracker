@@ -5,7 +5,6 @@ import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,14 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
-import gymtracker.composeapp.generated.resources.Res
-import io.github.alexzhirkevich.compottie.Compottie
-import io.github.alexzhirkevich.compottie.LottieCompositionSpec
-import io.github.alexzhirkevich.compottie.rememberLottieComposition
-import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.util.appUtil.Colors
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 
 @Composable
@@ -47,23 +40,6 @@ fun popOut(): Animatable<Float, AnimationVector1D> {
     }
 
     return scale
-}
-
-@OptIn(ExperimentalResourceApi::class)
-@Composable
-fun loadLottie(path: String) {
-    val composition by rememberLottieComposition {
-        LottieCompositionSpec.JsonString(
-            Res.readBytes("files/$path").decodeToString()
-        )
-    }
-    Image(
-        painter = rememberLottiePainter(
-            composition = composition,
-            iterations = Compottie.IterateForever
-        ),
-        contentDescription = "Lottie animation"
-    )
 }
 
 @Composable

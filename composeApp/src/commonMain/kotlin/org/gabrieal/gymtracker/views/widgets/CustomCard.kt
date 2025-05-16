@@ -2,10 +2,12 @@ package org.gabrieal.gymtracker.views.widgets
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -14,10 +16,10 @@ import org.gabrieal.gymtracker.util.appUtil.Colors
 
 
 @Composable
-fun CustomCard(enabled: Boolean, onClick: (() -> Unit)? = null, content: @Composable () -> Unit) {
+fun CustomCard(enabled: Boolean, onClick: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        backgroundColor = if (enabled) Colors.CardBackground else Colors.Maroon,
+        colors = CardDefaults.cardColors(containerColor = if (enabled) Colors.CardBackground else Colors.Maroon),
         border = BorderStroke(2.dp, Colors.BorderStroke),
         modifier = Modifier
             .fillMaxWidth()

@@ -11,8 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,15 +34,15 @@ fun ConfirmButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Colors.SlightlyDarkerLinkBlue,
-            disabledBackgroundColor = Colors.CardBackground
+            containerColor = Colors.SlightlyDarkerLinkBlue,
+            disabledContentColor = Colors.CardBackground,
         ),
         border = BorderStroke(1.dp, Colors.LinkBlue),
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
-        elevation = ButtonDefaults.elevation(0.dp),
+        elevation = ButtonDefaults.elevatedButtonElevation(0.dp),
         enabled = enabled
     ) {
         SubtitleText(text.uppercase(), color = Colors.White, modifier = Modifier.padding(4.dp))

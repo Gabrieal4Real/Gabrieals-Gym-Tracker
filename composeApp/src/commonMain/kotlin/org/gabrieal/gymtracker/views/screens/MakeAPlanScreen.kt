@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,6 +22,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
+import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
+import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
+import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.viewmodel.MakeAPlanViewModel
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
@@ -30,12 +36,6 @@ import org.gabrieal.gymtracker.views.widgets.DescriptionText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.views.widgets.TinyItalicText
 import org.gabrieal.gymtracker.views.widgets.TinyText
-import org.gabrieal.gymtracker.util.appUtil.Colors
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
-import org.gabrieal.gymtracker.util.systemUtil.Resources
-import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
-import org.gabrieal.gymtracker.viewmodel.MakeAPlanViewModel
 
 object MakeAPlanScreen : Screen {
     private val viewModel = MakeAPlanViewModel()
