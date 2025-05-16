@@ -32,15 +32,12 @@ import org.gabrieal.gymtracker.viewmodel.HomeViewModel
 import org.jetbrains.compose.resources.painterResource
 
 object HomeScreen : Screen {
-    // Create a single instance of the ViewModel
     private val viewModel = HomeViewModel()
     
     @Composable
     override fun Content() {
-        // Collect the UI state from the ViewModel
         val uiState by viewModel.uiState.collectAsState()
 
-        // Get the current context and update the ViewModel
         val context = getCurrentContext()
         LaunchedEffect(context) {
             viewModel.updateContext(context)

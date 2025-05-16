@@ -39,15 +39,12 @@ import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.viewmodel.CreateSplitViewModel
 
 object CreateSplitScreen : Screen {
-    // Create a single instance of the ViewModel
     private val viewModel = CreateSplitViewModel()
     
     @Composable
     override fun Content() {
-        // Collect the UI state from the ViewModel
         val uiState by viewModel.uiState.collectAsState()
-        
-        // Extract state values for easier access
+
         val selectedDays = uiState.selectedDays
         var showImage = uiState.showImage
 
@@ -86,7 +83,6 @@ object CreateSplitScreen : Screen {
                                 modifier = Modifier
                                     .size(36.dp)
                                     .clickable {
-                                        // Use ViewModel to update the selected day
                                         viewModel.updateSelectedDay(index, !isSelected)
                                     }
                             ) {
@@ -124,7 +120,6 @@ object CreateSplitScreen : Screen {
 
                 // Animated Image
                 showImage = AnimatedImage(showImage, Res.drawable.new_to_workout, false)
-                // Update the showImage state in the ViewModel
                 viewModel.setShowImage(showImage)
             }
         }

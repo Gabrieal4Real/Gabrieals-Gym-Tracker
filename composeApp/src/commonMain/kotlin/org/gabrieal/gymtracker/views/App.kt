@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import org.gabrieal.gymtracker.data.Exercise
-import org.gabrieal.gymtracker.data.decodeExercises
+import org.gabrieal.gymtracker.model.Exercise
+import org.gabrieal.gymtracker.model.decodeExercises
 import org.gabrieal.gymtracker.util.navigation.NavigationComponent
 import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.LocalStringResources

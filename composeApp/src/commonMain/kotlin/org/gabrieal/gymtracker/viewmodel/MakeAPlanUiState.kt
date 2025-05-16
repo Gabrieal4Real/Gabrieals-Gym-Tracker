@@ -1,6 +1,6 @@
 package org.gabrieal.gymtracker.viewmodel
 
-import org.gabrieal.gymtracker.data.SelectedExerciseList
+import org.gabrieal.gymtracker.model.SelectedExerciseList
 
 data class MakeAPlanUiState(
     val selectedDays: List<Boolean> = listOf(true, false, true, false, true, false, false),

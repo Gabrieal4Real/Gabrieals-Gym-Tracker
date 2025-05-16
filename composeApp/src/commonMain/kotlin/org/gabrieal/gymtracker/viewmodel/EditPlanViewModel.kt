@@ -4,25 +4,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.gabrieal.gymtracker.data.SelectedExercise
+import org.gabrieal.gymtracker.model.SelectedExercise
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.views.allExistingExerciseList
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
 
 class EditPlanViewModel {
-    // Private mutable state flow
     private val _uiState = MutableStateFlow(EditPlanUiState())
     
-    // Public immutable state flow that the UI can observe
     val uiState: StateFlow<EditPlanUiState> = _uiState.asStateFlow()
 
-    // Callback to update exercises in parent screen
     private var callback: ((List<SelectedExercise>) -> Unit)? = null
 
-    fun initializeDefaultExerciseList() {
+    fun initializePlaceholderList() {
         val defaultListSize = _uiState.value.exercises.size
-        val defaultList = List(defaultListSize) { allExistingExerciseList.random().name }
-        _uiState.update { it.copy(defaultExerciseList = defaultList) }
+        val placeHolderList = List(defaultListSize) { allExistingExerciseList.random().name }
+        _uiState.update { it.copy(placeHolderList = placeHolderList) }
     }
 
     fun setDay(day: String) {
@@ -80,15 +77,14 @@ class EditPlanViewModel {
             add(newExercise)
         }
         
-        // Update default exercise list
-        val updatedDefaultList = _uiState.value.defaultExerciseList.toMutableList().apply {
+        val placeholderList = _uiState.value.placeHolderList.toMutableList().apply {
             add(allExistingExerciseList.random().name)
         }
         
         _uiState.update { 
             it.copy(
                 exercises = updatedExercises,
-                defaultExerciseList = updatedDefaultList
+                placeHolderList = placeholderList
             ) 
         }
     }
@@ -98,16 +94,15 @@ class EditPlanViewModel {
             val updatedExercises = _uiState.value.exercises.toMutableList().apply {
                 removeAt(position)
             }
-            
-            // Update default exercise list
-            val updatedDefaultList = _uiState.value.defaultExerciseList.toMutableList().apply {
+
+            val placeholderList = _uiState.value.placeHolderList.toMutableList().apply {
                 removeAt(position)
             }
             
             _uiState.update { 
                 it.copy(
                     exercises = updatedExercises,
-                    defaultExerciseList = updatedDefaultList,
+                    placeHolderList = placeholderList,
                     showRemoveDialog = false
                 ) 
             }
@@ -125,13 +120,11 @@ class EditPlanViewModel {
     }
 
     fun navigateBack() {
-        //get non-empty exercise list
         val nonEmptyExercises = _uiState.value.exercises.filter { it.name?.isNotBlank() == true }
         if (nonEmptyExercises.isNotEmpty()) {
             callback?.invoke(nonEmptyExercises)
         }
 
-        // Navigate back
         AppNavigator.navigateBack()
     }
 }

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
-import org.gabrieal.gymtracker.data.SelectedExercise
+import org.gabrieal.gymtracker.model.SelectedExercise
 import org.gabrieal.gymtracker.views.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
@@ -45,27 +45,22 @@ import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.viewmodel.EditPlanViewModel
 
 object EditPlanScreen : Screen {
-    // Create a single instance of the ViewModel
     private val viewModel = EditPlanViewModel()
-    
-    // Stores the selected day and exercises for editing
+
     private var selectedDay: String = ""
     private var callback: ((List<SelectedExercise>) -> Unit)? = null
     private var exerciseList: List<SelectedExercise> = emptyList()
 
-    // Set callback to receive edited exercise list
     fun setCallback(onMessageSent: (List<SelectedExercise>) -> Unit) {
         callback = onMessageSent
         viewModel.setCallback(onMessageSent)
     }
 
-    // Set the day being edited
     fun setSelectedDay(day: String) {
         selectedDay = day
         viewModel.setDay(selectedDay)
     }
 
-    // Set the exercises for the day
     fun setExercises(exercises: List<SelectedExercise>?) {
         exerciseList = exercises ?: List(3) {
             SelectedExercise(
@@ -75,18 +70,16 @@ object EditPlanScreen : Screen {
             )
         }.toMutableList()
         viewModel.setExercises(exerciseList)
-        viewModel.initializeDefaultExerciseList()
+        viewModel.initializePlaceholderList()
     }
 
     @Composable
     override fun Content() {
-        // Collect the UI state from the ViewModel
         val uiState by viewModel.uiState.collectAsState()
-        
-        // Extract state values for easier access
+
         val day = uiState.day
         val exercises = uiState.exercises
-        val defaultExerciseList = uiState.defaultExerciseList
+        val placeholderList = uiState.placeHolderList
         val showImage = uiState.showImage
         val showRemoveDialog = uiState.showRemoveDialog
         val currentClickedPosition = uiState.currentClickedPosition
@@ -140,8 +133,8 @@ object EditPlanScreen : Screen {
                                             onValueChange = { newName ->
                                                 viewModel.updateExerciseName(position, newName)
                                             },
-                                            placeholderText = if (defaultExerciseList.isNotEmpty() && position < defaultExerciseList.size) 
-                                                defaultExerciseList[position] else "",
+                                            placeholderText = if (placeholderList.isNotEmpty() && position < placeholderList.size) 
+                                                placeholderList[position] else "",
                                             resource = Icons.Rounded.Search to {
                                                 viewModel.navigateToViewAllWorkouts(position)
                                             }
@@ -215,7 +208,6 @@ object EditPlanScreen : Screen {
 
                 // Animated Image
                 val updatedShowImage = AnimatedImage(showImage, Res.drawable.cant_decide, true)
-                // Update the showImage state in the ViewModel
                 viewModel.setShowImage(updatedShowImage)
 
                 // Remove exercise dialog

@@ -1,29 +1,8 @@
-package org.gabrieal.gymtracker.data
+package org.gabrieal.gymtracker.model
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-
-class Routine {
-    // Enum for muscle groups
-    enum class MuscleGroup(val displayName: String) {
-        Abs("Abs"),
-        Arms("Arms"),
-        Back("Back"),
-        Biceps("Biceps"),
-        Chest("Chest"),
-        FrontDelt("Front Delt"),
-        Glutes("Glutes"),
-        Hamstrings("Hamstrings"),
-        Legs("Legs"),
-        MiddleDelt("Middle Delt"),
-        Quads("Quads"),
-        RearDelt("Rear Delt"),
-        Shoulders("Shoulders"),
-        Traps("Traps"),
-        Triceps("Triceps")
-    }
-}
 
 @Serializable
 data class Exercise(

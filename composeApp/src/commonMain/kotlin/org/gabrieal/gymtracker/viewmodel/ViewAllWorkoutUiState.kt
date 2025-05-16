@@ -1,6 +1,6 @@
 package org.gabrieal.gymtracker.viewmodel
 
-import org.gabrieal.gymtracker.data.Exercise
+import org.gabrieal.gymtracker.model.Exercise
 
 data class ViewAllWorkoutUiState(
     val searchFilter: String = "",

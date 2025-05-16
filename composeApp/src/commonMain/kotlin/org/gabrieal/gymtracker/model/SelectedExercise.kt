@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.data
+package org.gabrieal.gymtracker.model
 
 import kotlinx.serialization.Serializable
 

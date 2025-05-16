@@ -1,7 +1,6 @@
 package org.gabrieal.gymtracker.viewmodel
 
-import org.gabrieal.gymtracker.data.SelectedExercise
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
+import org.gabrieal.gymtracker.model.SelectedExercise
 
 data class EditPlanUiState(
     val day: String = "",
@@ -9,5 +8,5 @@ data class EditPlanUiState(
     val showImage: Boolean = true,
     val showRemoveDialog: Boolean = false,
     val currentClickedPosition: Int = 0,
-    val defaultExerciseList: List<String> = emptyList()
+    val placeHolderList: List<String> = emptyList()
 )

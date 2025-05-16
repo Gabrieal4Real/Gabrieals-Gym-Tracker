@@ -4,20 +4,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.gabrieal.gymtracker.data.Routine
+import org.gabrieal.gymtracker.model.enums.MuscleGroup
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.views.allExistingExerciseList
 
 class ViewAllWorkoutViewModel {
-    // Private mutable state flow
     private val _uiState = MutableStateFlow(ViewAllWorkoutUiState(
         filteredWorkouts = allExistingExerciseList
     ))
-    
-    // Public immutable state flow that the UI can observe
+
     val uiState: StateFlow<ViewAllWorkoutUiState> = _uiState.asStateFlow()
-    
-    // Callback to send selected exercise back to previous screen
+
     private var callback: ((String) -> Unit)? = null
 
     fun setCallback(callback: (String) -> Unit) {
@@ -86,6 +83,6 @@ class ViewAllWorkoutViewModel {
     }
 
     fun getAllMuscleGroups(): List<String> {
-        return Routine.MuscleGroup.entries.map { it.displayName }
+        return MuscleGroup.entries.map { it.displayName }
     }
 }

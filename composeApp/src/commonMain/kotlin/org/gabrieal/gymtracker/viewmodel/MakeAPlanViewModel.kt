@@ -6,18 +6,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
-import org.gabrieal.gymtracker.data.SelectedExercise
-import org.gabrieal.gymtracker.data.SelectedExerciseList
+import org.gabrieal.gymtracker.model.SelectedExercise
+import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.providePreferences
 
 class MakeAPlanViewModel {
-    // Private mutable state flow
     private val _uiState = MutableStateFlow(MakeAPlanUiState())
-    
-    // Public immutable state flow that the UI can observe
+
     val uiState: StateFlow<MakeAPlanUiState> = _uiState.asStateFlow()
 
     fun setSelectedDays(selectedDays: List<Boolean>) {
@@ -54,8 +52,7 @@ class MakeAPlanViewModel {
         val selectedDays = _uiState.value.selectedDays
         val currentPlan = getCurrentPlan(selectedDays)
         val exercises = _uiState.value.selectedRoutineList.find { it.day == day }?.exercises
-        
-        // Create a callback function to update the exercises
+
         val callback = { updatedExercises: List<SelectedExercise> ->
             val currentRoutineList = _uiState.value.selectedRoutineList.toMutableList()
             val updatedRoutineList = currentRoutineList
@@ -66,8 +63,7 @@ class MakeAPlanViewModel {
                 }
             updateSelectedRoutineList(updatedRoutineList)
         }
-        
-        // Navigate to edit plan screen
+
         AppNavigator.navigateToEditPlan(
             day = currentPlan[index],
             exercises = exercises,

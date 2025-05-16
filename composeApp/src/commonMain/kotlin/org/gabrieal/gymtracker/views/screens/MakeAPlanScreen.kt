@@ -38,20 +38,16 @@ import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.viewmodel.MakeAPlanViewModel
 
 object MakeAPlanScreen : Screen {
-    // Create a single instance of the ViewModel
     private val viewModel = MakeAPlanViewModel()
-    
-    // Set the day being edited
+
     fun setSelectedDay(selectedDays: List<Boolean>) {
         viewModel.setSelectedDays(selectedDays)
     }
 
     @Composable
     override fun Content() {
-        // Collect the UI state from the ViewModel
         val uiState by viewModel.uiState.collectAsState()
-        
-        // Extract state values for easier access
+
         val selectedDays = uiState.selectedDays
         val selectedRoutineList = uiState.selectedRoutineList
         var showImage = uiState.showImage

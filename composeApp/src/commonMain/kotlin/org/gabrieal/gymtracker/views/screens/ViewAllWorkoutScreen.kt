@@ -41,30 +41,24 @@ import org.gabrieal.gymtracker.viewmodel.ViewAllWorkoutViewModel
 import org.jetbrains.compose.resources.painterResource
 
 object ViewAllWorkoutScreen : Screen {
-    // Create a single instance of the ViewModel
     private val viewModel = ViewAllWorkoutViewModel()
-    
-    // Set callback to receive selected exercise name
+
     fun setCallback(onMessageSent: (String) -> Unit) {
         viewModel.setCallback(onMessageSent)
     }
 
     @Composable
     override fun Content() {
-        // Collect the UI state from the ViewModel
         val uiState by viewModel.uiState.collectAsState()
-        
-        // Extract state values for easier access
+
         val searchFilter = uiState.searchFilter
         val selectedFilters = uiState.selectedFilters
         val selectedWorkout = uiState.selectedWorkout
         val showConfirmAddToRoutineDialog = uiState.showConfirmAddToRoutineDialog
         val filteredWorkouts = uiState.filteredWorkouts
-        
-        // Get all muscle groups for filtering
+
         val allMuscleGroups = viewModel.getAllMuscleGroups()
 
-        // Handle URL opening
         uiState.youtubeUrlToOpen?.let { url ->
             OpenURL(url)
             viewModel.onUrlOpened()
