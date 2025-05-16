@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
-import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.views.colors
 
 
 @Composable
@@ -62,7 +62,7 @@ fun AnimatedDividerWithScale() {
                 .fillMaxWidth(0.8f)
                 .height(2.dp)
                 .scale(scale, 1f)
-                .background(Colors.BorderStroke)
+                .background(colors.borderStroke)
                 .align(Alignment.CenterHorizontally)
         )
     }

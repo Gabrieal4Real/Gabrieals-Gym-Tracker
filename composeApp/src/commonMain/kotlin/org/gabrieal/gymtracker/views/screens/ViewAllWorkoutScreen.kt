@@ -26,10 +26,10 @@ import gymtracker.composeapp.generated.resources.tier_1
 import gymtracker.composeapp.generated.resources.tier_2
 import gymtracker.composeapp.generated.resources.tier_3
 import gymtracker.composeapp.generated.resources.youtube
-import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.viewmodel.ViewAllWorkoutViewModel
+import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.CustomCard
 import org.gabrieal.gymtracker.views.widgets.CustomTextField
@@ -72,7 +72,7 @@ object ViewAllWorkoutScreen : Screen {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Colors.LighterBackground)
+                    .background(colors.lighterBackground)
                     .padding(16.dp)
             ) {
                 DropDownFilter(
@@ -122,7 +122,7 @@ object ViewAllWorkoutScreen : Screen {
                                         DescriptionText(workout.name)
                                         TinyItalicText(
                                             workout.muscleGroup.joinToString(", "),
-                                            color = Colors.TextSecondary
+                                            color = colors.textSecondary
                                         )
                                         // YouTube icon to search for workout demo
                                         Image(

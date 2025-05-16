@@ -22,49 +22,51 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.appUtil.MediumText
+import org.gabrieal.gymtracker.views.colors
 
 
 @Composable
 fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderText: String, resource: Pair<ImageVector, () -> Unit>? = null) {
     val customSelectionColors = TextSelectionColors(
-        handleColor = Colors.SlightlyDarkerLinkBlue,
-        backgroundColor = Colors.LinkBlue
+        handleColor = colors.slightlyDarkerLinkBlue,
+        backgroundColor = colors.linkBlue
     )
 
     CompositionLocalProvider(LocalTextSelectionColors provides customSelectionColors) {
         Box {
             OutlinedTextField(
                 value = value,
-                placeholder = { TinyItalicText(placeholderText, color = Colors.PlaceholderColor, modifier = Modifier.align(Alignment.CenterStart)) },
+                placeholder = { TinyItalicText(placeholderText, color = colors.placeholderColor, modifier = Modifier.align(Alignment.CenterStart)) },
                 onValueChange = onValueChange,
-                textStyle = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp, color = Colors.Black),
+                textStyle = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp, color = colors.black),
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        Colors.TextPrimary,
+                        colors.textPrimary,
                         shape = RoundedCornerShape(12.dp)
                     ),
                 shape = RoundedCornerShape(12.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Colors.SlightlyDarkerLinkBlue,
-                    unfocusedIndicatorColor = Colors.BorderStroke,
-                    cursorColor = Colors.SlightlyDarkerLinkBlue,
-                    focusedTextColor = Colors.Black,
-                    unfocusedTextColor = Colors.Black,
-                    focusedPlaceholderColor = Colors.PlaceholderColor,
-                    unfocusedPlaceholderColor = Colors.PlaceholderColor,
-                    focusedLabelColor = Colors.SlightlyDarkerLinkBlue,
-                    unfocusedLabelColor = Colors.BorderStroke,
+                    focusedIndicatorColor = colors.slightlyDarkerLinkBlue,
+                    unfocusedIndicatorColor = colors.borderStroke,
+                    cursorColor = colors.slightlyDarkerLinkBlue,
+                    focusedTextColor = colors.black,
+                    unfocusedTextColor = colors.black,
+                    focusedPlaceholderColor = colors.placeholderColor,
+                    unfocusedPlaceholderColor = colors.placeholderColor,
+                    focusedLabelColor = colors.slightlyDarkerLinkBlue,
+                    unfocusedLabelColor = colors.borderStroke,
+                    focusedContainerColor = colors.white,
+                    unfocusedContainerColor = colors.white
                 ),
                 trailingIcon = {
                     if (resource != null) {
                         Icon(
                             imageVector = resource.first,
                             contentDescription = resource.first.name,
-                            tint = Colors.Black,
+                            tint = colors.black,
                             modifier = Modifier.size(48.dp).align(Alignment.CenterEnd).padding(start = 8.dp, end = 8.dp).clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,

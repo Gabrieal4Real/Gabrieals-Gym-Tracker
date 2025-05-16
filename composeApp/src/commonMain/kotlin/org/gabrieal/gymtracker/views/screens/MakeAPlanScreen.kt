@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
-import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.viewmodel.MakeAPlanViewModel
+import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
@@ -65,7 +65,7 @@ object MakeAPlanScreen : Screen {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Colors.LighterBackground)
+                    .background(colors.lighterBackground)
             ) {
                 Column(
                     modifier = Modifier
@@ -97,20 +97,20 @@ object MakeAPlanScreen : Screen {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     Column {
-                                        DescriptionText(day)
+                                        DescriptionText(day, color = if (isActive) colors.textPrimary else colors.white)
                                         if (isActive) {
-                                            TinyItalicText(getCurrentPlan(selectedDays)[index], color = Colors.TextSecondary)
+                                            TinyItalicText(getCurrentPlan(selectedDays)[index], color = colors.textSecondary)
                                             TinyText(if (hasExercises) Resources.strings.edited else Resources.strings.notEditedYet)
                                         }
                                     }
                                     Spacer(modifier = Modifier.weight(1f))
                                     if (!isActive) {
-                                        TinyItalicText(Resources.strings.restDay)
+                                        TinyItalicText(Resources.strings.restDay, color = colors.white)
                                     } else {
                                         Icon(
                                             imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
                                             contentDescription = null,
-                                            tint = Colors.TextPrimary
+                                            tint = colors.textPrimary
                                         )
                                     }
                                 }

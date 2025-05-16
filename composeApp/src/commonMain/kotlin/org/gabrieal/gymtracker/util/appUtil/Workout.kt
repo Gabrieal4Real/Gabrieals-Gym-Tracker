@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
 import org.gabrieal.gymtracker.views.widgets.TinyItalicText
@@ -64,7 +65,7 @@ class Workout {
                     DescriptionText("Day ${index + 1}: ${plans[selectedDays.count { it } - 1][position]}")
                     position += 1
                 } else {
-                    DescriptionItalicText("Day ${index + 1}: Rest", color = Colors.LightMaroon)
+                    DescriptionItalicText("Day ${index + 1}: Rest", color = colors.lightMaroon)
                 }
             }
         }

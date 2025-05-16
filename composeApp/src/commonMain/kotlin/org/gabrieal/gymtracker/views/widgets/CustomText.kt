@@ -11,14 +11,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.gabrieal.gymtracker.util.appUtil.BoldText
-import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.appUtil.ExtraBoldText
 import org.gabrieal.gymtracker.util.appUtil.MediumText
 import org.gabrieal.gymtracker.util.appUtil.RegularText
 import org.gabrieal.gymtracker.util.appUtil.SemiBoldText
+import org.gabrieal.gymtracker.views.colors
 
 @Composable
-fun TitleText(text: String, color: Color = Colors.TextPrimary) {
+fun TitleText(text: String, color: Color = colors.textPrimary) {
     Text(
         text = text.uppercase(),
         style = TextStyle(fontFamily = BoldText(), letterSpacing = 4.sp, lineHeight = 24.sp),
@@ -29,7 +29,7 @@ fun TitleText(text: String, color: Color = Colors.TextPrimary) {
 }
 
 @Composable
-fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary) {
+fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = colors.textSecondary) {
     Text(
         text = text.uppercase(),
         style = TextStyle(fontFamily = ExtraBoldText(), letterSpacing = 10.sp, lineHeight = 30.sp),
@@ -40,7 +40,7 @@ fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = Color
 }
 
 @Composable
-fun BigText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary, maxLines: Int = Int.MAX_VALUE) {
+fun BigText(text: String, modifier: Modifier = Modifier, color: Color = colors.textSecondary, maxLines: Int = Int.MAX_VALUE) {
     Text(
         text = text,
         style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 28.sp),
@@ -53,7 +53,7 @@ fun BigText(text: String, modifier: Modifier = Modifier, color: Color = Colors.T
 }
 
 @Composable
-fun SubtitleText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextSecondary, maxLines: Int = Int.MAX_VALUE) {
+fun SubtitleText(text: String, modifier: Modifier = Modifier, color: Color = colors.textSecondary, maxLines: Int = Int.MAX_VALUE) {
     Text(text,
         style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 22.sp),
         color = color,
@@ -65,7 +65,7 @@ fun SubtitleText(text: String, modifier: Modifier = Modifier, color: Color = Col
 }
 
 @Composable
-fun DescriptionText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextPrimary) {
+fun DescriptionText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
     Text(text,
         style = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp),
         color = color,
@@ -75,7 +75,7 @@ fun DescriptionText(text: String, modifier: Modifier = Modifier, color: Color = 
 }
 
 @Composable
-fun DescriptionItalicText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextPrimary) {
+fun DescriptionItalicText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
     Text(text,
         style = TextStyle(fontFamily = MediumText(), fontStyle = FontStyle.Italic, lineHeight = 20.sp),
         color = color,
@@ -85,7 +85,7 @@ fun DescriptionItalicText(text: String, modifier: Modifier = Modifier, color: Co
 }
 
 @Composable
-fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextPrimary) {
+fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
     Text(text,
         style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
         color = color,
@@ -95,7 +95,7 @@ fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = Colors.
 }
 
 @Composable
-fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = Colors.TextPrimary) {
+fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
     Text(text,
         style = TextStyle(fontFamily = RegularText(), fontStyle = FontStyle.Italic, lineHeight = 18.sp),
         color = color,
@@ -108,7 +108,7 @@ fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = C
 fun LinkText(text: String, modifier: Modifier = Modifier) {
     Text(text,
         style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
-        color = Colors.LinkBlue,
+        color = colors.linkBlue,
         fontSize = 12.sp,
         modifier = modifier
     )

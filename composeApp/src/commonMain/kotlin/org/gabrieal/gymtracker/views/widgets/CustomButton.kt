@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.views.colors
 
 
 @Composable
@@ -34,10 +34,10 @@ fun ConfirmButton(
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Colors.SlightlyDarkerLinkBlue,
-            disabledContentColor = Colors.CardBackground,
+            containerColor = colors.slightlyDarkerLinkBlue,
+            disabledContentColor = colors.cardBackground,
         ),
-        border = BorderStroke(1.dp, Colors.LinkBlue),
+        border = BorderStroke(1.dp, colors.linkBlue),
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
             .fillMaxWidth()
@@ -45,7 +45,7 @@ fun ConfirmButton(
         elevation = ButtonDefaults.elevatedButtonElevation(0.dp),
         enabled = enabled
     ) {
-        SubtitleText(text.uppercase(), color = Colors.White, modifier = Modifier.padding(4.dp))
+        SubtitleText(text.uppercase(), color = colors.white, modifier = Modifier.padding(4.dp))
     }
 }
 
@@ -53,8 +53,8 @@ fun ConfirmButton(
 fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): Int {
     var selectedValue by remember { mutableStateOf(initialValue) }
     Row {
-        val minusBackgroundColor = if (selectedValue > minValue) Colors.SlightlyDarkerLinkBlue else Colors.Background
-        val plusBackgroundColor = if (selectedValue < maxValue) Colors.SlightlyDarkerLinkBlue else Colors.Background
+        val minusBackgroundColor = if (selectedValue > minValue) colors.slightlyDarkerLinkBlue else colors.background
+        val plusBackgroundColor = if (selectedValue < maxValue) colors.slightlyDarkerLinkBlue else colors.background
         Box(
             modifier = Modifier
                 .size(32.dp)
@@ -66,7 +66,7 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): I
                 },
             contentAlignment = Alignment.Center
         ) {
-            DescriptionText("-", color = Colors.White)
+            DescriptionText("-", color = colors.white)
         }
         Spacer(modifier = Modifier.width(16.dp))
         DescriptionText(selectedValue.toString(), modifier = Modifier.align(Alignment.CenterVertically))
@@ -82,7 +82,7 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): I
                 },
             contentAlignment = Alignment.Center
         ) {
-            DescriptionText("+", color = Colors.White)
+            DescriptionText("+", color = colors.white)
         }
     }
 

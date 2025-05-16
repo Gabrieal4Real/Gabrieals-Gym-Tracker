@@ -24,12 +24,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
 import org.gabrieal.gymtracker.model.SelectedExercise
-import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.planTitles
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.viewmodel.EditPlanViewModel
+import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
@@ -96,7 +96,7 @@ object EditPlanScreen : Screen {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Colors.LighterBackground)
+                        .background(colors.lighterBackground)
                         .padding(16.dp)
                 ) {
                     Column(
@@ -172,12 +172,12 @@ object EditPlanScreen : Screen {
                                                     viewModel.setShowRemoveDialog(true)
                                                 }
                                                 .background(
-                                                    color = Colors.Red,
+                                                    color = colors.deleteRed,
                                                     shape = RoundedCornerShape(8.dp)
                                                 )
                                                 .padding(horizontal = 16.dp, vertical = 8.dp)
                                         ) {
-                                            DescriptionText("Remove", color = Colors.White)
+                                            DescriptionText("Remove", color = colors.white)
                                         }
                                     }
                                 })
@@ -189,7 +189,7 @@ object EditPlanScreen : Screen {
                                     modifier = Modifier.clickable {
                                         viewModel.addExercise()
                                     },
-                                    color = Colors.LinkBlue
+                                    color = colors.linkBlue
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                             }

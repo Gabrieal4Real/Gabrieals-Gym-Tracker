@@ -12,15 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
-import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.views.colors
 
 
 @Composable
 fun CustomCard(enabled: Boolean, onClick: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = if (enabled) Colors.CardBackground else Colors.Maroon),
-        border = BorderStroke(2.dp, Colors.BorderStroke),
+        colors = CardDefaults.cardColors(containerColor = if (enabled) colors.cardBackground else colors.maroon),
+        border = BorderStroke(2.dp, colors.borderStroke),
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 8.dp)
@@ -34,8 +34,8 @@ fun CustomCard(enabled: Boolean, onClick: (() -> Unit)? = null, content: @Compos
             .shadow(
                 elevation = 4.dp,
                 shape = RoundedCornerShape(8.dp),
-                ambientColor = Colors.Black,
-                spotColor = Colors.Black
+                ambientColor = colors.black,
+                spotColor = colors.black
             ),
         content = content
     )

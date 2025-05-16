@@ -21,10 +21,10 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.nothing_here
-import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.viewmodel.HomeViewModel
+import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.LinkText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.views.widgets.TitleText
@@ -49,7 +49,7 @@ object HomeScreen : Screen {
             TitleText(Resources.strings.appName)
 
             HorizontalDivider(
-                color = Colors.BorderStroke,
+                color = colors.borderStroke,
                 thickness = 1.dp,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -57,7 +57,7 @@ object HomeScreen : Screen {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Colors.LighterBackground)
+                    .background(colors.lighterBackground)
                     .padding(16.dp),
                 contentAlignment = Alignment.Center
             ) {

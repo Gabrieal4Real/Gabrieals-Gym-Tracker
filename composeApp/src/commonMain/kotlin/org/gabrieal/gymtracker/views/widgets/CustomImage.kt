@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.gabrieal.gymtracker.util.appUtil.Colors
+import org.gabrieal.gymtracker.views.colors
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -58,7 +58,7 @@ fun AnimatedImage(showImage: Boolean, resource: DrawableResource, isLeft: Boolea
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Colors.Black.copy(alpha = 0.35f))
+            .background(colors.black.copy(alpha = 0.35f))
             .clickable (
                 indication = null,
                 interactionSource = null

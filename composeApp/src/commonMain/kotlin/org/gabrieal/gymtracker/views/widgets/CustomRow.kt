@@ -36,15 +36,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.views.colors
 
 @Composable
 fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
-    val navigator = LocalNavigator.currentOrThrow
-
     Row(
         modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -55,14 +51,14 @@ fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                 contentDescription = "Back",
-                tint = Colors.TextPrimary
+                tint = colors.textPrimary
             )
         }
         TitleText(text)
     }
 
     HorizontalDivider(
-        color = Colors.BorderStroke,
+        color = colors.borderStroke,
         thickness = 1.dp,
         modifier = Modifier.fillMaxWidth()
     )
@@ -81,7 +77,7 @@ fun RepRangePicker(
         ranges.forEach { range ->
             val isSelected = range == selectedRange
             val backgroundColor =
-                if (isSelected) Colors.SlightlyDarkerLinkBlue else Colors.Background
+                if (isSelected) colors.slightlyDarkerLinkBlue else colors.background
             Box(
                 modifier = Modifier
                     .padding(end = 8.dp)
@@ -90,7 +86,7 @@ fun RepRangePicker(
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 contentAlignment = Alignment.Center
             ) {
-                TinyText("${range.first} - ${range.second} reps")
+                TinyText("${range.first} - ${range.second} reps", color = if (isSelected) colors.white else colors.textPrimary)
             }
         }
     }
@@ -113,7 +109,7 @@ fun DropDownFilter(
             modifier = Modifier
                 .size(32.dp)
                 .clickable { isExpanded = !isExpanded },
-            tint = Colors.TextPrimary
+            tint = colors.textPrimary
         )
 
         if (isExpanded) {
@@ -126,14 +122,14 @@ fun DropDownFilter(
                         .heightIn(max = 300.dp)
                         .verticalColumnScrollbar(scrollState)
                         .verticalScroll(scrollState)
-                        .background(Colors.Background, RoundedCornerShape(12.dp))
+                        .background(colors.background, RoundedCornerShape(12.dp))
                         .padding(start = 8.dp, top = 8.dp, end = 24.dp, bottom = 8.dp),
                 ) {
                     Column {
                         filterOptions.forEach { option ->
                             val isSelected = option in selectedFilters
                             val backgroundColor =
-                                if (isSelected) Colors.SlightlyDarkerLinkBlue else Colors.Background
+                                if (isSelected) colors.slightlyDarkerLinkBlue else colors.background
                             Box(
                                 modifier = Modifier
                                     .padding(2.dp)
@@ -157,8 +153,8 @@ fun Modifier.verticalColumnScrollbar(
     scrollState: ScrollState,
     width: Dp = 4.dp,
     showScrollBarTrack: Boolean = true,
-    scrollBarTrackColor: Color = Colors.Background,
-    scrollBarColor: Color = Colors.BorderStroke,
+    scrollBarTrackColor: Color = colors.background,
+    scrollBarColor: Color = colors.borderStroke,
     scrollBarCornerRadius: Float = 16f,
     endPadding: Float = 12f
 ): Modifier {

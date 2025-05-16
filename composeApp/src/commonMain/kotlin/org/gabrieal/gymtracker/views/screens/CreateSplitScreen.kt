@@ -27,11 +27,11 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
-import org.gabrieal.gymtracker.util.appUtil.Colors
 import org.gabrieal.gymtracker.util.appUtil.Workout
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.viewmodel.CreateSplitViewModel
+import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.BigText
@@ -57,7 +57,7 @@ object CreateSplitScreen : Screen {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Colors.LighterBackground)
+                    .background(colors.lighterBackground)
             ) {
                 Column(
                     modifier = Modifier
@@ -80,7 +80,7 @@ object CreateSplitScreen : Screen {
                             Card(
                                 shape = RoundedCornerShape(4.dp),
                                 colors = CardDefaults.cardColors(
-                                    containerColor = if (isSelected) Colors.White else Colors.Maroon
+                                    containerColor = if (isSelected) colors.white else colors.maroon
                                 ),
                                 elevation = CardDefaults.elevatedCardElevation(
                                     defaultElevation = if (isSelected) 8.dp else 4.dp
@@ -95,7 +95,7 @@ object CreateSplitScreen : Screen {
                                     modifier = Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    BigText(day, color = if (isSelected) Colors.Black else Colors.White)
+                                    BigText(day, color = if (isSelected) colors.black else colors.white)
                                 }
                             }
                         }
