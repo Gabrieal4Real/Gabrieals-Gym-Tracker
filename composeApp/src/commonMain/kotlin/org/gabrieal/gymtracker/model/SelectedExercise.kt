@@ -3,15 +3,15 @@ package org.gabrieal.gymtracker.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SelectedExercise (
+data class SelectedExercise(
     var name: String? = null,
     var sets: Int? = null,
-    var reps:  Pair<Int, Int>? = null
+    var reps: Pair<Int, Int>? = null
 )
 
 @Serializable
-data class SelectedExerciseList (
-    var position : Int? = null,
+data class SelectedExerciseList(
+    var position: Int? = null,
     var day: String? = null,
-    var exercises : List<SelectedExercise>? = null,
+    var exercises: List<SelectedExercise>? = null,
 )

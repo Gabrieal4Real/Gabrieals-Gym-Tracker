@@ -27,7 +27,12 @@ import org.gabrieal.gymtracker.views.colors
 
 
 @Composable
-fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderText: String, resource: Pair<ImageVector, () -> Unit>? = null) {
+fun CustomTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholderText: String,
+    resource: Pair<ImageVector, () -> Unit>? = null
+) {
     val customSelectionColors = TextSelectionColors(
         handleColor = colors.slightlyDarkerLinkBlue,
         backgroundColor = colors.linkBlue
@@ -37,9 +42,19 @@ fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderT
         Box {
             OutlinedTextField(
                 value = value,
-                placeholder = { TinyItalicText(placeholderText, color = colors.placeholderColor, modifier = Modifier.align(Alignment.CenterStart)) },
+                placeholder = {
+                    TinyItalicText(
+                        placeholderText,
+                        color = colors.placeholderColor,
+                        modifier = Modifier.align(Alignment.CenterStart)
+                    )
+                },
                 onValueChange = onValueChange,
-                textStyle = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp, color = colors.black),
+                textStyle = TextStyle(
+                    fontFamily = MediumText(),
+                    lineHeight = 20.sp,
+                    color = colors.black
+                ),
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -67,7 +82,8 @@ fun CustomTextField(value: String, onValueChange: (String) -> Unit, placeholderT
                             imageVector = resource.first,
                             contentDescription = resource.first.name,
                             tint = colors.black,
-                            modifier = Modifier.size(48.dp).align(Alignment.CenterEnd).padding(start = 8.dp, end = 8.dp).clickable(
+                            modifier = Modifier.size(48.dp).align(Alignment.CenterEnd)
+                                .padding(start = 8.dp, end = 8.dp).clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
                                 onClick = resource.second

@@ -109,37 +109,37 @@ object ViewAllWorkoutScreen : Screen {
                                     viewModel.setSelectedWorkout(workout.name)
                                 },
                                 content = {
-                                Row(
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .padding(16.dp)
+                                    Row(
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        // Workout name and muscle group tags
-                                        DescriptionText(workout.name)
-                                        TinyItalicText(
-                                            workout.targetMuscle,
-                                            color = colors.textSecondary
-                                        )
-                                        // YouTube icon to search for workout demo
-                                        Image(
-                                            painter = painterResource(Res.drawable.youtube),
-                                            contentDescription = "Youtube",
+                                        Column(
                                             modifier = Modifier
-                                                .size(24.dp)
-                                                .padding(top = 8.dp)
-                                                .clickable {
-                                                    viewModel.openYoutubeSearch(workout.name)
-                                                }
-                                        )
+                                                .weight(1f)
+                                                .padding(16.dp)
+                                        ) {
+                                            // Workout name and muscle group tags
+                                            DescriptionText(workout.name)
+                                            TinyItalicText(
+                                                workout.targetMuscle,
+                                                color = colors.textSecondary
+                                            )
+                                            // YouTube icon to search for workout demo
+                                            Image(
+                                                painter = painterResource(Res.drawable.youtube),
+                                                contentDescription = "Youtube",
+                                                modifier = Modifier
+                                                    .size(24.dp)
+                                                    .padding(top = 8.dp)
+                                                    .clickable {
+                                                        viewModel.openYoutubeSearch(workout.name)
+                                                    }
+                                            )
+                                        }
+                                        // Workout tier badge
+                                        TierImage(workout.tier)
                                     }
-                                    // Workout tier badge
-                                    TierImage(workout.tier)
-                                }
-                            })
+                                })
                             Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
@@ -173,7 +173,7 @@ object ViewAllWorkoutScreen : Screen {
             3 -> Res.drawable.tier_3
             else -> Res.drawable.tier_3
         }
-        
+
         Image(
             painter = painterResource(drawableResource),
             contentDescription = "Tier $tier",

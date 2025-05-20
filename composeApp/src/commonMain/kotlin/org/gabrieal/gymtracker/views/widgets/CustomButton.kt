@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -50,7 +49,7 @@ fun ConfirmButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled : Boolean = true,
+    enabled: Boolean = true,
     buttonType: ButtonType = ButtonType.BLUE
 ) {
     Button(
@@ -66,7 +65,11 @@ fun ConfirmButton(
         elevation = ButtonDefaults.elevatedButtonElevation(0.dp),
         enabled = enabled
     ) {
-        SubtitleText(text.uppercase(), color = buttonType.textColor, modifier = Modifier.padding(4.dp))
+        SubtitleText(
+            text.uppercase(),
+            color = buttonType.textColor,
+            modifier = Modifier.padding(4.dp)
+        )
     }
 }
 
@@ -74,8 +77,10 @@ fun ConfirmButton(
 fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): Int {
     var selectedValue by remember { mutableStateOf(initialValue) }
     Row {
-        val minusBackgroundColor = if (selectedValue > minValue) colors.slightlyDarkerLinkBlue else colors.background
-        val plusBackgroundColor = if (selectedValue < maxValue) colors.slightlyDarkerLinkBlue else colors.background
+        val minusBackgroundColor =
+            if (selectedValue > minValue) colors.slightlyDarkerLinkBlue else colors.background
+        val plusBackgroundColor =
+            if (selectedValue < maxValue) colors.slightlyDarkerLinkBlue else colors.background
         Box(
             modifier = Modifier
                 .size(32.dp)
@@ -90,7 +95,10 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): I
             DescriptionText("-", color = colors.white)
         }
         Spacer(modifier = Modifier.width(16.dp))
-        DescriptionText(selectedValue.toString(), modifier = Modifier.align(Alignment.CenterVertically))
+        DescriptionText(
+            selectedValue.toString(),
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
         Spacer(modifier = Modifier.width(16.dp))
         Box(
             modifier = Modifier

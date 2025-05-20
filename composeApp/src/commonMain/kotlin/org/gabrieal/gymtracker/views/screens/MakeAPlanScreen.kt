@@ -1,7 +1,6 @@
 package org.gabrieal.gymtracker.views.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -27,7 +25,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
-import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
 import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
 import org.gabrieal.gymtracker.util.systemUtil.Resources
@@ -143,7 +140,9 @@ object MakeAPlanScreen : Screen {
                     }
                 }
 
-                Column(modifier = Modifier.fillMaxWidth().align(Alignment.BottomEnd).padding(16.dp)) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomEnd).padding(16.dp)
+                ) {
                     //Template Button
                     ConfirmButton(
                         text = "Use a Template instead",

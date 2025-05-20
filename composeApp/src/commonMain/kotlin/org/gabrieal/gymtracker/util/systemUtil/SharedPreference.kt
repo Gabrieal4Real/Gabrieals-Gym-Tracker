@@ -18,13 +18,15 @@ expect fun providePreferences(context: Any?): SharedPreferences
 
 fun getSelectedRoutineListFromSharedPreferences(context: Any?): MutableList<SelectedExerciseList> {
     var selectedRoutineList = mutableListOf<SelectedExerciseList>()
-    
+
     try {
-        selectedRoutineList = Json.decodeFromString<MutableList<SelectedExerciseList>>(providePreferences(context).getString("selectedRoutineList"))
+        selectedRoutineList = Json.decodeFromString<MutableList<SelectedExerciseList>>(
+            providePreferences(context).getString("selectedRoutineList")
+        )
         println("selectedRoutineList: $selectedRoutineList")
     } catch (ex: Exception) {
         println("decodeFromStringError: ${ex.message} ")
     }
-    
+
     return selectedRoutineList
 }

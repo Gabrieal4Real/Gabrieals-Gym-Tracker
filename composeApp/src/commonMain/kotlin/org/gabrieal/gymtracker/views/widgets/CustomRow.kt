@@ -96,7 +96,10 @@ fun RepRangePicker(
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 contentAlignment = Alignment.Center
             ) {
-                TinyText("${range.first} - ${range.second} reps", color = if (isSelected) colors.white else colors.textPrimary)
+                TinyText(
+                    "${range.first} - ${range.second} reps",
+                    color = if (isSelected) colors.white else colors.textPrimary
+                )
             }
         }
     }

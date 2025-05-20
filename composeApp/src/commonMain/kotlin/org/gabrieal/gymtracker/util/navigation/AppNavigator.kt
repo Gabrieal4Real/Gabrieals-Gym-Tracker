@@ -18,7 +18,7 @@ object AppNavigator {
 
     private val _navigationEvents = MutableStateFlow<NavigationEvent?>(null)
     val navigationEvents: StateFlow<NavigationEvent?> = _navigationEvents.asStateFlow()
-    
+
 
     fun setNavigator(navigator: Navigator) {
         navigatorInstance = navigator

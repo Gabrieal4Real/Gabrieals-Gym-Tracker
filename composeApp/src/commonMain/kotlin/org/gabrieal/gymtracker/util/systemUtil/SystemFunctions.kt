@@ -29,7 +29,7 @@ fun readFile(path: String): String {
 expect fun OpenURL(url: String)
 
 @Composable
-expect fun getCurrentContext() : Any?
+expect fun getCurrentContext(): Any?
 
 @Composable
 expect fun ShowAlertDialog(

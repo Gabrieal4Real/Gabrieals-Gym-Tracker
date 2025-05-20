@@ -16,7 +16,11 @@ import org.gabrieal.gymtracker.views.colors
 
 
 @Composable
-fun CustomCard(enabled: Boolean, onClick: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
+fun CustomCard(
+    enabled: Boolean,
+    onClick: (() -> Unit)? = null,
+    content: @Composable ColumnScope.() -> Unit
+) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = if (enabled) colors.cardBackground else colors.maroon),

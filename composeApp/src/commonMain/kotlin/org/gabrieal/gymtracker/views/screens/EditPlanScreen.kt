@@ -125,63 +125,66 @@ object EditPlanScreen : Screen {
                                 CustomCard(
                                     enabled = true,
                                     content = {
-                                    Column(modifier = Modifier.padding(16.dp)) {
-                                        // Exercise name input
-                                        TinyItalicText("Name your exercise")
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        CustomTextField(
-                                            value = exercises[position].name ?: "",
-                                            onValueChange = { newName ->
-                                                viewModel.updateExerciseName(position, newName)
-                                            },
-                                            placeholderText = if (placeholderList.isNotEmpty() && position < placeholderList.size) 
-                                                placeholderList[position] else "",
-                                            resource = Icons.Rounded.Search to {
-                                                viewModel.navigateToViewAllWorkouts(position)
-                                            }
-                                        )
-                                        Spacer(modifier = Modifier.height(24.dp))
-
-                                        // Sets input
-                                        TinyItalicText("How many sets per exercise?")
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        viewModel.updateExerciseSets(position, IncrementDecrementButton(
-                                            exercises[position].sets ?: 3,
-                                            1,
-                                            20
-                                        ))
-                                        Spacer(modifier = Modifier.height(24.dp))
-
-                                        // Reps input
-                                        TinyItalicText("How many reps per set?")
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        RepRangePicker(
-                                            ranges = repRanges,
-                                            selectedRange = exercises[position].reps ?: repRanges.random(),
-                                            onRangeSelected = { newReps ->
-                                                viewModel.updateExerciseReps(position, newReps)
-                                            }
-                                        )
-                                        Spacer(modifier = Modifier.height(16.dp))
-
-                                        // Remove exercise button
-                                        Box(
-                                            modifier = Modifier
-                                                .align(Alignment.CenterHorizontally)
-                                                .clickable {
-                                                    viewModel.setCurrentClickedPosition(position)
-                                                    viewModel.setShowRemoveDialog(true)
+                                        Column(modifier = Modifier.padding(16.dp)) {
+                                            // Exercise name input
+                                            TinyItalicText("Name your exercise")
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            CustomTextField(
+                                                value = exercises[position].name ?: "",
+                                                onValueChange = { newName ->
+                                                    viewModel.updateExerciseName(position, newName)
+                                                },
+                                                placeholderText = if (placeholderList.isNotEmpty() && position < placeholderList.size)
+                                                    placeholderList[position] else "",
+                                                resource = Icons.Rounded.Search to {
+                                                    viewModel.navigateToViewAllWorkouts(position)
                                                 }
-                                                .background(
-                                                    color = colors.deleteRed,
-                                                    shape = RoundedCornerShape(8.dp)
+                                            )
+                                            Spacer(modifier = Modifier.height(24.dp))
+
+                                            // Sets input
+                                            TinyItalicText("How many sets per exercise?")
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            viewModel.updateExerciseSets(
+                                                position, IncrementDecrementButton(
+                                                    exercises[position].sets ?: 3,
+                                                    1,
+                                                    20
                                                 )
-                                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                                        ) {
-                                            DescriptionText("Remove", color = colors.white)
+                                            )
+                                            Spacer(modifier = Modifier.height(24.dp))
+
+                                            // Reps input
+                                            TinyItalicText("How many reps per set?")
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            RepRangePicker(
+                                                ranges = repRanges,
+                                                selectedRange = exercises[position].reps
+                                                    ?: repRanges.random(),
+                                                onRangeSelected = { newReps ->
+                                                    viewModel.updateExerciseReps(position, newReps)
+                                                }
+                                            )
+                                            Spacer(modifier = Modifier.height(16.dp))
+
+                                            // Remove exercise button
+                                            Box(
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterHorizontally)
+                                                    .clickable {
+                                                        viewModel.setCurrentClickedPosition(position)
+                                                        viewModel.setShowRemoveDialog(true)
+                                                    }
+                                                    .background(
+                                                        color = colors.deleteRed,
+                                                        shape = RoundedCornerShape(8.dp)
+                                                    )
+                                                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                                            ) {
+                                                DescriptionText("Remove", color = colors.white)
+                                            }
                                         }
-                                    }
-                                })
+                                    })
                             }
                             item {
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -216,7 +219,7 @@ object EditPlanScreen : Screen {
                     if (exercises.size == 1) {
                         ShowToast("Need to have at least 1 workout")
                         viewModel.setShowRemoveDialog(false)
-                    } else if (exercises[currentClickedPosition].name?.isBlank() == true){
+                    } else if (exercises[currentClickedPosition].name?.isBlank() == true) {
                         viewModel.removeExercise(currentClickedPosition)
                         viewModel.setShowRemoveDialog(false)
                     } else {

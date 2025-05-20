@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,12 +26,11 @@ import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.LinkText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
-import org.gabrieal.gymtracker.views.widgets.TitleText
 import org.jetbrains.compose.resources.painterResource
 
 object HomeScreen : Screen {
     private val viewModel = HomeViewModel()
-    
+
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
@@ -45,7 +42,7 @@ object HomeScreen : Screen {
         LaunchedEffect(context) {
             viewModel.updateContext(context)
         }
-        
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -78,7 +75,10 @@ object HomeScreen : Screen {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         SubtitleText(Resources.strings.nothingHereYet)
-                        LinkText(Resources.strings.startTrackingWorkout, modifier = Modifier.padding(top = 4.dp))
+                        LinkText(
+                            Resources.strings.startTrackingWorkout,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
                     }
                 }
             }

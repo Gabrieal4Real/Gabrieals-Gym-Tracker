@@ -40,7 +40,12 @@ fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = color
 }
 
 @Composable
-fun BigText(text: String, modifier: Modifier = Modifier, color: Color = colors.textSecondary, maxLines: Int = Int.MAX_VALUE) {
+fun BigText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textSecondary,
+    maxLines: Int = Int.MAX_VALUE
+) {
     Text(
         text = text,
         style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 28.sp),
@@ -53,8 +58,14 @@ fun BigText(text: String, modifier: Modifier = Modifier, color: Color = colors.t
 }
 
 @Composable
-fun SubtitleText(text: String, modifier: Modifier = Modifier, color: Color = colors.textSecondary, maxLines: Int = Int.MAX_VALUE) {
-    Text(text,
+fun SubtitleText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textSecondary,
+    maxLines: Int = Int.MAX_VALUE
+) {
+    Text(
+        text,
         style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 22.sp),
         color = color,
         fontSize = 16.sp,
@@ -65,8 +76,13 @@ fun SubtitleText(text: String, modifier: Modifier = Modifier, color: Color = col
 }
 
 @Composable
-fun DescriptionText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
-    Text(text,
+fun DescriptionText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textPrimary
+) {
+    Text(
+        text,
         style = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp),
         color = color,
         fontSize = 14.sp,
@@ -75,9 +91,18 @@ fun DescriptionText(text: String, modifier: Modifier = Modifier, color: Color = 
 }
 
 @Composable
-fun DescriptionItalicText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
-    Text(text,
-        style = TextStyle(fontFamily = MediumText(), fontStyle = FontStyle.Italic, lineHeight = 20.sp),
+fun DescriptionItalicText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textPrimary
+) {
+    Text(
+        text,
+        style = TextStyle(
+            fontFamily = MediumText(),
+            fontStyle = FontStyle.Italic,
+            lineHeight = 20.sp
+        ),
         color = color,
         fontSize = 14.sp,
         modifier = modifier
@@ -86,7 +111,8 @@ fun DescriptionItalicText(text: String, modifier: Modifier = Modifier, color: Co
 
 @Composable
 fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
-    Text(text,
+    Text(
+        text,
         style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
         color = color,
         fontSize = 12.sp,
@@ -96,8 +122,13 @@ fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = colors.
 
 @Composable
 fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
-    Text(text,
-        style = TextStyle(fontFamily = RegularText(), fontStyle = FontStyle.Italic, lineHeight = 18.sp),
+    Text(
+        text,
+        style = TextStyle(
+            fontFamily = RegularText(),
+            fontStyle = FontStyle.Italic,
+            lineHeight = 18.sp
+        ),
         color = color,
         fontSize = 12.sp,
         modifier = modifier
@@ -106,7 +137,8 @@ fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = c
 
 @Composable
 fun LinkText(text: String, modifier: Modifier = Modifier) {
-    Text(text,
+    Text(
+        text,
         style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
         color = colors.linkBlue,
         fontSize = 12.sp,

@@ -10,9 +10,7 @@ import org.gabrieal.gymtracker.views.allExistingExerciseList
 
 class ViewAllWorkoutViewModel {
     private val _uiState = MutableStateFlow(
-        ViewAllWorkoutUiState(
-        filteredWorkouts = allExistingExerciseList
-    )
+        ViewAllWorkoutUiState(filteredWorkouts = allExistingExerciseList)
     )
 
     val uiState: StateFlow<ViewAllWorkoutUiState> = _uiState.asStateFlow()
@@ -35,7 +33,7 @@ class ViewAllWorkoutViewModel {
         } else {
             currentFilters + filter
         }
-        
+
         _uiState.update { it.copy(selectedFilters = updatedFilters) }
         updateFilteredWorkouts()
     }
@@ -43,21 +41,25 @@ class ViewAllWorkoutViewModel {
     private fun updateFilteredWorkouts() {
         val searchFilter = _uiState.value.searchFilter
         val selectedFilters = _uiState.value.selectedFilters
-        
+
         val filteredList = allExistingExerciseList.filter { exercise ->
             exercise.name.contains(searchFilter, ignoreCase = true) &&
-                    (selectedFilters.isEmpty() || selectedFilters.any{ MuscleGroup.relatedMuscles(it).contains(exercise.targetMuscle) })
+                    (selectedFilters.isEmpty() || selectedFilters.any {
+                        MuscleGroup.relatedMuscles(
+                            it
+                        ).contains(exercise.targetMuscle)
+                    })
         }
-        
+
         _uiState.update { it.copy(filteredWorkouts = filteredList) }
     }
 
     fun setSelectedWorkout(workout: String) {
-        _uiState.update { 
+        _uiState.update {
             it.copy(
                 selectedWorkout = workout,
                 showConfirmAddToRoutineDialog = true
-            ) 
+            )
         }
     }
 
@@ -72,7 +74,9 @@ class ViewAllWorkoutViewModel {
     }
 
     fun openYoutubeSearch(workoutName: String) {
-        val searchUrl = "https://www.youtube.com/results?search_query=how+to+do+${workoutName.replace(" ", "+")}"
+        val searchUrl = "https://www.youtube.com/results?search_query=how+to+do+${
+            workoutName.replace(" ", "+")
+        }"
         _uiState.update { it.copy(youtubeUrlToOpen = searchUrl) }
     }
 

@@ -35,7 +35,6 @@ import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.viewmodel.createSplit.CreateSplitViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
-import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.BigText
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
@@ -44,7 +43,7 @@ import org.gabrieal.gymtracker.views.widgets.TitleRow
 
 object CreateSplitScreen : Screen {
     private val viewModel = CreateSplitViewModel()
-    
+
     @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
@@ -104,7 +103,10 @@ object CreateSplitScreen : Screen {
                                     modifier = Modifier.fillMaxSize(),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    BigText(day, color = if (isSelected) colors.black else colors.white)
+                                    BigText(
+                                        day,
+                                        color = if (isSelected) colors.black else colors.white
+                                    )
                                 }
                             }
                         }

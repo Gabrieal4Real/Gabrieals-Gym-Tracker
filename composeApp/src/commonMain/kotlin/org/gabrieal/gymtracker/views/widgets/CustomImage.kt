@@ -59,7 +59,7 @@ fun AnimatedImage(showImage: Boolean, resource: DrawableResource, isLeft: Boolea
         modifier = Modifier
             .fillMaxSize()
             .background(colors.black.copy(alpha = 0.35f))
-            .clickable (
+            .clickable(
                 indication = null,
                 interactionSource = null
             ) {
@@ -70,7 +70,10 @@ fun AnimatedImage(showImage: Boolean, resource: DrawableResource, isLeft: Boolea
                 }
             }
     ) {
-        Box(contentAlignment = if (isLeft) Alignment.BottomStart else Alignment.BottomEnd, modifier = Modifier.fillMaxSize().absoluteOffset(y = 4.dp)) {
+        Box(
+            contentAlignment = if (isLeft) Alignment.BottomStart else Alignment.BottomEnd,
+            modifier = Modifier.fillMaxSize().absoluteOffset(y = 4.dp)
+        ) {
             AnimatedVisibility(
                 visible = animationVisibility,
                 enter = enterAnimation,

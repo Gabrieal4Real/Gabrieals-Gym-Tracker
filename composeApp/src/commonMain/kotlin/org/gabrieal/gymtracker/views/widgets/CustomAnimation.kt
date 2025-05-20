@@ -51,12 +51,12 @@ fun AnimatedDividerWithScale() {
         animationSpec = tween(durationMillis = 800)
     )
 
-    LaunchedEffect (Unit) {
+    LaunchedEffect(Unit) {
         delay(100)
         isExpanded = true
     }
 
-    Column (modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.8f)

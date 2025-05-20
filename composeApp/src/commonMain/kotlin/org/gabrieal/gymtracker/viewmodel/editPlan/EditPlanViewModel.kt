@@ -11,7 +11,7 @@ import org.gabrieal.gymtracker.views.allExistingExerciseList
 
 class EditPlanViewModel {
     private val _uiState = MutableStateFlow(EditPlanUiState())
-    
+
     val uiState: StateFlow<EditPlanUiState> = _uiState.asStateFlow()
 
     private var callback: ((List<SelectedExercise>) -> Unit)? = null
@@ -76,16 +76,16 @@ class EditPlanViewModel {
         val updatedExercises = _uiState.value.exercises.toMutableList().apply {
             add(newExercise)
         }
-        
+
         val placeholderList = _uiState.value.placeHolderList.toMutableList().apply {
             add(allExistingExerciseList.random().name)
         }
-        
-        _uiState.update { 
+
+        _uiState.update {
             it.copy(
                 exercises = updatedExercises,
                 placeHolderList = placeholderList
-            ) 
+            )
         }
     }
 
@@ -98,13 +98,13 @@ class EditPlanViewModel {
             val placeholderList = _uiState.value.placeHolderList.toMutableList().apply {
                 removeAt(position)
             }
-            
-            _uiState.update { 
+
+            _uiState.update {
                 it.copy(
                     exercises = updatedExercises,
                     placeHolderList = placeholderList,
                     showRemoveDialog = false
-                ) 
+                )
             }
         } else {
             setShowRemoveDialog(false)

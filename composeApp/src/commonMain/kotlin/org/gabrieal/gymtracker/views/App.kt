@@ -18,7 +18,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import org.gabrieal.gymtracker.model.ConvertedTemplate
 import org.gabrieal.gymtracker.model.Exercise
-import org.gabrieal.gymtracker.model.Template
 import org.gabrieal.gymtracker.model.decodeExercises
 import org.gabrieal.gymtracker.model.decodeTemplate
 import org.gabrieal.gymtracker.util.appUtil.AppColors
@@ -48,27 +47,28 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
         allExistingExerciseList = decodeExercises(readFile("exercises.json"))
         templates = decodeTemplate(readFile("templates.json"))
 
-        MaterialTheme{
-                Surface(
-                    modifier = Modifier.fillMaxSize().background(colors.background).windowInsetsPadding(WindowInsets.safeDrawing),
-                    color = colors.background
-                ) {
-                    Navigator(HomeScreen) { navigator ->
-                        LaunchedEffect(navigator) {
-                            AppNavigator.setNavigator(navigator)
-                        }
-
-                        val navigationEvent by AppNavigator.navigationEvents.collectAsState()
-
-                        LaunchedEffect(navigationEvent) {
-                            navigationEvent?.let { event ->
-                                AppNavigator.processNavigationEvent(event)
-                            }
-                        }
-
-                        SlideTransition(navigator)
+        MaterialTheme {
+            Surface(
+                modifier = Modifier.fillMaxSize().background(colors.background)
+                    .windowInsetsPadding(WindowInsets.safeDrawing),
+                color = colors.background
+            ) {
+                Navigator(HomeScreen) { navigator ->
+                    LaunchedEffect(navigator) {
+                        AppNavigator.setNavigator(navigator)
                     }
+
+                    val navigationEvent by AppNavigator.navigationEvents.collectAsState()
+
+                    LaunchedEffect(navigationEvent) {
+                        navigationEvent?.let { event ->
+                            AppNavigator.processNavigationEvent(event)
+                        }
+                    }
+
+                    SlideTransition(navigator)
                 }
             }
+        }
     }
 }

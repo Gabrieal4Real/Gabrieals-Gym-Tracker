@@ -36,6 +36,7 @@ object DarkColors : AppColors() {
     override val lightMaroon = Color(0xFFAB4567)
     override val deleteRed = Color(0xFFB22222)
 }
+
 object LightColors : AppColors() {
     override val background = Color(0xFF889E81)
     override val lighterBackground = Color(0xFFC8DBBE)

@@ -27,7 +27,7 @@ class MakeAPlanViewModel {
     }
 
     fun setShowWarningBack(show: Boolean) {
-        if (_uiState.value.selectedRoutineList.isEmpty())  {
+        if (_uiState.value.selectedRoutineList.isEmpty()) {
             navigateBack()
             return
         }
@@ -63,7 +63,13 @@ class MakeAPlanViewModel {
                 .filterNot { it.day == day }
                 .toMutableList()
                 .apply {
-                    add(SelectedExerciseList(position = index, day = day, exercises = updatedExercises))
+                    add(
+                        SelectedExerciseList(
+                            position = index,
+                            day = day,
+                            exercises = updatedExercises
+                        )
+                    )
                 }
             updateSelectedRoutineList(updatedRoutineList)
         }
@@ -78,10 +84,10 @@ class MakeAPlanViewModel {
     @Composable
     fun saveRoutineList() {
         val sortedRoutineList = _uiState.value.selectedRoutineList.sortedBy { it.position }
-        
+
         getCurrentContext().let {
             providePreferences(it).putString(
-                "selectedRoutineList", 
+                "selectedRoutineList",
                 Json.encodeToString(sortedRoutineList)
             )
             AppNavigator.navigateToRoot()
