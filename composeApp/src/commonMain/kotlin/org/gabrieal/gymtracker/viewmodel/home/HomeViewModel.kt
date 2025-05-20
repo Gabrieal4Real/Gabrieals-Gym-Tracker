@@ -25,6 +25,8 @@ class HomeViewModel {
                 navigateToCreateSplit()
             }
 
+            println(routines)
+
             it.copy(
                 selectedRoutineList = routines,
                 hasRoutines = routines.isNotEmpty()

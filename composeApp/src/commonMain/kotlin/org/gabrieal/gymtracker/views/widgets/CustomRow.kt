@@ -57,16 +57,17 @@ fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
         TitleText(text)
     }
 
-    HorizontalDivider(
-        color = colors.borderStroke,
-        thickness = 1.dp,
-        modifier = Modifier.fillMaxWidth()
-    )
+    CustomDivider()
 }
 
 @Composable
 fun TitleRow(text: String) {
     TitleText(text)
+    CustomDivider()
+}
+
+@Composable
+fun CustomDivider() {
     HorizontalDivider(
         color = colors.borderStroke,
         thickness = 1.dp,

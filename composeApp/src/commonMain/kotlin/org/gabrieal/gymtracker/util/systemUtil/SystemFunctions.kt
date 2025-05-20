@@ -40,3 +40,5 @@ expect fun ShowAlertDialog(
 
 @Composable
 expect fun ShowToast(message: String)
+
+expect fun getTodayDayName(): String

@@ -29,16 +29,18 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
-import org.gabrieal.gymtracker.util.appUtil.Workout
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.days
+import org.gabrieal.gymtracker.util.appUtil.plans
+import org.gabrieal.gymtracker.util.appUtil.shortFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.viewmodel.createSplit.CreateSplitViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
 import org.gabrieal.gymtracker.views.widgets.BigText
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
+import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
+import org.gabrieal.gymtracker.views.widgets.TinyItalicText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
 
 object CreateSplitScreen : Screen {
@@ -83,7 +85,7 @@ object CreateSplitScreen : Screen {
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        days.forEachIndexed { index, day ->
+                        shortFormDays.forEachIndexed { index, day ->
                             val isSelected = selectedDays[index]
                             Card(
                                 shape = RoundedCornerShape(4.dp),
@@ -122,7 +124,20 @@ object CreateSplitScreen : Screen {
                     // Recommended Split
                     SubtitleText(Resources.strings.recommendedSplit)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Workout.WorkoutSplit(selectedDays)
+                    TinyItalicText(
+                        Resources.strings.xDayWorkoutxDayRest(selectedDays.count { it }, selectedDays.count { !it }),
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    var position = 0
+                    selectedDays.forEachIndexed { index, isSelected ->
+                        if (isSelected) {
+                            DescriptionText("Day ${index + 1}: ${plans[selectedDays.count { it } - 1][position]}")
+                            position += 1
+                        } else {
+                            DescriptionItalicText("Day ${index + 1}: Rest", color = colors.lightMaroon)
+                        }
+                    }
+
                     Spacer(modifier = Modifier.height(4.dp))
                 }
 

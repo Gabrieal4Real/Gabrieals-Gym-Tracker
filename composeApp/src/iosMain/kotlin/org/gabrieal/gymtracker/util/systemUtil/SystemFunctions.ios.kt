@@ -76,3 +76,10 @@ actual fun ShowToast(message: String) {
     val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
     rootViewController?.presentViewController(alertController, animated = true, completion = null)
 }
+
+actual fun getTodayDayName(): String {
+    val dateFormatter = NSDateFormatter()
+    dateFormatter.dateFormat = "EEEE"
+    val date = NSDate()
+    return dateFormatter.stringFromDate(date)
+}

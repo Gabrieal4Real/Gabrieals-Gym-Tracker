@@ -25,8 +25,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.fullDays
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.getCurrentPlan
+import org.gabrieal.gymtracker.util.appUtil.getCurrentPlan
+import org.gabrieal.gymtracker.util.appUtil.longFormDays
+import org.gabrieal.gymtracker.util.appUtil.planTitles
+import org.gabrieal.gymtracker.util.appUtil.plans
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.viewmodel.makeAPlan.MakeAPlanViewModel
@@ -94,7 +96,7 @@ object MakeAPlanScreen : Screen {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Day Cards
-                    fullDays.forEachIndexed { index, day ->
+                    longFormDays.forEachIndexed { index, day ->
                         val isActive = selectedDays[index]
                         val hasExercises = selectedRoutineList.any { it.day == day }
                         CustomCard(
@@ -230,7 +232,9 @@ object MakeAPlanScreen : Screen {
             var fullDayIndex = 0
             selectedDays.forEachIndexed { index, isSelected ->
                 if (isSelected && fullDayIndex < template.size) {
-                    template[fullDayIndex].day = fullDays[index]
+                    template[fullDayIndex].day = longFormDays[index]
+                    val planTitle = planTitles.find { getCurrentPlan(selectedDays)[index].contains(it) }
+                    template[fullDayIndex].routineName = planTitle
                     fullDayIndex++
                 }
             }

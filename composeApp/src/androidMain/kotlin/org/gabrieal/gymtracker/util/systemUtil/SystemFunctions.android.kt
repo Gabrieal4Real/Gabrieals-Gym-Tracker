@@ -8,6 +8,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.net.toUri
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 actual fun OpenURL(url: String) {
@@ -47,4 +50,10 @@ actual fun ShowAlertDialog(
 @Composable
 actual fun ShowToast(message: String) {
     Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+}
+
+actual fun getTodayDayName(): String {
+    val calendar = Calendar.getInstance()
+    val sdf = SimpleDateFormat("EEEE", Locale.getDefault()) // Full day name, e.g. Monday
+    return sdf.format(calendar.time)
 }

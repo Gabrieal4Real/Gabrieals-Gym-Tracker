@@ -25,8 +25,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
 import org.gabrieal.gymtracker.model.SelectedExercise
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.planTitles
-import org.gabrieal.gymtracker.util.appUtil.Workout.Companion.repRanges
+import org.gabrieal.gymtracker.util.appUtil.planTitles
+import org.gabrieal.gymtracker.util.appUtil.repRanges
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.viewmodel.editPlan.EditPlanViewModel
