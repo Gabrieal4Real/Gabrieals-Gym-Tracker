@@ -35,11 +35,15 @@ class MakeAPlanViewModel {
         _uiState.update { it.copy(showWarningBack = show) }
     }
 
+    fun setOverrideWarning(show: Boolean) {
+        _uiState.update { it.copy(showOverrideWarning = show) }
+    }
+
     fun setSaveRoutineList(save: Boolean) {
         _uiState.update { it.copy(saveRoutineList = save) }
     }
 
-    private fun updateSelectedRoutineList(routineList: List<SelectedExerciseList>) {
+    fun updateSelectedRoutineList(routineList: List<SelectedExerciseList>) {
         _uiState.update { it.copy(selectedRoutineList = routineList) }
     }
 

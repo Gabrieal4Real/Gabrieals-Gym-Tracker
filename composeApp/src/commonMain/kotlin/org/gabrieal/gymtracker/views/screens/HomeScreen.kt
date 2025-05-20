@@ -27,6 +27,7 @@ import org.gabrieal.gymtracker.viewmodel.home.HomeViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.LinkText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
+import org.gabrieal.gymtracker.views.widgets.TitleRow
 import org.gabrieal.gymtracker.views.widgets.TitleText
 import org.jetbrains.compose.resources.painterResource
 
@@ -37,7 +38,10 @@ object HomeScreen : Screen {
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
 
+        val selectedRoutineList = uiState.selectedRoutineList
+
         val context = getCurrentContext()
+
         LaunchedEffect(context) {
             viewModel.updateContext(context)
         }
@@ -46,13 +50,7 @@ object HomeScreen : Screen {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TitleText(Resources.strings.appName)
-
-            HorizontalDivider(
-                color = colors.borderStroke,
-                thickness = 1.dp,
-                modifier = Modifier.fillMaxWidth()
-            )
+            TitleRow(Resources.strings.appName)
 
             Box(
                 modifier = Modifier

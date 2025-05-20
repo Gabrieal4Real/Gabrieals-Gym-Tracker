@@ -24,7 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
 import org.gabrieal.gymtracker.util.appUtil.Workout
@@ -38,10 +40,12 @@ import org.gabrieal.gymtracker.views.widgets.BigText
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
+import org.gabrieal.gymtracker.views.widgets.TitleRow
 
 object CreateSplitScreen : Screen {
     private val viewModel = CreateSplitViewModel()
     
+    @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
@@ -49,11 +53,16 @@ object CreateSplitScreen : Screen {
         val selectedDays = uiState.selectedDays
         var showImage = uiState.showImage
 
+        BackHandler(enabled = true) {
+
+        }
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BackButtonRow(Resources.strings.createSplit)
+            TitleRow(Resources.strings.createSplit)
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -120,7 +129,7 @@ object CreateSplitScreen : Screen {
                     Resources.strings.letsPlanIt,
                     onClick = { viewModel.navigateToMakeAPlan() },
                     enabled = viewModel.isAnyDaySelected(),
-                    modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomEnd).padding(16.dp)
                 )
 
                 // Animated Image

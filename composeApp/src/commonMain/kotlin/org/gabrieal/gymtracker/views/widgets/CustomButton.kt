@@ -20,32 +20,53 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.gabrieal.gymtracker.views.colors
 
+
+enum class ButtonType(
+    val containerColor: Color = colors.slightlyDarkerLinkBlue,
+    val disabledContentColor: Color = colors.cardBackground,
+    val borderColor: Color = colors.linkBlue,
+    val textColor: Color = colors.white,
+) {
+    BLUE(
+        containerColor = colors.slightlyDarkerLinkBlue,
+        disabledContentColor = colors.cardBackground,
+        borderColor = colors.linkBlue,
+        textColor = colors.white
+    ),
+    RED(
+        containerColor = colors.maroon,
+        disabledContentColor = colors.cardBackground,
+        borderColor = colors.lightMaroon,
+        textColor = colors.white
+    ),
+}
 
 @Composable
 fun ConfirmButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled : Boolean = true
+    enabled : Boolean = true,
+    buttonType: ButtonType = ButtonType.BLUE
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = colors.slightlyDarkerLinkBlue,
-            disabledContentColor = colors.cardBackground,
+            containerColor = buttonType.containerColor,
+            disabledContentColor = buttonType.disabledContentColor,
         ),
-        border = BorderStroke(1.dp, colors.linkBlue),
+        border = BorderStroke(1.dp, buttonType.borderColor),
         shape = RoundedCornerShape(12.dp),
         modifier = modifier
-            .fillMaxWidth()
             .padding(vertical = 8.dp),
         elevation = ButtonDefaults.elevatedButtonElevation(0.dp),
         enabled = enabled
     ) {
-        SubtitleText(text.uppercase(), color = colors.white, modifier = Modifier.padding(4.dp))
+        SubtitleText(text.uppercase(), color = buttonType.textColor, modifier = Modifier.padding(4.dp))
     }
 }
 

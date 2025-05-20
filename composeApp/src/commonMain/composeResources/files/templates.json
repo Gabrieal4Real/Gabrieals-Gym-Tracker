@@ -1,0 +1,344 @@
+{
+  "1_day": [
+    [
+      {
+        "position": 0,
+        "day": "Monday",
+        "exercises": [
+          {"name": "Barbell Back Squat", "sets": 4, "reps": [1, 5]},
+          {"name": "Bench Press", "sets": 4, "reps": [1, 5]},
+          {"name": "Wide-Grip Lat Pulldown", "sets": 3, "reps": [8, 12]},
+          {"name": "Dumbbell Preacher Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ],
+    [
+      {
+        "position": 0,
+        "day": "Wednesday",
+        "exercises": [
+          {"name": "Hack Squat", "sets": 4, "reps": [6, 10]},
+          {"name": "Incline Bench Press", "sets": 4, "reps": [6, 10]},
+          {"name": "Chest-Supported Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Triceps Pressdown (Bar)", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ]
+  ],
+  "2_day": [
+    [
+      {
+        "position": 0,
+        "day": "Monday",
+        "exercises": [
+          {"name": "Barbell Back Squat", "sets": 4, "reps": [1, 5]},
+          {"name": "Bench Press", "sets": 4, "reps": [1, 5]},
+          {"name": "Wide-Grip Lat Pulldown", "sets": 3, "reps": [8, 12]},
+          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]},
+          {"name": "Dumbbell Preacher Curl", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 1,
+        "day": "Thursday",
+        "exercises": [
+          {"name": "Pendulum Squat", "sets": 4, "reps": [6, 10]},
+          {"name": "Incline Dumbbell Press", "sets": 4, "reps": [8, 12]},
+          {"name": "Chest-Supported Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Triceps Pressdown (Bar)", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ],
+    [
+      {
+        "position": 0,
+        "day": "Tuesday",
+        "exercises": [
+          {"name": "Hack Squat", "sets": 4, "reps": [6, 10]},
+          {"name": "Smith Machine Bench Press", "sets": 4, "reps": [6, 10]},
+          {"name": "Neutral-Grip Lat Pulldown", "sets": 3, "reps": [8, 12]},
+          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]},
+          {"name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 1,
+        "day": "Friday",
+        "exercises": [
+          {"name": "Bulgarian Split Squat", "sets": 4, "reps": [8, 12]},
+          {"name": "Incline Smith Machine Bench Press", "sets": 4, "reps": [8, 12]},
+          {"name": "Meadows Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Dumbbell Preacher Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Triceps Pressdown (Bar)", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ]
+  ],
+  "3_day": [
+    [
+      {
+        "position": 0,
+        "day": "Monday",
+        "exercises": [
+          {"name": "Bench Press", "sets": 4, "reps": [1, 5]},
+          {"name": "Seated Cable Pec Fly", "sets": 3, "reps": [8, 12]},
+          {"name": "Overhead Cable Triceps Extension (Bar)", "sets": 3, "reps": [12, 15]},
+          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]},
+          {"name": "Incline Dumbbell Press", "sets": 3, "reps": [8, 12]}
+        ]
+      },
+      {
+        "position": 1,
+        "day": "Wednesday",
+        "exercises": [
+          {"name": "Wide-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
+          {"name": "Meadows Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Dumbbell Preacher Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Reverse Pec Deck", "sets": 3, "reps": [12, 15]},
+          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 2,
+        "day": "Friday",
+        "exercises": [
+          {"name": "Barbell Back Squat", "sets": 4, "reps": [6, 10]},
+          {"name": "Leg Extension", "sets": 3, "reps": [12, 15]},
+          {"name": "Seated Leg Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Standing Calf Raise", "sets": 3, "reps": [12, 15]},
+          {"name": "Hip Abduction", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ],
+    [
+      {
+        "position": 0,
+        "day": "Monday",
+        "exercises": [
+          {"name": "Incline Bench Press", "sets": 4, "reps": [6, 10]},
+          {"name": "Cable Crossovers", "sets": 3, "reps": [8, 12]},
+          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]},
+          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]},
+          {"name": "Flat Dumbbell Press", "sets": 3, "reps": [8, 12]}
+        ]
+      },
+      {
+        "position": 1,
+        "day": "Wednesday",
+        "exercises": [
+          {"name": "Neutral-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
+          {"name": "Chest-Supported Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Reverse Cable Crossover", "sets": 3, "reps": [12, 15]},
+          {"name": "Triceps Pressdown (Bar)", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 2,
+        "day": "Friday",
+        "exercises": [
+          {"name": "Pendulum Squat", "sets": 4, "reps": [8, 12]},
+          {"name": "Leg Extension", "sets": 3, "reps": [12, 15]},
+          {"name": "Seated Leg Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Standing Calf Raise", "sets": 3, "reps": [12, 15]},
+          {"name": "Hip Abduction", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ]
+  ],
+  "4_day": [
+    [
+      {
+        "position": 0,
+        "day": "Monday",
+        "exercises": [
+          {"name": "Bench Press", "sets": 4, "reps": [1, 5]},
+          {"name": "Seated Cable Pec Fly", "sets": 3, "reps": [8, 12]},
+          {"name": "Overhead Cable Triceps Extension (Bar)", "sets": 3, "reps": [12, 15]},
+          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 1,
+        "day": "Tuesday",
+        "exercises": [
+          {"name": "Wide-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
+          {"name": "Meadows Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Dumbbell Preacher Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Reverse Pec Deck", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 2,
+        "day": "Thursday",
+        "exercises": [
+          {"name": "Barbell Back Squat", "sets": 4, "reps": [6, 10]},
+          {"name": "Leg Extension", "sets": 3, "reps": [12, 15]},
+          {"name": "Seated Leg Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Standing Calf Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 3,
+        "day": "Saturday",
+        "exercises": [
+          {"name": "Cable Crunch", "sets": 3, "reps": [15, 20]},
+          {"name": "Weighted L-Sit Hold", "sets": 3, "reps": [15, 20]},
+          {"name": "Reverse Cable Crossover", "sets": 3, "reps": [12, 15]},
+          {"name": "Rope Face Pull Variations", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ],
+    [
+      {
+        "position": 0,
+        "day": "Monday",
+        "exercises": [
+          {"name": "Incline Bench Press", "sets": 4, "reps": [6, 10]},
+          {"name": "Cable Crossovers", "sets": 3, "reps": [8, 12]},
+          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]},
+          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 1,
+        "day": "Tuesday",
+        "exercises": [
+          {"name": "Neutral-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
+          {"name": "Chest-Supported Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Reverse Pec Deck", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 2,
+        "day": "Thursday",
+        "exercises": [
+          {"name": "Pendulum Squat", "sets": 4, "reps": [8, 12]},
+          {"name": "Leg Extension", "sets": 3, "reps": [12, 15]},
+          {"name": "Seated Leg Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Standing Calf Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 3,
+        "day": "Saturday",
+        "exercises": [
+          {"name": "Cable Crunch", "sets": 3, "reps": [15, 20]},
+          {"name": "Weighted L-Sit Hold", "sets": 3, "reps": [15, 20]},
+          {"name": "Reverse Cable Crossover", "sets": 3, "reps": [12, 15]},
+          {"name": "Rope Face Pull Variations", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ]
+  ],
+  "5_day": [
+    [
+      {
+        "position": 0,
+        "day": "Monday",
+        "exercises": [
+          {"name": "Bench Press", "sets": 4, "reps": [1, 5]},
+          {"name": "Seated Cable Pec Fly", "sets": 3, "reps": [8, 12]},
+          {"name": "Overhead Cable Triceps Extension (Bar)", "sets": 3, "reps": [12, 15]},
+          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 1,
+        "day": "Tuesday",
+        "exercises": [
+          {"name": "Wide-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
+          {"name": "Meadows Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Dumbbell Preacher Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Reverse Pec Deck", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 2,
+        "day": "Wednesday",
+        "exercises": [
+          {"name": "Barbell Back Squat", "sets": 4, "reps": [6, 10]},
+          {"name": "Leg Extension", "sets": 3, "reps": [12, 15]},
+          {"name": "Seated Leg Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Standing Calf Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 3,
+        "day": "Friday",
+        "exercises": [
+          {"name": "Incline Bench Press", "sets": 4, "reps": [6, 10]},
+          {"name": "Cable Crossovers", "sets": 3, "reps": [8, 12]},
+          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]},
+          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 4,
+        "day": "Saturday",
+        "exercises": [
+          {"name": "Neutral-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
+          {"name": "Chest-Supported Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Reverse Pec Deck", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ],
+    [
+      {
+        "position": 0,
+        "day": "Monday",
+        "exercises": [
+          {"name": "Incline Bench Press", "sets": 4, "reps": [6, 10]},
+          {"name": "Seated Cable Pec Fly", "sets": 3, "reps": [8, 12]},
+          {"name": "Overhead Cable Triceps Extension (Bar)", "sets": 3, "reps": [12, 15]},
+          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 1,
+        "day": "Tuesday",
+        "exercises": [
+          {"name": "Wide-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
+          {"name": "Meadows Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Dumbbell Preacher Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Reverse Pec Deck", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 2,
+        "day": "Wednesday",
+        "exercises": [
+          {"name": "Pendulum Squat", "sets": 4, "reps": [8, 12]},
+          {"name": "Leg Extension", "sets": 3, "reps": [12, 15]},
+          {"name": "Seated Leg Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Standing Calf Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 3,
+        "day": "Friday",
+        "exercises": [
+          {"name": "Bench Press", "sets": 4, "reps": [1, 5]},
+          {"name": "Cable Crossovers", "sets": 3, "reps": [8, 12]},
+          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]},
+          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]}
+        ]
+      },
+      {
+        "position": 4,
+        "day": "Saturday",
+        "exercises": [
+          {"name": "Neutral-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
+          {"name": "Chest-Supported Row", "sets": 3, "reps": [8, 12]},
+          {"name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]},
+          {"name": "Reverse Pec Deck", "sets": 3, "reps": [12, 15]}
+        ]
+      }
+    ]
+  ]
+}

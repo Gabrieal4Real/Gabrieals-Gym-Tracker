@@ -16,7 +16,7 @@ interface SharedPreferences {
 expect fun providePreferences(context: Any?): SharedPreferences
 
 
-fun getSelectedRoutineListFromViewModel(context: Any?): MutableList<SelectedExerciseList> {
+fun getSelectedRoutineListFromSharedPreferences(context: Any?): MutableList<SelectedExerciseList> {
     var selectedRoutineList = mutableListOf<SelectedExerciseList>()
     
     try {

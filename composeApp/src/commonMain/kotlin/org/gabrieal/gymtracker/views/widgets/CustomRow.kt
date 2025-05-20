@@ -65,6 +65,16 @@ fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
 }
 
 @Composable
+fun TitleRow(text: String) {
+    TitleText(text)
+    HorizontalDivider(
+        color = colors.borderStroke,
+        thickness = 1.dp,
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+@Composable
 fun RepRangePicker(
     ranges: List<Pair<Int, Int>>,
     selectedRange: Pair<Int, Int>,

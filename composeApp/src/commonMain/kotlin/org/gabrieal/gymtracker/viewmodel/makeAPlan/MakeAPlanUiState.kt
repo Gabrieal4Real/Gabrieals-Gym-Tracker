@@ -7,5 +7,6 @@ data class MakeAPlanUiState(
     val selectedRoutineList: List<SelectedExerciseList> = emptyList(),
     val showImage: Boolean = true,
     val showWarningBack: Boolean = false,
+    val showOverrideWarning: Boolean = false,
     val saveRoutineList: Boolean = false
 )
