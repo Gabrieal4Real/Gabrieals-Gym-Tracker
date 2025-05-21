@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +29,6 @@ import gymtracker.composeapp.generated.resources.start_editing
 import org.gabrieal.gymtracker.util.appUtil.getCurrentPlan
 import org.gabrieal.gymtracker.util.appUtil.longFormDays
 import org.gabrieal.gymtracker.util.appUtil.planTitles
-import org.gabrieal.gymtracker.util.appUtil.plans
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.viewmodel.makeAPlan.MakeAPlanViewModel
@@ -82,7 +82,8 @@ object MakeAPlanScreen : Screen {
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxWidth()
+                        .fillMaxHeight(if (viewModel.areAllActiveDaysEdited()) 0.8f else 0.9f)
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {

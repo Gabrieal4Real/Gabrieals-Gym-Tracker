@@ -1,30 +1,52 @@
 package org.gabrieal.gymtracker.views.screens
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.util.lerp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
+import gymtracker.composeapp.generated.resources.protein
+import gymtracker.composeapp.generated.resources.habit_1
+import gymtracker.composeapp.generated.resources.habit_2
+import gymtracker.composeapp.generated.resources.habit_3
+import gymtracker.composeapp.generated.resources.habit_4
+import gymtracker.composeapp.generated.resources.habit_5
+import gymtracker.composeapp.generated.resources.habit_6
+import gymtracker.composeapp.generated.resources.habit_7
+import gymtracker.composeapp.generated.resources.habit_8
+import gymtracker.composeapp.generated.resources.rest_day
 import gymtracker.composeapp.generated.resources.workout_1
 import gymtracker.composeapp.generated.resources.workout_2
 import gymtracker.composeapp.generated.resources.workout_3
@@ -32,12 +54,21 @@ import gymtracker.composeapp.generated.resources.workout_4
 import gymtracker.composeapp.generated.resources.workout_5
 import gymtracker.composeapp.generated.resources.workout_7
 import gymtracker.composeapp.generated.resources.workout_8
+import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.util.appUtil.longFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getTodayDayName
 import org.gabrieal.gymtracker.viewmodel.home.HomeViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.BiggerText
+import org.gabrieal.gymtracker.views.widgets.CustomCard
+import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
+import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.LinkText
+import org.gabrieal.gymtracker.views.widgets.SubtitleText
+import org.gabrieal.gymtracker.views.widgets.TinyItalicText
+import org.gabrieal.gymtracker.views.widgets.TinyText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
 import org.jetbrains.compose.resources.painterResource
 
@@ -54,18 +85,55 @@ object HomeScreen : Screen {
         Res.drawable.workout_8
     ).random()
 
+    private val randomSelectedHabitImage = listOf(
+        Res.drawable.habit_1,
+        Res.drawable.habit_2,
+        Res.drawable.habit_3,
+        Res.drawable.habit_4,
+        Res.drawable.habit_5,
+        Res.drawable.habit_6,
+        Res.drawable.habit_7,
+        Res.drawable.habit_8
+    ).random()
+
+    private val restDayMessage = listOf(
+        "Time to recharge!\nRest up and treat yourself today.\n🔋🍰😴",
+        "Kick back, relax, and let your body recover.\n🧘‍♂️💤🛀",
+        "Netflix, snacks, and gains incoming.\n📺🍿🔥",
+        "Even superheroes take a break—enjoy your rest day!\n🦸‍♂️🛌✨",
+        "Take a deep breath, prioritise recovery and self-care.\n🌿🫁🕯️",
+        "Your body grows when you rest.\nEmbrace the pause and feel good today.\n🌙💪🧠"
+    ).random()
+
+
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
 
         val selectedRoutineList = uiState.selectedRoutineList
         val todayRoutine = selectedRoutineList.find { it.day.equals(getTodayDayName(), ignoreCase = false) }
+        val followingDay = longFormDays[(longFormDays.indexOf(getTodayDayName()) + 1) % longFormDays.size]
+        val followingDayRoutine = selectedRoutineList.find { it.day.equals(followingDay, ignoreCase = false) }
 
         val context = getCurrentContext()
 
         LaunchedEffect(context) {
             viewModel.updateContext(context)
         }
+
+        val initialAspectRatio = 0.95f
+        val maxCollapsedAspectRatio = 4.5f
+
+        val scrollState = rememberLazyListState()
+        val headerHeightPx = with(LocalDensity.current) { 100.dp.toPx() }
+        val totalScroll = scrollState.firstVisibleItemIndex * headerHeightPx + scrollState.firstVisibleItemScrollOffset
+        val collapseFraction = (totalScroll / headerHeightPx).coerceIn(0f, 1f)
+        val currentAspectRatio = lerp(initialAspectRatio, maxCollapsedAspectRatio, collapseFraction)
+        val currentSpacerHeight = lerp(0.dp, 100.dp, collapseFraction)
+        val currentBackgroundOpacity = lerp(0f, 1f, collapseFraction)
+        val animateCurrentAspectRatio by animateFloatAsState(targetValue = currentAspectRatio)
+        val animateCurrentBackgroundOpacity by animateFloatAsState(targetValue = currentBackgroundOpacity)
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -79,47 +147,213 @@ object HomeScreen : Screen {
                     return@Box
                 }
 
-                Column (modifier = Modifier.verticalScroll(rememberScrollState())){
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(0.95f)
-                            .clickable {
-                                //Go to today's workout
-                            }
-                    ) {
+                LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
+                    stickyHeader {
+                        WorkoutHeader(animateCurrentAspectRatio, animateCurrentBackgroundOpacity, todayRoutine?.routineName)
+                    }
+
+                    item {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Spacer(modifier = Modifier.height(currentSpacerHeight))
+
+                            // Progress Summary
+                            ProgressSummary(selectedRoutineList)
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Reminder Image
+                            ReminderImage(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally))
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Next Workout Preview
+                            NextWorkoutPreview(followingDayRoutine)
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Habit Image
+                            Image(
+                                painter = painterResource(randomSelectedHabitImage),
+                                contentDescription = "Habit",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.height(140.dp).align(Alignment.CenterHorizontally)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            // Last Workout Highlight
+
+                            // Motivational Quote
+
+                        }
+                    }
+                    items(30) {
                         Image(
-                            painter = painterResource(randomSelectedWorkoutImage),
-                            contentDescription = "Workout image",
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.matchParentSize()
-                        )
-                        Box(
+                            painter = painterResource(randomSelectedHabitImage),
+                            contentDescription = "Habit",
                             modifier = Modifier
-                                .matchParentSize()
-                                .background(
-                                    brush = Brush.verticalGradient(
-                                        colorStops = arrayOf(
-                                            0.0f to Color.Transparent,
-                                            0.7f to Color.Transparent,
-                                            1.0f to colors.black.copy(alpha = 1f)
-                                        )
-                                    )
-                                )
-                        )
-
-                        BiggerText(
-                            "${todayRoutine?.routineName} Day",
-                            modifier = Modifier.align(Alignment.BottomStart).padding(16.dp)
-                        )
-
-                        BiggerText(
-                            ">",
-                            modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp)
+                                .fillMaxWidth(0.5f)
                         )
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
+            }
+        }
+    }
+
+    @Composable
+    fun NextWorkoutPreview(followingDayRoutine: SelectedExerciseList?) {
+        CustomCard(
+            enabled = followingDayRoutine != null,
+            content = {
+                Column(modifier = Modifier.padding(16.dp).fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    SubtitleText("What's for tomorrow".uppercase())
+                    BiggerText(followingDayRoutine?.routineName ?: "Rest")
+                    Spacer(modifier = Modifier.height(2.dp))
+                    if (followingDayRoutine != null) {
+                        TinyItalicText(followingDayRoutine.exercises?.joinToString(", ") { it.name.orEmpty() } ?: "", textAlign = TextAlign.Center)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        LinkText("Click for more details")
+                        return@Column
+                    }
+
+                    TinyItalicText(restDayMessage, textAlign = TextAlign.Center)
+                }
+            },
+            onClick = {
+                followingDayRoutine?.let {
+
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun ReminderImage(modifier: Modifier) {
+        Row (
+            modifier = modifier,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(Res.drawable.protein),
+                contentDescription = "Protein",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.height(140.dp)
+            )
+            DescriptionText("Reminder to take your protein and drink lots of water", modifier = Modifier.padding(end = 16.dp))
+        }
+    }
+
+    @Composable
+    fun ProgressSummary(selectedRoutineList: List<SelectedExerciseList>) {
+        CustomCard(
+            enabled = true,
+            content = {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                    SubtitleText("This Week In Recap".uppercase())
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        selectedRoutineList.forEachIndexed { index, it ->
+                            RoutineStatusColumn(it)
+
+                            if (index != selectedRoutineList.lastIndex) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                DashedDivider()
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TinyItalicText("Workouts: ${selectedRoutineList.count { it.isCompleted }} / ${selectedRoutineList.size} completed")
+                }
+            },
+        )
+    }
+
+    @Composable
+    fun DashedDivider() {
+        Canvas(
+            modifier = Modifier
+                .height(36.dp)
+                .width(1.dp)
+        ) {
+            val pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 4f), 0f)
+            drawLine(
+                color = Color.Gray,
+                start = Offset.Zero,
+                end = Offset(0f, size.height),
+                strokeWidth = 2f,
+                pathEffect = pathEffect
+            )
+        }
+    }
+
+    @Composable
+    fun RoutineStatusColumn(routine: SelectedExerciseList) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(modifier = Modifier.height(2.dp))
+            DescriptionText(if (routine.isCompleted) "✅" else "⬜")
+            Spacer(modifier = Modifier.height(2.dp))
+            TinyText(routine.routineName ?: "")
+        }
+    }
+
+    @Composable
+    fun WorkoutHeader(
+        animateCurrentAspectRatio: Float,
+        animateCurrentBackgroundOpacity: Float,
+        routineName: String?
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(animateCurrentAspectRatio)
+                .clickable {
+                    //Go to today's workout
+                }
+        ) {
+            Image(
+                painter = painterResource(randomSelectedWorkoutImage),
+                contentDescription = "Workout image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize()
+            )
+
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                Color.Transparent,
+                                colors.black.copy(alpha = 1f)
+                            )
+                        )
+                    )
+            )
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            Color.Transparent,
+                            colors.black.copy(alpha = animateCurrentBackgroundOpacity)
+                        )
+                    )
+                ),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    DescriptionItalicText("Today's Workout")
+                    BiggerText(
+                        "${routineName ?: "Rest"} Day",
+                    )
+                }
+
+                BiggerText(
+                    ">",
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         }
     }

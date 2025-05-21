@@ -90,7 +90,10 @@ object EditPlanScreen : Screen {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val planTitle = planTitles.find { day.contains(it) }
+            var planTitle = planTitles.find { day.contains(it) }
+            if (planTitle.equals("Legs")) {
+                planTitle = "Leg"
+            }
             BackButtonRow("Edit Plan")
             Box {
                 // Main editing area
@@ -111,7 +114,7 @@ object EditPlanScreen : Screen {
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         BiggerText(
-                            "$planTitle Day",
+                            "${planTitle} Day",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                 .scale(popOut().value)
                         )

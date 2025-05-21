@@ -3,7 +3,7 @@ package org.gabrieal.gymtracker.util.appUtil
 val shortFormDays = listOf("M", "T", "W", "T", "F", "S", "S")
 val longFormDays =
     listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-val planTitles = listOf("Full Body", "Push", "Pull", "Leg", "Accessory")
+val planTitles = listOf("Full Body", "Push", "Pull", "Legs", "Accessory")
 val plans = listOf(
     listOf("Full Body"),
     listOf("Full Body (Strength Focus)", "Full Body (Hypertrophy Focus)"),
@@ -90,8 +90,8 @@ val matchedMachineWeights = listOf(
 fun getCurrentPlan(selectedDays: List<Boolean>): List<String> {
     val currentPlan = mutableListOf<String>()
     var position = 0
-    selectedDays.forEachIndexed { index, isSelected ->
-        if (isSelected) {
+    selectedDays.forEach {
+        if (it) {
             currentPlan.add(plans[selectedDays.count { it } - 1][position])
             position += 1
         } else {

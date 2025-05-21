@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,7 +36,8 @@ fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = color
         style = TextStyle(fontFamily = ExtraBoldText(), letterSpacing = 10.sp, lineHeight = 30.sp),
         color = color,
         fontSize = 24.sp,
-        modifier = modifier
+        modifier = modifier,
+        textAlign = TextAlign.Center
     )
 }
 
@@ -121,17 +123,18 @@ fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = colors.
 }
 
 @Composable
-fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
+fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary, textAlign: TextAlign = TextAlign.Start) {
     Text(
         text,
         style = TextStyle(
             fontFamily = RegularText(),
             fontStyle = FontStyle.Italic,
-            lineHeight = 18.sp
+            lineHeight = 18.sp,
         ),
         color = color,
         fontSize = 12.sp,
-        modifier = modifier
+        modifier = modifier,
+        textAlign = textAlign
     )
 }
 

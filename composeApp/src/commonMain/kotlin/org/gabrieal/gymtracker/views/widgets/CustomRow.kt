@@ -21,6 +21,7 @@ import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,21 +58,30 @@ fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
         TitleText(text)
     }
 
-    CustomDivider()
+    CustomHorizontalDivider()
 }
 
 @Composable
 fun TitleRow(text: String) {
     TitleText(text)
-    CustomDivider()
+    CustomHorizontalDivider()
 }
 
 @Composable
-fun CustomDivider() {
+fun CustomHorizontalDivider() {
     HorizontalDivider(
         color = colors.borderStroke,
         thickness = 1.dp,
         modifier = Modifier.fillMaxWidth()
+    )
+}
+
+@Composable
+fun CustomVerticalDivider() {
+    VerticalDivider(
+        color = colors.borderStroke,
+        thickness = 1.dp,
+        modifier = Modifier.fillMaxHeight()
     )
 }
 
