@@ -58,7 +58,6 @@ object StartWorkoutScreen : Screen {
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
-
         val selectedExerciseList = uiState.selectedExerciseList
 
         Column(
@@ -82,93 +81,34 @@ object StartWorkoutScreen : Screen {
                             .fillMaxHeight(0.9f)
                             .align(Alignment.CenterHorizontally)
                     ) {
-                        // Header
                         TinyText(
                             "Let's start your",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         BiggerText(
-                            "${selectedExerciseList?.routineName} Day",
-                            modifier = Modifier.align(Alignment.CenterHorizontally)
-                                .scale(popOut().value)
+                            "${selectedExerciseList?.routineName ?: "Workout"} Day",
+                            modifier = Modifier.align(Alignment.CenterHorizontally).scale(popOut().value)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         AnimatedDividerWithScale()
                         Spacer(modifier = Modifier.height(16.dp))
-
                         TinyText(
                             "Estimated workout time: ${calculateEstimatedTime(selectedExerciseList)}",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                             content = {
-                                items(
-                                    selectedExerciseList?.exercises?.size ?: 0
-                                ) { selectedExercise ->
-                                    CustomCard(
-                                        enabled = true,
-                                        content = {
-                                            Column(
-                                                modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-
-                                                SubtitleText(
-                                                    selectedExerciseList?.exercises?.get(
-                                                        selectedExercise
-                                                    )?.name.orEmpty()
-                                                )
-                                                val exercise = selectedExerciseList?.exercises?.getOrNull(selectedExercise)
-
-                                                val sets = Pair("${exercise?.sets ?: "-"} sets", Res.drawable.icon_sets)
-                                                val reps = Pair("${exercise?.reps?.first ?: "-"} to ${exercise?.reps?.second ?: "-"} reps", Res.drawable.icon_reps)
-                                                val timer = Pair("${formatRestTime(getCurrentTimerInSeconds(exercise?.reps))} rest", Res.drawable.icon_timer)
-                                                val listOfPairs = listOf(sets, reps, timer)
-
-                                                Spacer(modifier = Modifier.height(8.dp))
-                                                Row {
-                                                    listOfPairs.forEachIndexed { index, pair ->
-                                                        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
-                                                            Image(
-                                                                painter = painterResource(pair.second),
-                                                                contentDescription = pair.first,
-                                                                contentScale = ContentScale.Fit,
-                                                                modifier = Modifier.height(32.dp),
-                                                                colorFilter = ColorFilter.tint(colors.textPrimary)
-                                                            )
-                                                            Spacer(modifier = Modifier.height(8.dp))
-                                                            TinyText(pair.first)
-                                                        }
-                                                        if (index != listOfPairs.lastIndex) {
-                                                            Spacer(modifier = Modifier.width(8.dp))
-                                                            DashedDivider()
-                                                            Spacer(modifier = Modifier.width(8.dp))
-                                                        }
-                                                    }
-                                                }
-
-                                                Spacer(modifier = Modifier.height(8.dp))
-                                                TinyButton(
-                                                    "Start    >",
-                                                    onClick = {
-
-                                                    },
-                                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                                )
-                                            }
-                                        }
-                                    )
+                                items(selectedExerciseList?.exercises?.size ?: 0) { selectedExercise ->
+                                    ExerciseCard(selectedExerciseList, selectedExercise)
                                 }
                             }
                         )
                     }
-
                     ConfirmButton(
                         "Complete Workout",
-                        onClick = {
-                            viewModel.markWorkoutAsDone()
-                        },
+                        onClick = { viewModel.markWorkoutAsDone() },
                         modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
                     )
                 }
@@ -176,11 +116,60 @@ object StartWorkoutScreen : Screen {
         }
     }
 
+    @Composable
+    private fun ExerciseCard(selectedExerciseList: SelectedExerciseList?, selectedExercise: Int) {
+        CustomCard(
+            enabled = true,
+            content = {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                ) {
+                    SubtitleText(
+                        selectedExerciseList?.exercises?.get(selectedExercise)?.name.orEmpty()
+                    )
+                    val exercise = selectedExerciseList?.exercises?.getOrNull(selectedExercise)
+                    val sets = Pair("${exercise?.sets ?: "-"} sets", Res.drawable.icon_sets)
+                    val reps = Pair("${exercise?.reps?.first ?: "-"} to ${exercise?.reps?.second ?: "-"} reps", Res.drawable.icon_reps)
+                    val timer = Pair("${formatRestTime(getCurrentTimerInSeconds(exercise?.reps))} rest", Res.drawable.icon_timer)
+                    val listOfPairs = listOf(sets, reps, timer)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row {
+                        listOfPairs.forEachIndexed { index, pair ->
+                            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
+                                Image(
+                                    painter = painterResource(pair.second),
+                                    contentDescription = pair.first,
+                                    contentScale = ContentScale.Fit,
+                                    modifier = Modifier.height(32.dp),
+                                    colorFilter = ColorFilter.tint(colors.textPrimary)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                TinyText(pair.first)
+                            }
+                            if (index != listOfPairs.lastIndex) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                DashedDivider()
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    TinyButton(
+                        "Start    >",
+                        onClick = {
+                            // TODO: navigate to exercise detail/screen
+                        },
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
+                }
+            }
+        )
+    }
+
     private fun calculateEstimatedTime(selectedExerciseList: SelectedExerciseList?): String {
         val estimatedTime = selectedExerciseList?.exercises?.sumOf {
             (getCurrentTimerInSeconds(it.reps) + 60) * (it.sets ?: 1)
         } ?: 0
-
         return formatRestTime(estimatedTime)
     }
 }
