@@ -6,10 +6,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.gabrieal.gymtracker.model.SelectedExercise
+import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.views.screens.CreateSplitScreen
 import org.gabrieal.gymtracker.views.screens.EditPlanScreen
 import org.gabrieal.gymtracker.views.screens.HomeScreen
 import org.gabrieal.gymtracker.views.screens.MakeAPlanScreen
+import org.gabrieal.gymtracker.views.screens.StartWorkoutScreen
 import org.gabrieal.gymtracker.views.screens.ViewAllWorkoutScreen
 
 
@@ -70,6 +72,14 @@ object AppNavigator {
             }
         }
         _navigationEvents.value = null
+    }
+
+    fun navigateToStartWorkout(selectedExerciseList: SelectedExerciseList, callback: (selectedExerciseList: SelectedExerciseList) -> Unit) {
+        StartWorkoutScreen.setCallback {
+            callback(it)
+        }
+        StartWorkoutScreen.setSelectedExerciseList(selectedExerciseList)
+        _navigationEvents.value = NavigationEvent.NavigateTo(StartWorkoutScreen)
     }
 }
 

@@ -48,22 +48,16 @@ import org.gabrieal.gymtracker.views.widgets.popOut
 object EditPlanScreen : Screen {
     private val viewModel = EditPlanViewModel()
 
-    private var selectedDay: String = ""
-    private var callback: ((List<SelectedExercise>) -> Unit)? = null
-    private var exerciseList: List<SelectedExercise> = emptyList()
-
     fun setCallback(onMessageSent: (List<SelectedExercise>) -> Unit) {
-        callback = onMessageSent
         viewModel.setCallback(onMessageSent)
     }
 
     fun setSelectedDay(day: String) {
-        selectedDay = day
-        viewModel.setDay(selectedDay)
+        viewModel.setDay(day)
     }
 
     fun setExercises(exercises: List<SelectedExercise>?) {
-        exerciseList = exercises ?: List(3) {
+        val exerciseList = exercises ?: List(3) {
             SelectedExercise(
                 name = "",
                 reps = repRanges.random(),

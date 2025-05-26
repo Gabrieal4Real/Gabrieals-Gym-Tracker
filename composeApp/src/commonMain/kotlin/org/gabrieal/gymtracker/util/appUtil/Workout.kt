@@ -22,7 +22,9 @@ val plans = listOf(
         "Pull (Back, Biceps)"
     )
 )
+
 val repRanges = listOf(1 to 5, 6 to 10, 8 to 12, 12 to 15, 15 to 20)
+val timerRangesInSeconds = listOf(300, 180, 120, 90, 60)
 
 // KG to LBS
 val matchedDumbbellWeights = listOf(
@@ -101,3 +103,30 @@ fun getCurrentPlan(selectedDays: List<Boolean>): List<String> {
 
     return currentPlan
 }
+
+fun getCurrentTimerInSeconds(repRange: Pair<Int, Int>?): Int {
+    val repRangesIndex = repRanges.indexOf(repRange)
+    return timerRangesInSeconds.getOrNull(repRangesIndex) ?: 90
+}
+
+fun formatRestTime(seconds: Int): String {
+    return when {
+        seconds <= 90 -> {
+            "${seconds}s"
+        }
+        seconds < 3600 -> {
+            val minutes = seconds / 60
+            "${minutes}m"
+        }
+        else -> {
+            val hours = seconds / 3600
+            val minutes = (seconds % 3600) / 60
+            if (minutes == 0) {
+                "${hours}h"
+            } else {
+                "${hours}h ${minutes}m"
+            }
+        }
+    }
+}
+

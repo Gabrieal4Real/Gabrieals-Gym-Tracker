@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -37,7 +38,6 @@ import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
-import gymtracker.composeapp.generated.resources.protein
 import gymtracker.composeapp.generated.resources.habit_1
 import gymtracker.composeapp.generated.resources.habit_2
 import gymtracker.composeapp.generated.resources.habit_3
@@ -46,7 +46,8 @@ import gymtracker.composeapp.generated.resources.habit_5
 import gymtracker.composeapp.generated.resources.habit_6
 import gymtracker.composeapp.generated.resources.habit_7
 import gymtracker.composeapp.generated.resources.habit_8
-import gymtracker.composeapp.generated.resources.rest_day
+import gymtracker.composeapp.generated.resources.icon_protein
+import gymtracker.composeapp.generated.resources.protein
 import gymtracker.composeapp.generated.resources.workout_1
 import gymtracker.composeapp.generated.resources.workout_2
 import gymtracker.composeapp.generated.resources.workout_3
@@ -112,9 +113,14 @@ object HomeScreen : Screen {
         val uiState by viewModel.uiState.collectAsState()
 
         val selectedRoutineList = uiState.selectedRoutineList
-        val todayRoutine = selectedRoutineList.find { it.day.equals(getTodayDayName(), ignoreCase = false) }
-        val followingDay = longFormDays[(longFormDays.indexOf(getTodayDayName()) + 1) % longFormDays.size]
-        val followingDayRoutine = selectedRoutineList.find { it.day.equals(followingDay, ignoreCase = false) }
+        val saveRoutineList = uiState.saveRoutineList
+
+        val todayRoutine =
+            selectedRoutineList.find { it.day.equals(getTodayDayName(), ignoreCase = false) }
+        val followingDay =
+            longFormDays[(longFormDays.indexOf(getTodayDayName()) + 1) % longFormDays.size]
+        val followingDayRoutine =
+            selectedRoutineList.find { it.day.equals(followingDay, ignoreCase = false) }
 
         val context = getCurrentContext()
 
@@ -127,7 +133,8 @@ object HomeScreen : Screen {
 
         val scrollState = rememberLazyListState()
         val headerHeightPx = with(LocalDensity.current) { 100.dp.toPx() }
-        val totalScroll = scrollState.firstVisibleItemIndex * headerHeightPx + scrollState.firstVisibleItemScrollOffset
+        val totalScroll =
+            scrollState.firstVisibleItemIndex * headerHeightPx + scrollState.firstVisibleItemScrollOffset
         val collapseFraction = (totalScroll / headerHeightPx).coerceIn(0f, 1f)
         val currentAspectRatio = lerp(initialAspectRatio, maxCollapsedAspectRatio, collapseFraction)
         val currentSpacerHeight = lerp(0.dp, 100.dp, collapseFraction)
@@ -149,7 +156,11 @@ object HomeScreen : Screen {
 
                 LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
                     stickyHeader {
-                        WorkoutHeader(animateCurrentAspectRatio, animateCurrentBackgroundOpacity, todayRoutine?.routineName)
+                        WorkoutHeader(
+                            animateCurrentAspectRatio,
+                            animateCurrentBackgroundOpacity,
+                            todayRoutine
+                        )
                     }
 
                     item {
@@ -161,39 +172,72 @@ object HomeScreen : Screen {
                             Spacer(modifier = Modifier.height(16.dp))
 
                             // Reminder Image
-                            ReminderImage(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally))
+                            ReminderImage(
+                                modifier = Modifier.fillMaxWidth()
+                                    .align(Alignment.CenterHorizontally)
+                            )
                             Spacer(modifier = Modifier.height(16.dp))
 
                             // Next Workout Preview
                             NextWorkoutPreview(followingDayRoutine)
                             Spacer(modifier = Modifier.height(16.dp))
 
+                            // Last Workout Highlight
+                            LastWorkoutHighlight(selectedRoutineList)
+                            Spacer(modifier = Modifier.height(16.dp))
+
                             // Habit Image
                             Image(
                                 painter = painterResource(randomSelectedHabitImage),
                                 contentDescription = "Habit",
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier.height(140.dp).align(Alignment.CenterHorizontally)
+                                contentScale = ContentScale.FillHeight,
+                                modifier = Modifier.height(220.dp)
+                                    .align(Alignment.CenterHorizontally)
                             )
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            // Last Workout Highlight
 
                             // Motivational Quote
-
+                            Spacer(modifier = Modifier.height(16.dp))
                         }
-                    }
-                    items(30) {
-                        Image(
-                            painter = painterResource(randomSelectedHabitImage),
-                            contentDescription = "Habit",
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                        )
                     }
                 }
             }
+
+            if (saveRoutineList) {
+                viewModel.saveRoutineList()
+            }
         }
+    }
+
+    @Composable
+    fun LastWorkoutHighlight(selectedRoutineList: List<SelectedExerciseList>) {
+        CustomCard(
+            enabled = true,
+            content = {
+                Column(
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    SubtitleText("PR of the week".uppercase())
+                    //check if any routine of the week is completed
+                    val completedRoutine = selectedRoutineList.find { it.isCompleted }
+                    if (completedRoutine != null) {
+                        BiggerText(completedRoutine.routineName ?: "")
+                        Spacer(modifier = Modifier.height(2.dp))
+                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
+                            ?: "", textAlign = TextAlign.Center)
+                        return@Column
+                    }
+
+                    TinyItalicText(
+                        "You have not completed any routines this week",
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+        )
     }
 
     @Composable
@@ -201,12 +245,17 @@ object HomeScreen : Screen {
         CustomCard(
             enabled = followingDayRoutine != null,
             content = {
-                Column(modifier = Modifier.padding(16.dp).fillMaxWidth(), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     SubtitleText("What's for tomorrow".uppercase())
                     BiggerText(followingDayRoutine?.routineName ?: "Rest")
                     Spacer(modifier = Modifier.height(2.dp))
                     if (followingDayRoutine != null) {
-                        TinyItalicText(followingDayRoutine.exercises?.joinToString(", ") { it.name.orEmpty() } ?: "", textAlign = TextAlign.Center)
+                        TinyItalicText(followingDayRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
+                            ?: "", textAlign = TextAlign.Center)
                         Spacer(modifier = Modifier.height(8.dp))
                         LinkText("Click for more details")
                         return@Column
@@ -217,7 +266,9 @@ object HomeScreen : Screen {
             },
             onClick = {
                 followingDayRoutine?.let {
-
+                    viewModel.navigateToStartWorkout(it) {
+                        viewModel.updateSelectedRoutineList(it)
+                    }
                 }
             }
         )
@@ -225,17 +276,22 @@ object HomeScreen : Screen {
 
     @Composable
     fun ReminderImage(modifier: Modifier) {
-        Row (
+        Row(
             modifier = modifier,
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Image(
-                painter = painterResource(Res.drawable.protein),
+                painter = painterResource(Res.drawable.icon_protein),
                 contentDescription = "Protein",
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.height(140.dp)
+                modifier = Modifier.height(140.dp),
+                colorFilter = ColorFilter.tint(colors.textPrimary)
             )
-            DescriptionText("Reminder to take your protein and drink lots of water", modifier = Modifier.padding(end = 16.dp))
+            DescriptionText(
+                "Reminder to take your protein and drink lots of water",
+                modifier = Modifier.padding(end = 16.dp)
+            )
         }
     }
 
@@ -244,7 +300,11 @@ object HomeScreen : Screen {
         CustomCard(
             enabled = true,
             content = {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     SubtitleText("This Week In Recap".uppercase())
                     Spacer(modifier = Modifier.height(8.dp))
                     Row(
@@ -288,7 +348,11 @@ object HomeScreen : Screen {
 
     @Composable
     fun RoutineStatusColumn(routine: SelectedExerciseList) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable {
+            viewModel.navigateToStartWorkout(routine) {
+                viewModel.updateSelectedRoutineList(it)
+            }
+        }) {
             Spacer(modifier = Modifier.height(2.dp))
             DescriptionText(if (routine.isCompleted) "✅" else "⬜")
             Spacer(modifier = Modifier.height(2.dp))
@@ -300,14 +364,18 @@ object HomeScreen : Screen {
     fun WorkoutHeader(
         animateCurrentAspectRatio: Float,
         animateCurrentBackgroundOpacity: Float,
-        routineName: String?
+        selectedRoutine: SelectedExerciseList?
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(animateCurrentAspectRatio)
                 .clickable {
-                    //Go to today's workout
+                    selectedRoutine?.let {
+                        viewModel.navigateToStartWorkout(it) {
+                            viewModel.updateSelectedRoutineList(it)
+                        }
+                    }
                 }
         ) {
             Image(
@@ -330,23 +398,25 @@ object HomeScreen : Screen {
                     )
             )
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .background(
-                    brush = Brush.verticalGradient(
-                        listOf(
-                            Color.Transparent,
-                            colors.black.copy(alpha = animateCurrentBackgroundOpacity)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            listOf(
+                                Color.Transparent,
+                                colors.black.copy(alpha = animateCurrentBackgroundOpacity)
+                            )
                         )
-                    )
-                ),
+                    ),
                 verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.SpaceBetween) {
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     DescriptionItalicText("Today's Workout")
                     BiggerText(
-                        "${routineName ?: "Rest"} Day",
+                        "${selectedRoutine?.routineName ?: "Rest"} Day",
                     )
                 }
 

@@ -125,7 +125,9 @@ object CreateSplitScreen : Screen {
                     SubtitleText(Resources.strings.recommendedSplit)
                     Spacer(modifier = Modifier.height(8.dp))
                     TinyItalicText(
-                        Resources.strings.xDayWorkoutxDayRest(selectedDays.count { it }, selectedDays.count { !it }),
+                        Resources.strings.xDayWorkoutxDayRest(
+                            selectedDays.count { it },
+                            selectedDays.count { !it }),
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     var position = 0
@@ -134,7 +136,10 @@ object CreateSplitScreen : Screen {
                             DescriptionText("Day ${index + 1}: ${plans[selectedDays.count { it } - 1][position]}")
                             position += 1
                         } else {
-                            DescriptionItalicText("Day ${index + 1}: Rest", color = colors.lightMaroon)
+                            DescriptionItalicText(
+                                "Day ${index + 1}: Rest",
+                                color = colors.lightMaroon
+                            )
                         }
                     }
 

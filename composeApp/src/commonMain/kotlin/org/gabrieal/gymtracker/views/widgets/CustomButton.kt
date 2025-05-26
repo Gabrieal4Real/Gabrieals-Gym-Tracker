@@ -74,6 +74,35 @@ fun ConfirmButton(
 }
 
 @Composable
+fun TinyButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    buttonType: ButtonType = ButtonType.BLUE
+) {
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = buttonType.containerColor,
+            disabledContentColor = buttonType.disabledContentColor,
+        ),
+        border = BorderStroke(1.dp, buttonType.borderColor),
+        shape = RoundedCornerShape(8.dp),
+        modifier = modifier
+            .padding(0.dp),
+        elevation = ButtonDefaults.elevatedButtonElevation(0.dp),
+        enabled = enabled
+    ) {
+        TinyText(
+            text.uppercase(),
+            color = buttonType.textColor,
+            modifier = Modifier.padding(2.dp)
+        )
+    }
+}
+
+@Composable
 fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): Int {
     var selectedValue by remember { mutableStateOf(initialValue) }
     Row {

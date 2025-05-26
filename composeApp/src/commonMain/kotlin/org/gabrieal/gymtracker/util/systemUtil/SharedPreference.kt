@@ -23,7 +23,6 @@ fun getSelectedRoutineListFromSharedPreferences(context: Any?): MutableList<Sele
         selectedRoutineList = Json.decodeFromString<MutableList<SelectedExerciseList>>(
             providePreferences(context).getString("selectedRoutineList")
         )
-        println("selectedRoutineList: $selectedRoutineList")
     } catch (ex: Exception) {
         println("decodeFromStringError: ${ex.message} ")
     }

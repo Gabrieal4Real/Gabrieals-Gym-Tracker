@@ -234,7 +234,8 @@ object MakeAPlanScreen : Screen {
             selectedDays.forEachIndexed { index, isSelected ->
                 if (isSelected && fullDayIndex < template.size) {
                     template[fullDayIndex].day = longFormDays[index]
-                    val planTitle = planTitles.find { getCurrentPlan(selectedDays)[index].contains(it) }
+                    val planTitle =
+                        planTitles.find { getCurrentPlan(selectedDays)[index].contains(it) }
                     template[fullDayIndex].routineName = planTitle
                     fullDayIndex++
                 }
