@@ -36,7 +36,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
+import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.habit_1
 import gymtracker.composeapp.generated.resources.habit_2
@@ -107,7 +109,7 @@ object HomeScreen : Screen {
     ).random()
 
 
-    @OptIn(ExperimentalFoundationApi::class)
+    @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
@@ -121,12 +123,6 @@ object HomeScreen : Screen {
             longFormDays[(longFormDays.indexOf(getTodayDayName()) + 1) % longFormDays.size]
         val followingDayRoutine =
             selectedRoutineList.find { it.day.equals(followingDay, ignoreCase = false) }
-
-        val context = getCurrentContext()
-
-        LaunchedEffect(context) {
-            viewModel.updateContext(context)
-        }
 
         val initialAspectRatio = 0.95f
         val maxCollapsedAspectRatio = 4.5f
@@ -142,6 +138,14 @@ object HomeScreen : Screen {
         val animateCurrentAspectRatio by animateFloatAsState(targetValue = currentAspectRatio)
         val animateCurrentBackgroundOpacity by animateFloatAsState(targetValue = currentBackgroundOpacity)
 
+        val context = getCurrentContext()
+
+        BackHandler(enabled = true) {}
+
+        LaunchedEffect(context) {
+            viewModel.updateContext(context)
+        }
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -154,51 +158,55 @@ object HomeScreen : Screen {
                     return@Box
                 }
 
-                LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
-                    stickyHeader {
-                        WorkoutHeader(
-                            animateCurrentAspectRatio,
-                            animateCurrentBackgroundOpacity,
-                            todayRoutine
-                        )
-                    }
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    WorkoutHeader(
+                        animateCurrentAspectRatio,
+                        animateCurrentBackgroundOpacity,
+                        todayRoutine
+                    )
 
-                    item {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Spacer(modifier = Modifier.height(currentSpacerHeight))
+                    LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
+                        item {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Spacer(modifier = Modifier.height(currentSpacerHeight))
 
-                            // Progress Summary
-                            ProgressSummary(selectedRoutineList)
-                            Spacer(modifier = Modifier.height(16.dp))
+                                // Progress Summary
+                                ProgressSummary(selectedRoutineList)
+                                Spacer(modifier = Modifier.height(16.dp))
 
-                            // Reminder Image
-                            ReminderImage(
-                                modifier = Modifier.fillMaxWidth()
-                                    .align(Alignment.CenterHorizontally)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
+                                // Reminder Image
+                                ReminderImage(
+                                    modifier = Modifier.fillMaxWidth()
+                                        .align(Alignment.CenterHorizontally)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
 
-                            // Next Workout Preview
-                            NextWorkoutPreview(followingDayRoutine)
-                            Spacer(modifier = Modifier.height(16.dp))
+                                // Next Workout Preview
+                                NextWorkoutPreview(followingDayRoutine)
+                                Spacer(modifier = Modifier.height(16.dp))
 
-                            // Last Workout Highlight
-                            LastWorkoutHighlight(selectedRoutineList)
-                            Spacer(modifier = Modifier.height(16.dp))
+                                // Last Workout Highlight
+                                LastWorkoutHighlight(selectedRoutineList)
+                                Spacer(modifier = Modifier.height(16.dp))
 
-                            // Habit Image
-                            Image(
-                                painter = painterResource(randomSelectedHabitImage),
-                                contentDescription = "Habit",
-                                contentScale = ContentScale.FillHeight,
-                                modifier = Modifier.height(220.dp)
-                                    .align(Alignment.CenterHorizontally)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
+                                // Habit Image
+                                Image(
+                                    painter = painterResource(randomSelectedHabitImage),
+                                    contentDescription = "Habit",
+                                    contentScale = ContentScale.FillHeight,
+                                    modifier = Modifier.height(220.dp)
+                                        .align(Alignment.CenterHorizontally)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
 
 
-                            // Motivational Quote
-                            Spacer(modifier = Modifier.height(16.dp))
+                                // Motivational Quote
+                                Spacer(modifier = Modifier.height(16.dp))
+                            }
                         }
                     }
                 }

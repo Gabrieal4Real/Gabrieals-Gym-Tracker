@@ -54,9 +54,7 @@ object CreateSplitScreen : Screen {
         val selectedDays = uiState.selectedDays
         var showImage = uiState.showImage
 
-        BackHandler(enabled = true) {
-
-        }
+        BackHandler(enabled = true) {}
 
         Column(
             modifier = Modifier.fillMaxSize(),

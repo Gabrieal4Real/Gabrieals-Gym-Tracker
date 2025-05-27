@@ -58,6 +58,7 @@ object StartWorkoutScreen : Screen {
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
+
         val selectedExerciseList = uiState.selectedExerciseList
 
         Column(
