@@ -191,10 +191,6 @@ object HomeTab : Tab {
                                 NextWorkoutPreview(followingDayRoutine)
                                 Spacer(modifier = Modifier.height(16.dp))
 
-                                // Last Workout Highlight
-                                LastWorkoutHighlight(selectedRoutineList)
-                                Spacer(modifier = Modifier.height(16.dp))
-
                                 // Habit Image
                                 Image(
                                     painter = painterResource(randomSelectedHabitImage),
@@ -205,9 +201,8 @@ object HomeTab : Tab {
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
 
-
-                                // Motivational Quote
-                                Spacer(modifier = Modifier.height(16.dp))
+                                // Last Workout Highlight
+                                LastWorkoutHighlight(selectedRoutineList)
                             }
                         }
                     }
@@ -287,7 +282,7 @@ object HomeTab : Tab {
     @Composable
     fun ReminderImage(modifier: Modifier) {
         Row(
-            modifier = modifier,
+            modifier = modifier.padding(horizontal = 24.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -295,11 +290,11 @@ object HomeTab : Tab {
                 painter = painterResource(Res.drawable.icon_protein),
                 contentDescription = "Protein",
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.height(140.dp),
+                modifier = Modifier.height(120.dp),
                 colorFilter = ColorFilter.tint(colors.textPrimary)
             )
             DescriptionText(
-                "Reminder to take your protein and drink lots of water",
+                "Don’t forget to take your protein and stay hydrated—your body will thank you!",
                 modifier = Modifier.padding(end = 16.dp)
             )
         }

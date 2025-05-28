@@ -16,7 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -50,7 +50,7 @@ fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
             backButtonAction?.invoke() ?: AppNavigator.navigateBack()
         }) {
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBackIos,
                 contentDescription = "Back",
                 tint = colors.textPrimary
             )
