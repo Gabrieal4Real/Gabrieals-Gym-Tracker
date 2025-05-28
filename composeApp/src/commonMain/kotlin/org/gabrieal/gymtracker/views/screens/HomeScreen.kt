@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -30,6 +32,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +42,8 @@ import androidx.compose.ui.util.lerp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.habit_1
 import gymtracker.composeapp.generated.resources.habit_2
@@ -49,6 +54,7 @@ import gymtracker.composeapp.generated.resources.habit_6
 import gymtracker.composeapp.generated.resources.habit_7
 import gymtracker.composeapp.generated.resources.habit_8
 import gymtracker.composeapp.generated.resources.icon_protein
+import gymtracker.composeapp.generated.resources.icon_reps
 import gymtracker.composeapp.generated.resources.protein
 import gymtracker.composeapp.generated.resources.workout_1
 import gymtracker.composeapp.generated.resources.workout_2
@@ -75,7 +81,7 @@ import org.gabrieal.gymtracker.views.widgets.TinyText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
 import org.jetbrains.compose.resources.painterResource
 
-object HomeScreen : Screen {
+object HomeScreen : Tab {
     private val viewModel = HomeViewModel()
 
     private val randomSelectedWorkoutImage = listOf(
@@ -107,7 +113,6 @@ object HomeScreen : Screen {
         "Take a deep breath, prioritise recovery and self-care.\n🌿🫁🕯️",
         "Your body grows when you rest.\nEmbrace the pause and feel good today.\n🌙💪🧠"
     ).random()
-
 
     @OptIn(InternalVoyagerApi::class)
     @Composable
@@ -147,7 +152,7 @@ object HomeScreen : Screen {
         }
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().background(colors.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TitleRow(Resources.strings.appName)
@@ -435,4 +440,11 @@ object HomeScreen : Screen {
             }
         }
     }
+
+    override val options: TabOptions
+        @Composable get() = TabOptions(
+            index = 0u,
+            title = "Home",
+            icon = rememberVectorPainter(Icons.Default.Home),
+        )
 }

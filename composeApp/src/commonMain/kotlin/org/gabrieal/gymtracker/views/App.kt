@@ -29,6 +29,7 @@ import org.gabrieal.gymtracker.util.systemUtil.StringResources
 import org.gabrieal.gymtracker.util.systemUtil.language
 import org.gabrieal.gymtracker.util.systemUtil.readFile
 import org.gabrieal.gymtracker.views.screens.HomeScreen
+import org.gabrieal.gymtracker.views.screens.LandingScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 expect fun isIOS(): Boolean
@@ -53,7 +54,7 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
                     .windowInsetsPadding(WindowInsets.safeDrawing),
                 color = colors.background
             ) {
-                Navigator(HomeScreen) { navigator ->
+                Navigator(LandingScreen) { navigator ->
                     LaunchedEffect(navigator) {
                         AppNavigator.setNavigator(navigator)
                     }
