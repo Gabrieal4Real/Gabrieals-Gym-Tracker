@@ -182,6 +182,7 @@ object EditPlanScreen : Screen {
                                             }
                                         }
                                     })
+                                Spacer(modifier = Modifier.height(8.dp))
                             }
                             item {
                                 Spacer(modifier = Modifier.height(8.dp))

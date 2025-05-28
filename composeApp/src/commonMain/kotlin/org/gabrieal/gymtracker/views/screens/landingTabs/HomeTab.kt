@@ -2,6 +2,7 @@ package org.gabrieal.gymtracker.views.screens.landingTabs
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -111,7 +112,7 @@ object HomeTab : Tab {
         "Your body grows when you rest.\nEmbrace the pause and feel good today.\n🌙💪🧠"
     ).random()
 
-    @OptIn(InternalVoyagerApi::class)
+    @OptIn(InternalVoyagerApi::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
@@ -130,12 +131,12 @@ object HomeTab : Tab {
         val maxCollapsedAspectRatio = 4.5f
 
         val scrollState = rememberLazyListState()
-        val headerHeightPx = with(LocalDensity.current) { 100.dp.toPx() }
+        val headerHeightPx = with(LocalDensity.current) { 80.dp.toPx() }
         val totalScroll =
             scrollState.firstVisibleItemIndex * headerHeightPx + scrollState.firstVisibleItemScrollOffset
         val collapseFraction = (totalScroll / headerHeightPx).coerceIn(0f, 1f)
         val currentAspectRatio = lerp(initialAspectRatio, maxCollapsedAspectRatio, collapseFraction)
-        val currentSpacerHeight = lerp(0.dp, 100.dp, collapseFraction)
+        val currentSpacerHeight = lerp(0.dp, 80.dp, collapseFraction)
         val currentBackgroundOpacity = lerp(0f, 1f, collapseFraction)
         val animateCurrentAspectRatio by animateFloatAsState(targetValue = currentAspectRatio)
         val animateCurrentBackgroundOpacity by animateFloatAsState(targetValue = currentBackgroundOpacity)
@@ -161,21 +162,20 @@ object HomeTab : Tab {
                 }
 
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    WorkoutHeader(
-                        animateCurrentAspectRatio,
-                        animateCurrentBackgroundOpacity,
-                        todayRoutine
-                    )
-
                     LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
+                        stickyHeader {
+                            WorkoutHeader(
+                                animateCurrentAspectRatio,
+                                animateCurrentBackgroundOpacity,
+                                todayRoutine
+                            )
+                        }
                         item {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Spacer(modifier = Modifier.height(currentSpacerHeight))
-
                                 // Progress Summary
                                 ProgressSummary(selectedRoutineList)
                                 Spacer(modifier = Modifier.height(16.dp))
@@ -200,7 +200,6 @@ object HomeTab : Tab {
                                         .align(Alignment.CenterHorizontally)
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
-
                                 // Last Workout Highlight
                                 LastWorkoutHighlight(selectedRoutineList)
                             }
@@ -231,13 +230,12 @@ object HomeTab : Tab {
                     if (completedRoutine != null) {
                         BiggerText(getPlanTitle(completedRoutine.routineName))
                         Spacer(modifier = Modifier.height(2.dp))
-                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
-                            ?: "", textAlign = TextAlign.Center)
+                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() } ?: "", textAlign = TextAlign.Center)
                         return@Column
                     }
 
                     TinyItalicText(
-                        "You have not completed any routines this week",
+                        "You have not completed any workouts this week",
                         textAlign = TextAlign.Center
                     )
                 }

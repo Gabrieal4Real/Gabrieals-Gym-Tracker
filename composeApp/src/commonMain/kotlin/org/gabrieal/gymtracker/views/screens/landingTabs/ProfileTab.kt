@@ -47,7 +47,18 @@ object ProfileTab : Tab {
             Box(
                 modifier = Modifier.fillMaxSize().background(colors.lighterBackground)
             ) {
+                //Edit Routines
 
+                //Macronutrient Split Calculator
+
+                //Protein Intake Calculator
+
+                //TDEE (Total Daily Energy Expenditure)
+
+                //BMI Calculator
+
+                //Maintenance Calorie Calculator
+                    //Calorie Tracker
             }
         }
     }

@@ -140,6 +140,7 @@ object MakeAPlanScreen : Screen {
                                 }
                             }
                         )
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
 

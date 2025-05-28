@@ -27,7 +27,6 @@ fun CustomCard(
         border = BorderStroke(2.dp, colors.borderStroke),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp)
             .then(
                 if (enabled && onClick != null) {
                     Modifier.clickable(onClick = onClick)

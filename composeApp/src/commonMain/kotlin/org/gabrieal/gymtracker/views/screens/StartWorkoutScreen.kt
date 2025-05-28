@@ -103,6 +103,7 @@ object StartWorkoutScreen : Screen {
                             content = {
                                 items(selectedExerciseList?.exercises?.size ?: 0) { selectedExercise ->
                                     ExerciseCard(selectedExerciseList, selectedExercise)
+                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
                             }
                         )
