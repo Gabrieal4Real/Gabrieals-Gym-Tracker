@@ -64,7 +64,9 @@ import gymtracker.composeapp.generated.resources.workout_5
 import gymtracker.composeapp.generated.resources.workout_7
 import gymtracker.composeapp.generated.resources.workout_8
 import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.util.appUtil.getPlanTitle
 import org.gabrieal.gymtracker.util.appUtil.longFormDays
+import org.gabrieal.gymtracker.util.appUtil.planTitles
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getTodayDayName
@@ -237,7 +239,7 @@ object HomeScreen : Tab {
                     //check if any routine of the week is completed
                     val completedRoutine = selectedRoutineList.find { it.isCompleted }
                     if (completedRoutine != null) {
-                        BiggerText(completedRoutine.routineName ?: "")
+                        BiggerText(getPlanTitle(completedRoutine.routineName))
                         Spacer(modifier = Modifier.height(2.dp))
                         TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
                             ?: "", textAlign = TextAlign.Center)
@@ -264,7 +266,7 @@ object HomeScreen : Tab {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SubtitleText("What's for tomorrow".uppercase())
-                    BiggerText(followingDayRoutine?.routineName ?: "Rest")
+                    BiggerText(getPlanTitle(followingDayRoutine?.routineName))
                     Spacer(modifier = Modifier.height(2.dp))
                     if (followingDayRoutine != null) {
                         TinyItalicText(followingDayRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
@@ -429,7 +431,7 @@ object HomeScreen : Tab {
                 Column(modifier = Modifier.padding(16.dp)) {
                     DescriptionItalicText("Today's Workout")
                     BiggerText(
-                        "${selectedRoutine?.routineName ?: "Rest"} Day",
+                        "${getPlanTitle(selectedRoutine?.routineName)} Day",
                     )
                 }
 

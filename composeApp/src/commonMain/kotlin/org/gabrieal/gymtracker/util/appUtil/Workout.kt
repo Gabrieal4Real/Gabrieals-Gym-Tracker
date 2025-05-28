@@ -3,10 +3,10 @@ package org.gabrieal.gymtracker.util.appUtil
 val shortFormDays = listOf("M", "T", "W", "T", "F", "S", "S")
 val longFormDays =
     listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-val planTitles = listOf("Full Body", "Push", "Pull", "Legs", "Accessory")
+val planTitles = listOf("Full Body", "Push", "Pull", "Legs", "Accessory", "Upper Body", "Lower Body")
 val plans = listOf(
     listOf("Full Body"),
-    listOf("Full Body (Strength Focus)", "Full Body (Hypertrophy Focus)"),
+    listOf("Upper Body", "Lower Body"),
     listOf("Push (Chest, Shoulders, Triceps)", "Pull (Back, Biceps)", "Legs"),
     listOf(
         "Push (Chest, Shoulders, Triceps)",
@@ -15,11 +15,11 @@ val plans = listOf(
         "Accessory (Target muscle of your choosing)"
     ),
     listOf(
+        "Upper Body",
+        "Lower Body",
         "Push (Chest, Shoulders, Triceps)",
         "Pull (Back, Biceps)",
         "Legs",
-        "Push (Chest, Shoulders, Triceps)",
-        "Pull (Back, Biceps)"
     )
 )
 
@@ -128,5 +128,14 @@ fun formatRestTime(seconds: Int): String {
             }
         }
     }
+}
+
+fun getPlanTitle(routineName: String?): String {
+    var planTitle = routineName
+    if (routineName.equals("Legs")) {
+        planTitle = "Leg"
+    }
+
+    return planTitle ?: "Rest"
 }
 
