@@ -9,10 +9,10 @@ import org.gabrieal.gymtracker.model.SelectedExercise
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.views.screens.CreateSplitScreen
 import org.gabrieal.gymtracker.views.screens.EditPlanScreen
-import org.gabrieal.gymtracker.views.screens.HomeScreen
+import org.gabrieal.gymtracker.views.screens.landingTabs.HomeTab
 import org.gabrieal.gymtracker.views.screens.MakeAPlanScreen
 import org.gabrieal.gymtracker.views.screens.StartWorkoutScreen
-import org.gabrieal.gymtracker.views.screens.ViewAllWorkoutScreen
+import org.gabrieal.gymtracker.views.screens.landingTabs.ViewAllWorkoutTabScreen
 
 
 object AppNavigator {
@@ -27,7 +27,7 @@ object AppNavigator {
     }
 
     fun navigateToHome() {
-        _navigationEvents.value = NavigationEvent.NavigateTo(HomeScreen)
+        _navigationEvents.value = NavigationEvent.NavigateTo(HomeTab)
     }
 
     fun navigateToCreateSplit() {
@@ -51,8 +51,8 @@ object AppNavigator {
     }
 
     fun navigateToViewAllWorkouts(callback: (String) -> Unit) {
-        ViewAllWorkoutScreen.setCallback(callback)
-        _navigationEvents.value = NavigationEvent.NavigateTo(ViewAllWorkoutScreen)
+        ViewAllWorkoutTabScreen.setCallback(callback)
+        _navigationEvents.value = NavigationEvent.NavigateTo(ViewAllWorkoutTabScreen)
     }
 
     fun navigateBack() {

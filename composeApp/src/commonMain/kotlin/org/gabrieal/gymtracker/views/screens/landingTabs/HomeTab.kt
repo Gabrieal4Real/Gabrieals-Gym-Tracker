@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.views.screens
+package org.gabrieal.gymtracker.views.screens.landingTabs
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
@@ -78,7 +78,7 @@ import org.gabrieal.gymtracker.views.widgets.TinyText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
 import org.jetbrains.compose.resources.painterResource
 
-object HomeScreen : Tab {
+object HomeTab : Tab {
     private val viewModel = HomeViewModel()
 
     private val randomSelectedWorkoutImage = listOf(

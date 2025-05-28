@@ -17,19 +17,23 @@ import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import org.gabrieal.gymtracker.views.colors
+import org.gabrieal.gymtracker.views.screens.landingTabs.HomeTab
+import org.gabrieal.gymtracker.views.screens.landingTabs.ProfileTab
+import org.gabrieal.gymtracker.views.screens.landingTabs.ViewAllWorkoutTabScreen
 import org.gabrieal.gymtracker.views.widgets.TinyText
 
 object LandingScreen : Screen {
     @Composable
     override fun Content() {
-        TabNavigator(HomeScreen) {
+        TabNavigator(HomeTab) {
             Scaffold(
                 bottomBar = {
                     NavigationBar(
                         containerColor = colors.background,
                     ) {
-                        TabNavigationItem(ViewAllWorkoutScreen)
-                        TabNavigationItem(HomeScreen)
+                        TabNavigationItem(ViewAllWorkoutTabScreen)
+                        TabNavigationItem(HomeTab)
+                        TabNavigationItem(ProfileTab)
                     }
                 }
             ) {

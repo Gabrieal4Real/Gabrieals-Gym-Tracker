@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.views.screens
+package org.gabrieal.gymtracker.views.screens.landingTabs
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,9 +34,7 @@ import gymtracker.composeapp.generated.resources.tier_1
 import gymtracker.composeapp.generated.resources.tier_2
 import gymtracker.composeapp.generated.resources.tier_3
 import gymtracker.composeapp.generated.resources.youtube
-import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.util.systemUtil.OpenURL
-import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.viewmodel.viewAllWorkouts.ViewAllWorkoutViewModel
 import org.gabrieal.gymtracker.views.allExistingExerciseList
@@ -53,7 +50,7 @@ import org.gabrieal.gymtracker.views.widgets.TinyItalicText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
 import org.jetbrains.compose.resources.painterResource
 
-object ViewAllWorkoutScreen : Tab, Screen {
+object ViewAllWorkoutTabScreen : Tab, Screen {
     private val viewModel = ViewAllWorkoutViewModel()
 
     fun setCallback(onMessageSent: (String) -> Unit) {
@@ -98,7 +95,7 @@ object ViewAllWorkoutScreen : Tab, Screen {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(colors.lighterBackground)
-                    .padding(16.dp)
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             ) {
                 DropDownFilter(
                     filterOptions = allMuscleGroups,

@@ -33,7 +33,7 @@ import org.gabrieal.gymtracker.util.appUtil.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.appUtil.getPlanTitle
 import org.gabrieal.gymtracker.viewmodel.startWorkout.StartWorkoutViewModel
 import org.gabrieal.gymtracker.views.colors
-import org.gabrieal.gymtracker.views.screens.HomeScreen.DashedDivider
+import org.gabrieal.gymtracker.views.screens.landingTabs.HomeTab.DashedDivider
 import org.gabrieal.gymtracker.views.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.BiggerText

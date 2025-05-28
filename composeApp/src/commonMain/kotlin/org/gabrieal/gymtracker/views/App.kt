@@ -28,7 +28,6 @@ import org.gabrieal.gymtracker.util.systemUtil.StringFactory
 import org.gabrieal.gymtracker.util.systemUtil.StringResources
 import org.gabrieal.gymtracker.util.systemUtil.language
 import org.gabrieal.gymtracker.util.systemUtil.readFile
-import org.gabrieal.gymtracker.views.screens.HomeScreen
 import org.gabrieal.gymtracker.views.screens.LandingScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
