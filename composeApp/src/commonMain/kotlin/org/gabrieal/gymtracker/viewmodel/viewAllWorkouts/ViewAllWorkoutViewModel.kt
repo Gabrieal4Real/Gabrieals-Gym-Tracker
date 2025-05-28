@@ -9,16 +9,12 @@ import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.views.allExistingExerciseList
 
 class ViewAllWorkoutViewModel {
-    private val _uiState = MutableStateFlow(
-        ViewAllWorkoutUiState(filteredWorkouts = allExistingExerciseList)
-    )
+    private val _uiState = MutableStateFlow(ViewAllWorkoutUiState(filteredWorkouts = allExistingExerciseList))
 
     val uiState: StateFlow<ViewAllWorkoutUiState> = _uiState.asStateFlow()
 
-    private var callback: ((String) -> Unit)? = null
-
     fun setCallback(callback: (String) -> Unit) {
-        this.callback = callback
+        _uiState.update { it.copy(callback = callback) }
     }
 
     fun setSearchFilter(filter: String) {
@@ -38,7 +34,7 @@ class ViewAllWorkoutViewModel {
         updateFilteredWorkouts()
     }
 
-    private fun updateFilteredWorkouts() {
+    fun updateFilteredWorkouts() {
         val searchFilter = _uiState.value.searchFilter
         val selectedFilters = _uiState.value.selectedFilters
 
@@ -68,7 +64,7 @@ class ViewAllWorkoutViewModel {
     }
 
     fun confirmWorkoutSelection() {
-        callback?.invoke(_uiState.value.selectedWorkout)
+        _uiState.value.callback?.invoke(_uiState.value.selectedWorkout)
         dismissConfirmDialog()
         navigateBack()
     }

@@ -8,5 +8,6 @@ data class ViewAllWorkoutUiState(
     val selectedWorkout: String = "",
     val showConfirmAddToRoutineDialog: Boolean = false,
     val youtubeUrlToOpen: String? = null,
-    val filteredWorkouts: List<Exercise> = emptyList()
+    val filteredWorkouts: List<Exercise> = emptyList(),
+    val callback: ((String) -> Unit)? = null
 )

@@ -30,6 +30,7 @@ import gymtracker.composeapp.generated.resources.icon_timer
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.appUtil.formatRestTime
 import org.gabrieal.gymtracker.util.appUtil.getCurrentTimerInSeconds
+import org.gabrieal.gymtracker.util.appUtil.getPlanTitle
 import org.gabrieal.gymtracker.viewmodel.startWorkout.StartWorkoutViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.screens.HomeScreen.DashedDivider
@@ -58,7 +59,6 @@ object StartWorkoutScreen : Screen {
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
-
         val selectedExerciseList = uiState.selectedExerciseList
 
         Column(
@@ -87,7 +87,7 @@ object StartWorkoutScreen : Screen {
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         BiggerText(
-                            "${selectedExerciseList?.routineName ?: "Workout"} Day",
+                            "${getPlanTitle(selectedExerciseList?.routineName)} Day",
                             modifier = Modifier.align(Alignment.CenterHorizontally).scale(popOut().value)
                         )
                         Spacer(modifier = Modifier.height(8.dp))

@@ -2,7 +2,6 @@ package org.gabrieal.gymtracker.views.screens
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,7 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.rounded.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.util.lerp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
@@ -54,8 +52,6 @@ import gymtracker.composeapp.generated.resources.habit_6
 import gymtracker.composeapp.generated.resources.habit_7
 import gymtracker.composeapp.generated.resources.habit_8
 import gymtracker.composeapp.generated.resources.icon_protein
-import gymtracker.composeapp.generated.resources.icon_reps
-import gymtracker.composeapp.generated.resources.protein
 import gymtracker.composeapp.generated.resources.workout_1
 import gymtracker.composeapp.generated.resources.workout_2
 import gymtracker.composeapp.generated.resources.workout_3
@@ -66,7 +62,6 @@ import gymtracker.composeapp.generated.resources.workout_8
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.appUtil.getPlanTitle
 import org.gabrieal.gymtracker.util.appUtil.longFormDays
-import org.gabrieal.gymtracker.util.appUtil.planTitles
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getTodayDayName
@@ -154,7 +149,7 @@ object HomeScreen : Tab {
         }
 
         Column(
-            modifier = Modifier.fillMaxSize().background(colors.background),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TitleRow(Resources.strings.appName)
@@ -445,8 +440,8 @@ object HomeScreen : Tab {
 
     override val options: TabOptions
         @Composable get() = TabOptions(
-            index = 0u,
+            index = 1u,
             title = "Home",
-            icon = rememberVectorPainter(Icons.Default.Home),
+            icon = rememberVectorPainter(Icons.Rounded.Home),
         )
 }
