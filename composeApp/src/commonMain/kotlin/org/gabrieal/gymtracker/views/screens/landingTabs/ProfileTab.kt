@@ -26,18 +26,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.gabrieal.gymtracker.util.appUtil.calculateBMI
-import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.viewmodel.profile.ProfileViewModel
 import org.gabrieal.gymtracker.views.colors
-import org.gabrieal.gymtracker.views.screens.MakeAPlanScreen
 import org.gabrieal.gymtracker.views.widgets.CustomCard
 import org.gabrieal.gymtracker.views.widgets.DashedDivider
 import org.gabrieal.gymtracker.views.widgets.TinyText
@@ -166,7 +165,8 @@ object ProfileTab : Tab {
                 },
                 negativeButton = Pair("Cancel") {
                     viewModel.setWeightHeightBMIClicked(false)
-                }
+                },
+                type = KeyboardType.Decimal
             )
         }
     }

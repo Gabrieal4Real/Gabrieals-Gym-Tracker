@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -16,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import java.text.SimpleDateFormat
@@ -72,7 +74,8 @@ actual fun getTodayDayName(): String {
 actual fun ShowInputDialog(
     titleMessage: Pair<String, String>,
     positiveButton: Pair<String, (String) -> Unit>,
-    negativeButton: Pair<String, () -> Unit>
+    negativeButton: Pair<String, () -> Unit>,
+    type: KeyboardType
 ) {
     var text by remember { mutableStateOf("") }
     AlertDialog(
@@ -84,8 +87,15 @@ actual fun ShowInputDialog(
                 Spacer(modifier = Modifier.height(4.dp))
                 OutlinedTextField(
                     value = text,
-                    onValueChange = { text = it },
-                    label = { Text("Input") }
+                    onValueChange = {
+                        if (type == KeyboardType.Decimal) {
+                            if (it.isEmpty() || it.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                                text = it
+                            }
+                        }
+                    },
+                    label = { Text("Input") },
+                    keyboardOptions = KeyboardOptions(keyboardType = type)
                 )
             }
         },

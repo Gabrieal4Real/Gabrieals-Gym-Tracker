@@ -1,9 +1,14 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.text.input.KeyboardType
+import kotlinx.cinterop.CValue
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.useContents
 
 import platform.UIKit.*
 import platform.Foundation.*
+import platform.darwin.NSObject
 
 @Composable
 actual fun OpenURL(url: String) {
@@ -88,7 +93,8 @@ actual fun getTodayDayName(): String {
 actual fun ShowInputDialog(
     titleMessage: Pair<String, String>,
     positiveButton: Pair<String, (String) -> Unit>,
-    negativeButton: Pair<String, () -> Unit>
+    negativeButton: Pair<String, () -> Unit>,
+    type: KeyboardType
 ) {
     val alertController = UIAlertController.alertControllerWithTitle(
         title = titleMessage.first,
@@ -96,7 +102,15 @@ actual fun ShowInputDialog(
         preferredStyle = UIAlertControllerStyleAlert
     )
 
-    alertController.addTextFieldWithConfigurationHandler(null)
+    alertController.addTextFieldWithConfigurationHandler { textField ->
+        when (type) {
+            KeyboardType.Number -> { textField?.keyboardType = UIKeyboardTypeNumberPad }
+            KeyboardType.Text -> { textField?.keyboardType = UIKeyboardTypeDefault }
+            KeyboardType.Decimal -> {
+                textField?.keyboardType = UIKeyboardTypeDecimalPad
+            }
+        }
+    }
 
     val positiveAction = UIAlertAction.actionWithTitle(
         title = positiveButton.first,

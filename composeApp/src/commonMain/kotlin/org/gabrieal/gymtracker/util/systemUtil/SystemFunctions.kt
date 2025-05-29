@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.KeyboardType
 import gymtracker.composeapp.generated.resources.Res.readBytes
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -42,7 +43,8 @@ expect fun ShowAlertDialog(
 expect fun ShowInputDialog(
     titleMessage: Pair<String, String>,
     positiveButton: Pair<String, (String) -> Unit>,
-    negativeButton: Pair<String, () -> Unit>
+    negativeButton: Pair<String, () -> Unit>,
+    type: KeyboardType
 )
 
 @Composable
