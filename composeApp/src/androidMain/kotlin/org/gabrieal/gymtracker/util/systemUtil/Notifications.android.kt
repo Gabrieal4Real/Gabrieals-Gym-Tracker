@@ -19,7 +19,7 @@ private const val CHANNEL_DESC = "Basic App Notifications"
 @SuppressLint("StaticFieldLeak")
 var activityReference: Activity? = null
 
-actual fun requestPermission() {
+actual fun requestNotificationPermission() {
     val context = activityReference ?: return
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         if (ActivityCompat.checkSelfPermission(

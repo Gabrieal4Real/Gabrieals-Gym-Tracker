@@ -3,7 +3,7 @@ package org.gabrieal.gymtracker.util.systemUtil
 import platform.UserNotifications.*
 import platform.Foundation.*
 
-actual fun requestPermission() {
+actual fun requestNotificationPermission() {
     val center = UNUserNotificationCenter.currentNotificationCenter()
     center.requestAuthorizationWithOptions(
         options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge,
@@ -24,6 +24,7 @@ actual fun notifyPlatform(message: String) {
     }
 
     val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(1.0, repeats = false)
+
     val request = UNNotificationRequest.requestWithIdentifier(
         identifier = NSUUID().UUIDString,
         content = content,

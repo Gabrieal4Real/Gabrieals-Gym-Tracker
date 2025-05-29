@@ -1,6 +1,6 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
 
-expect fun requestPermission()
+expect fun requestNotificationPermission()
 
 expect fun notifyPlatform(message: String)

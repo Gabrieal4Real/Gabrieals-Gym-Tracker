@@ -19,7 +19,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
-import org.gabrieal.gymtracker.util.systemUtil.requestPermission
+import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
 import org.gabrieal.gymtracker.viewmodel.profile.ProfileViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
@@ -56,13 +56,14 @@ object ProfileTab : Tab {
                         .fillMaxSize()
                 ) {
                     ConfirmButton("Request Permission", onClick = {
-                        requestPermission()
+                        requestNotificationPermission()
                     })
                     ConfirmButton("Test Notification", onClick = {
                         notifyPlatform("Notification")
                     })
                 }
                 //Profile
+
 
                 //Edit Routines
 
