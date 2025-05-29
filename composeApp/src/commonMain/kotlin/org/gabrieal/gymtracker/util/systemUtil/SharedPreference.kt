@@ -1,6 +1,7 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
 import kotlinx.serialization.json.Json
+import org.gabrieal.gymtracker.model.Profile
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 
 interface SharedPreferences {
@@ -28,4 +29,19 @@ fun getSelectedRoutineListFromSharedPreferences(context: Any?): MutableList<Sele
     }
 
     return selectedRoutineList
+}
+
+
+fun getProfileFromSharedPreferences(context: Any?): Profile {
+    var profile = Profile()
+
+    try {
+        profile = Json.decodeFromString<Profile>(
+            providePreferences(context).getString("profile")
+        )
+    } catch (ex: Exception) {
+        println("decodeFromStringError: ${ex.message} ")
+    }
+
+    return profile
 }

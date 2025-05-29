@@ -1,5 +1,6 @@
 package org.gabrieal.gymtracker.views.widgets
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,9 +10,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -34,6 +37,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
@@ -74,6 +78,24 @@ fun CustomHorizontalDivider() {
         thickness = 1.dp,
         modifier = Modifier.fillMaxWidth()
     )
+}
+
+@Composable
+fun DashedDivider() {
+    Canvas(
+        modifier = Modifier
+            .height(36.dp)
+            .width(1.dp)
+    ) {
+        val pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 4f), 0f)
+        drawLine(
+            color = Color.Gray,
+            start = Offset.Zero,
+            end = Offset(0f, size.height),
+            strokeWidth = 2f,
+            pathEffect = pathEffect
+        )
+    }
 }
 
 @Composable

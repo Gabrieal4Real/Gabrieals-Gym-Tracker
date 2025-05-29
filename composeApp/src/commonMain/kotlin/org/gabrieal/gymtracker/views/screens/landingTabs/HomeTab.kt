@@ -70,6 +70,7 @@ import org.gabrieal.gymtracker.viewmodel.home.HomeViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.BiggerText
 import org.gabrieal.gymtracker.views.widgets.CustomCard
+import org.gabrieal.gymtracker.views.widgets.DashedDivider
 import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
 import org.gabrieal.gymtracker.views.widgets.LinkText
@@ -329,24 +330,6 @@ object HomeTab : Tab {
                 }
             },
         )
-    }
-
-    @Composable
-    fun DashedDivider() {
-        Canvas(
-            modifier = Modifier
-                .height(36.dp)
-                .width(1.dp)
-        ) {
-            val pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 4f), 0f)
-            drawLine(
-                color = Color.Gray,
-                start = Offset.Zero,
-                end = Offset(0f, size.height),
-                strokeWidth = 2f,
-                pathEffect = pathEffect
-            )
-        }
     }
 
     @Composable

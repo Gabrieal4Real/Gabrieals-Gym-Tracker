@@ -1,11 +1,24 @@
 package org.gabrieal.gymtracker.views.screens.landingTabs
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Accessibility
+import androidx.compose.material.icons.rounded.Height
+import androidx.compose.material.icons.rounded.MonitorWeight
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,16 +26,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import org.gabrieal.gymtracker.util.appUtil.calculateBMI
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
-import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
-import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
 import org.gabrieal.gymtracker.viewmodel.profile.ProfileViewModel
 import org.gabrieal.gymtracker.views.colors
-import org.gabrieal.gymtracker.views.widgets.ConfirmButton
+import org.gabrieal.gymtracker.views.screens.MakeAPlanScreen
+import org.gabrieal.gymtracker.views.widgets.CustomCard
+import org.gabrieal.gymtracker.views.widgets.DashedDivider
+import org.gabrieal.gymtracker.views.widgets.TinyText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
 
 object ProfileTab : Tab {
@@ -32,7 +50,12 @@ object ProfileTab : Tab {
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
+
         val routines = uiState.selectedRoutineList
+        val profile = uiState.profile
+        val saveRoutineList = uiState.saveRoutineList
+        val saveProfile = uiState.saveProfile
+        val weightHeightBMIClicked = uiState.weightHeightBMIClicked
 
         val context = getCurrentContext()
 
@@ -51,19 +74,62 @@ object ProfileTab : Tab {
                 modifier = Modifier.fillMaxSize().background(colors.lighterBackground)
             ) {
 
-                Column(
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(16.dp),
                 ) {
-                    ConfirmButton("Request Permission", onClick = {
-                        requestNotificationPermission()
-                    })
-                    ConfirmButton("Test Notification", onClick = {
-                        notifyPlatform("Notification")
-                    })
+                    item {
+                        CustomCard(
+                            enabled = true,
+                            content = {
+                                val typeOfData = listOf(
+                                    Pair(Triple(profile?.weight, Icons.Rounded.MonitorWeight, "KG"), {
+                                        viewModel.setWeightHeightBMIClicked(true)
+                                    }),
+                                    Pair(Triple(profile?.height, Icons.Rounded.Height, "CM"), {
+                                        viewModel.setWeightHeightBMIClicked(true)
+                                    }),
+                                    Pair(Triple(calculateBMI(profile?.weight, profile?.height), Icons.Rounded.Accessibility, "BMI"), {
+                                        viewModel.setWeightHeightBMIClicked(true)
+                                    }),
+                                )
+                                Column(
+                                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth()
+                                            .padding(horizontal = 16.dp),
+                                        horizontalArrangement = Arrangement.SpaceEvenly
+                                    ) {
+                                        typeOfData.forEachIndexed { index, pair ->
+                                            val title: String = if(pair.first.first != null) "${pair.first.first} ${pair.first.third}" else "No Data"
+                                            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable {
+                                                pair.second.invoke()
+                                            }) {
+                                                Spacer(modifier = Modifier.height(2.dp))
+                                                Icon(
+                                                    painter = rememberVectorPainter(pair.first.second),
+                                                    tint = colors.textPrimary,
+                                                    contentDescription = pair.first.third
+                                                )
+                                                Spacer(modifier = Modifier.height(2.dp))
+                                                TinyText(title)
+                                            }
+                                            if (index != typeOfData.lastIndex) {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                DashedDivider()
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
-                //Profile
 
+                //Profile
 
                 //Edit Routines
 
@@ -76,8 +142,32 @@ object ProfileTab : Tab {
                 //BMI Calculator
 
                 //Maintenance Calorie Calculator
-                    //Calorie Tracker
+                //Calorie Tracker
             }
+        }
+
+        if (saveProfile) {
+            viewModel.saveProfile()
+        }
+
+        if (saveRoutineList) {
+            viewModel.saveRoutineList()
+        }
+
+        if (weightHeightBMIClicked) {
+            ShowInputDialog(
+                titleMessage = Pair(
+                    "Are you sure?",
+                    "You will lose all previous changes"
+                ),
+                positiveButton = Pair("Proceed") {
+                    println(it)
+                    viewModel.setWeightHeightBMIClicked(false)
+                },
+                negativeButton = Pair("Cancel") {
+                    viewModel.setWeightHeightBMIClicked(false)
+                }
+            )
         }
     }
 

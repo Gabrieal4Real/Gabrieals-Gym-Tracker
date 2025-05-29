@@ -83,3 +83,40 @@ actual fun getTodayDayName(): String {
     val date = NSDate()
     return dateFormatter.stringFromDate(date)
 }
+
+@Composable
+actual fun ShowInputDialog(
+    titleMessage: Pair<String, String>,
+    positiveButton: Pair<String, (String) -> Unit>,
+    negativeButton: Pair<String, () -> Unit>
+) {
+    val alertController = UIAlertController.alertControllerWithTitle(
+        title = titleMessage.first,
+        message = titleMessage.second,
+        preferredStyle = UIAlertControllerStyleAlert
+    )
+
+    alertController.addTextFieldWithConfigurationHandler(null)
+
+    val positiveAction = UIAlertAction.actionWithTitle(
+        title = positiveButton.first,
+        style = UIAlertActionStyleDefault
+    ) { _ ->
+        val textField = alertController.textFields?.firstOrNull() as? UITextField
+        positiveButton.second(textField?.text ?: "")
+    }
+    alertController.addAction(positiveAction)
+
+    // Negative action
+    val negativeAction = UIAlertAction.actionWithTitle(
+        title = negativeButton.first,
+        style = UIAlertActionStyleCancel
+    ) { _ ->
+        negativeButton.second()
+    }
+    alertController.addAction(negativeAction)
+
+    // Present the alert
+    val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+    rootViewController?.presentViewController(alertController, animated = true, completion = null)
+}

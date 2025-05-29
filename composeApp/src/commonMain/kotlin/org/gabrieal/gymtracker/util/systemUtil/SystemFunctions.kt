@@ -39,6 +39,13 @@ expect fun ShowAlertDialog(
 )
 
 @Composable
+expect fun ShowInputDialog(
+    titleMessage: Pair<String, String>,
+    positiveButton: Pair<String, (String) -> Unit>,
+    negativeButton: Pair<String, () -> Unit>
+)
+
+@Composable
 expect fun ShowToast(message: String)
 
 expect fun getTodayDayName(): String

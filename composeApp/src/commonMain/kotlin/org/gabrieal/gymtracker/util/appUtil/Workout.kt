@@ -139,3 +139,11 @@ fun getPlanTitle(routineName: String?): String {
     return planTitle ?: "Rest"
 }
 
+fun calculateBMI(weight: Double?, height: Double?): Double? {
+    if (weight != null && height != null) {
+        val heightInMeters = height / 100
+        return weight / (heightInMeters * heightInMeters)
+    }
+    return null
+}
+
