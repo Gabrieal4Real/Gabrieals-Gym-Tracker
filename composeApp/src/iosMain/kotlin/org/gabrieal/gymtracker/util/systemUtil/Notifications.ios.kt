@@ -3,20 +3,18 @@ package org.gabrieal.gymtracker.util.systemUtil
 import platform.UserNotifications.*
 import platform.Foundation.*
 
-actual class NotificationPermissionHandler {
-    actual fun requestPermission() {
-        val center = UNUserNotificationCenter.currentNotificationCenter()
-        center.requestAuthorizationWithOptions(
-            options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge,
-            completionHandler = { granted, error ->
-                if (error != null) {
-                    println("iOS Notification permission error: ${'$'}{error.localizedDescription}")
-                } else {
-                    println("iOS Notification permission granted: ${'$'}granted")
-                }
+actual fun requestPermission() {
+    val center = UNUserNotificationCenter.currentNotificationCenter()
+    center.requestAuthorizationWithOptions(
+        options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge,
+        completionHandler = { granted, error ->
+            if (error != null) {
+                println("iOS Notification permission error: ${'$'}{error.localizedDescription}")
+            } else {
+                println("iOS Notification permission granted: ${'$'}granted")
             }
-        )
-    }
+        }
+    )
 }
 
 actual fun notifyPlatform(message: String) {

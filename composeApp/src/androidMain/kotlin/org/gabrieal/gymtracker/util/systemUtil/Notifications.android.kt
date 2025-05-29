@@ -16,21 +16,22 @@ private const val CHANNEL_ID = "default_channel_id"
 private const val CHANNEL_NAME = "General Notifications"
 private const val CHANNEL_DESC = "Basic App Notifications"
 
-actual class NotificationPermissionHandler {
-    actual fun requestPermission() {
-        val context = activityReference ?: return
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                ActivityCompat.requestPermissions(
-                    context,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    1001
-                )
-            }
+@SuppressLint("StaticFieldLeak")
+var activityReference: Activity? = null
+
+actual fun requestPermission() {
+    val context = activityReference ?: return
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                context,
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                1001
+            )
         }
     }
 }
@@ -69,6 +70,3 @@ private fun createNotificationChannel(context: Context) {
         notificationManager.createNotificationChannel(channel)
     }
 }
-
-@SuppressLint("StaticFieldLeak")
-var activityReference: Activity? = null

@@ -17,12 +17,11 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import org.gabrieal.gymtracker.util.systemUtil.NotificationPermissionHandler
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
+import org.gabrieal.gymtracker.util.systemUtil.requestPermission
 import org.gabrieal.gymtracker.viewmodel.profile.ProfileViewModel
 import org.gabrieal.gymtracker.views.colors
-import org.gabrieal.gymtracker.views.notificationPermissionHandler
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
 import org.gabrieal.gymtracker.views.widgets.TitleRow
 
@@ -56,10 +55,10 @@ object ProfileTab : Tab {
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    ConfirmButton("QEJGPEOWJG", onClick = {
-                        notificationPermissionHandler.requestPermission()
+                    ConfirmButton("Request Permission", onClick = {
+                        requestPermission()
                     })
-                    ConfirmButton("QEJGPEOWJG", onClick = {
+                    ConfirmButton("Test Notification", onClick = {
                         notifyPlatform("Notification")
                     })
                 }

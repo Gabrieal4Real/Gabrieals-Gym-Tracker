@@ -6,9 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import org.gabrieal.gymtracker.util.systemUtil.NotificationPermissionHandler
 import org.gabrieal.gymtracker.util.systemUtil.activityReference
 import org.gabrieal.gymtracker.views.App
 
@@ -24,7 +21,7 @@ class MainActivity : ComponentActivity() {
         activityReference = this
 
         setContent {
-            App(NotificationPermissionHandler())
+            App()
         }
     }
 }

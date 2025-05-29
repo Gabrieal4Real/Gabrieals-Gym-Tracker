@@ -24,7 +24,6 @@ import org.gabrieal.gymtracker.util.appUtil.AppColors
 import org.gabrieal.gymtracker.util.appUtil.DarkColors
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.LocalStringResources
-import org.gabrieal.gymtracker.util.systemUtil.NotificationPermissionHandler
 import org.gabrieal.gymtracker.util.systemUtil.StringFactory
 import org.gabrieal.gymtracker.util.systemUtil.StringResources
 import org.gabrieal.gymtracker.util.systemUtil.language
@@ -37,16 +36,14 @@ expect fun isIOS(): Boolean
 var allExistingExerciseList = mutableListOf<Exercise>()
 var templates = ConvertedTemplate()
 var colors: AppColors = DarkColors
-lateinit var notificationPermissionHandler: NotificationPermissionHandler
 
 @Composable
 @Preview
-fun App(permissionHandler: NotificationPermissionHandler, stringResources: StringResources = remember { StringFactory.createStrings(language) }) {
+fun App(stringResources: StringResources = remember { StringFactory.createStrings(language) }) {
 
     CompositionLocalProvider(
         LocalStringResources provides stringResources
     ) {
-        notificationPermissionHandler = permissionHandler
         allExistingExerciseList = decodeExercises(readFile("exercises.json"))
         templates = decodeTemplate(readFile("templates.json"))
 
