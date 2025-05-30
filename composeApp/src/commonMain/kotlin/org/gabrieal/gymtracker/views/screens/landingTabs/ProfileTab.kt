@@ -132,7 +132,8 @@ object ProfileTab : Tab {
                                     Spacer(modifier = Modifier.height(16.dp))
                                     HorizontalDivider()
                                     Spacer(modifier = Modifier.height(16.dp))
-                                    getBMISummary(weight = weight, height = height)
+                                    if (weightHeightBMIClicked == -1)
+                                        getBMISummary(weight, height)
                                 }
                             }
                         )

@@ -166,11 +166,12 @@ actual fun ShowSpinner(
         ) { _ -> onOptionSelected(index) }
         alertController.addAction(action)
     }
+
     val cancelAction = UIAlertAction.actionWithTitle(
         title = "Cancel",
-        style = UIAlertActionStyleCancel,
-        handler = null
-    )
+        style = UIAlertActionStyleCancel
+    ) { _ -> onOptionSelected(-1) }
+
     alertController.addAction(cancelAction)
     val rootVC = UIApplication.sharedApplication.keyWindow?.rootViewController
     rootVC?.presentViewController(alertController, animated = true, completion = null)

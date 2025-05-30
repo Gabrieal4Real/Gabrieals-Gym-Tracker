@@ -64,6 +64,7 @@ class ProfileViewModel {
                 Json.encodeToString(profile)
             )
             setProfile(false)
+
         }
     }
 

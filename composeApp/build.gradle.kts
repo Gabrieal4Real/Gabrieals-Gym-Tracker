@@ -49,6 +49,7 @@ kotlin {
             implementation(libs.voyager.tab.navigator)
             implementation(libs.voyager.transitions)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.cmpcharts)
         }
     }
 }
