@@ -1,18 +1,21 @@
 package org.gabrieal.gymtracker.util.appUtil
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import network.chaintech.cmpcharts.ui.segmentprogresschart.SegmentedProgressBarChart
-import network.chaintech.cmpcharts.ui.segmentprogresschart.model.SegmentInfo
-import network.chaintech.cmpcharts.ui.segmentprogresschart.model.SegmentProgressBarConfig
 import org.gabrieal.gymtracker.model.enums.bmiSegments
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
@@ -178,7 +181,7 @@ fun getBMISummary(weight: Double?, height: Double?) {
         val bmi = weight / (heightInMeters * heightInMeters)
         val roundedBMI = (round(bmi * 100) / 100)
 
-        SegmentProgressBarChartDemo(roundedBMI)
+        BMIBarChart(roundedBMI)
         Spacer(modifier = Modifier.height(8.dp))
 
         val minHealthyBMI = 18.5
@@ -232,38 +235,56 @@ fun getListForWeightHeightSpinner(weightHeightBMIClicked: Int): List<String> {
 }
 
 @Composable
-fun SegmentProgressBarChartDemo(roundedBMI: Double) {
+fun BMIBarChart(roundedBMI: Double) {
     val segmentInfo = bmiSegments.map {
-        SegmentInfo(
-            segmentWeight = it.range,
-            segmentColor = it.color,
-        )
+        Pair(it.range, it.color)
     }
 
-    val progress = ((roundedBMI.toFloat() - 13f) / (41f - 13f)).coerceIn(0f, 1f)
+    val progress = ((roundedBMI.toFloat() - 13f) / (41f - 13f)).coerceIn(0.01f, 0.99f)
     val selectedSegment = bmiSegments.find { it.maxValue >= roundedBMI }
 
-    Box {
-        SubtitleText("Body Mass Index Summary", modifier = Modifier.align(Alignment.TopCenter))
-        SegmentedProgressBarChart(
-            modifier = Modifier.padding(vertical = 8.dp),
-            segmentProgressBarConfig = SegmentProgressBarConfig(
-                cornerRadius = 8.dp,
-                segmentsHeight = 100.dp,
-                animationDurationMillis = 1200,
-                shouldAnimateProgress = true,
-                segmentsList = segmentInfo,
-                pointerWidth = 8.dp,
-                pointerHeight = 50.dp,
-                displayScale = false,
-                progress = progress
-            ),
-        )
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SubtitleText("Body Mass Index Summary")
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Card(
+                shape = RoundedCornerShape(8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+                modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+            ) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        segmentInfo.forEach { segmentInfo ->
+                            Box(
+                                modifier = Modifier
+                                    .weight(segmentInfo.first)
+                                    .background(segmentInfo.second)
+                                    .height(48.dp)
+                            )
+                        }
+                    }
+                }
+            }
 
+            Row {
+                Spacer(modifier = Modifier.weight(progress))
+                Box(
+                    modifier = Modifier
+                        .height(56.dp)
+                        .background(colors.white)
+                        .width(3.dp)
+                )
+                Spacer(modifier = Modifier.weight(1 - progress))
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         DescriptionText(
             selectedSegment?.label ?: "Extremely Obese",
-            color = selectedSegment?.color ?: colors.lightMaroon,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            color = selectedSegment?.color ?: colors.lightMaroon
         )
     }
 }
