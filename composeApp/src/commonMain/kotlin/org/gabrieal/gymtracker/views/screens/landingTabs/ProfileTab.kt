@@ -18,6 +18,7 @@ import androidx.compose.material.icons.rounded.Accessibility
 import androidx.compose.material.icons.rounded.Height
 import androidx.compose.material.icons.rounded.MonitorWeight
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,19 +27,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import org.gabrieal.gymtracker.util.appUtil.calculateBMI
-import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
+import org.gabrieal.gymtracker.util.appUtil.getBMISummary
+import org.gabrieal.gymtracker.util.appUtil.getListForWeightHeightSpinner
+import org.gabrieal.gymtracker.util.systemUtil.ShowSpinner
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.viewmodel.profile.ProfileViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.CustomCard
 import org.gabrieal.gymtracker.views.widgets.DashedDivider
+import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.views.widgets.TinyText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
 
@@ -52,6 +55,9 @@ object ProfileTab : Tab {
 
         val routines = uiState.selectedRoutineList
         val profile = uiState.profile
+        val weight = profile?.weight
+        val height = profile?.height
+
         val saveRoutineList = uiState.saveRoutineList
         val saveProfile = uiState.saveProfile
         val weightHeightBMIClicked = uiState.weightHeightBMIClicked
@@ -83,18 +89,15 @@ object ProfileTab : Tab {
                             enabled = true,
                             content = {
                                 val typeOfData = listOf(
-                                    Pair(Triple(profile?.weight, Icons.Rounded.MonitorWeight, "KG"), {
-                                        viewModel.setWeightHeightBMIClicked(true)
+                                    Pair(Triple(weight?.toInt(), Icons.Rounded.MonitorWeight, "KG"), {
+                                        viewModel.setWeightHeightBMIClicked(0)
                                     }),
-                                    Pair(Triple(profile?.height, Icons.Rounded.Height, "CM"), {
-                                        viewModel.setWeightHeightBMIClicked(true)
-                                    }),
-                                    Pair(Triple(calculateBMI(profile?.weight, profile?.height), Icons.Rounded.Accessibility, "BMI"), {
-                                        viewModel.setWeightHeightBMIClicked(true)
+                                    Pair(Triple(height?.toInt(), Icons.Rounded.Height, "CM"), {
+                                        viewModel.setWeightHeightBMIClicked(1)
                                     }),
                                 )
                                 Column(
-                                    modifier = Modifier.fillMaxWidth().padding(16.dp)
+                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
                                 ) {
                                     Row(
                                         modifier = Modifier.fillMaxWidth()
@@ -102,10 +105,13 @@ object ProfileTab : Tab {
                                         horizontalArrangement = Arrangement.SpaceEvenly
                                     ) {
                                         typeOfData.forEachIndexed { index, pair ->
-                                            val title: String = if(pair.first.first != null) "${pair.first.first} ${pair.first.third}" else "No Data"
-                                            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.clickable {
-                                                pair.second.invoke()
-                                            }) {
+                                            val title: String =
+                                                if (pair.first.first != null) "${pair.first.first} ${pair.first.third}" else "No Data"
+                                            Column(
+                                                horizontalAlignment = Alignment.CenterHorizontally,
+                                                modifier = Modifier.clickable {
+                                                    pair.second.invoke()
+                                                }) {
                                                 Spacer(modifier = Modifier.height(2.dp))
                                                 Icon(
                                                     painter = rememberVectorPainter(pair.first.second),
@@ -122,6 +128,11 @@ object ProfileTab : Tab {
                                             }
                                         }
                                     }
+
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    HorizontalDivider()
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    getBMISummary(weight = weight, height = height)
                                 }
                             }
                         )
@@ -153,20 +164,23 @@ object ProfileTab : Tab {
             viewModel.saveRoutineList()
         }
 
-        if (weightHeightBMIClicked) {
-            ShowInputDialog(
-                titleMessage = Pair(
-                    "Are you sure?",
-                    "You will lose all previous changes"
-                ),
-                positiveButton = Pair("Proceed") {
-                    println(it)
-                    viewModel.setWeightHeightBMIClicked(false)
-                },
-                negativeButton = Pair("Cancel") {
-                    viewModel.setWeightHeightBMIClicked(false)
-                },
-                type = KeyboardType.Decimal
+        if (weightHeightBMIClicked != -1) {
+            val list = getListForWeightHeightSpinner(weightHeightBMIClicked)
+            ShowSpinner(
+                title = "Select your ${if (weightHeightBMIClicked == 0) "weight" else "height"}",
+                options = list,
+                onOptionSelected = { index ->
+                    if (index == -1) {
+                        viewModel.setWeightHeightBMIClicked(-1)
+                        return@ShowSpinner
+                    }
+                    when (weightHeightBMIClicked) {
+                        0 -> profile?.weight = list[index].removeSuffix(" KG").toDouble()
+                        1 -> profile?.height = list[index].removeSuffix(" CM").toDouble()
+                    }
+                    viewModel.setWeightHeightBMIClicked(-1)
+                    profile?.let { viewModel.updateProfile(it) }
+                }
             )
         }
     }

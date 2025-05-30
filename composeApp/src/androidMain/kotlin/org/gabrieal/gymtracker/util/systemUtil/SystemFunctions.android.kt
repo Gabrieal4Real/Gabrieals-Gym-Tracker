@@ -2,11 +2,18 @@ package org.gabrieal.gymtracker.util.systemUtil
 
 import android.content.Intent
 import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -109,6 +116,43 @@ actual fun ShowInputDialog(
         dismissButton = {
             TextButton(onClick = negativeButton.second) {
                 Text(negativeButton.first)
+            }
+        }
+    )
+}
+
+@Composable
+actual fun ShowSpinner(
+    title: String,
+    options: List<String>,
+    onOptionSelected: (Int) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = { onOptionSelected(-1) },
+        title = { Text(title) },
+        text = {
+            LazyColumn(modifier = Modifier.fillMaxHeight(0.5f)) {
+                items(options.size) { index ->
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = options[index],
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onOptionSelected(index)
+                                }
+                                .padding(vertical = 8.dp),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                onOptionSelected(-1)
+            }) {
+                Text("Cancel")
             }
         }
     )

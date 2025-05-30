@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
+import org.gabrieal.gymtracker.model.Profile
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
@@ -37,8 +38,8 @@ class ProfileViewModel {
         }
     }
 
-    fun setWeightHeightBMIClicked(save: Boolean) {
-        _uiState.update { it.copy(weightHeightBMIClicked = save) }
+    fun setWeightHeightBMIClicked(weightHeightBMIClicked: Int) {
+        _uiState.update { it.copy(weightHeightBMIClicked = weightHeightBMIClicked) }
     }
 
     private fun loadProfile() {
@@ -46,6 +47,11 @@ class ProfileViewModel {
         _uiState.update {
             it.copy(profile = profile)
         }
+    }
+
+    fun updateProfile(profile: Profile) {
+        _uiState.update { it.copy(profile = profile) }
+        setProfile(true)
     }
 
     @Composable

@@ -1,6 +1,9 @@
 package org.gabrieal.gymtracker.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Profile(
-    val weight: Double? = null,
-    val height: Double? = null,
+    var weight: Double? = null,
+    var height: Double? = null
 )

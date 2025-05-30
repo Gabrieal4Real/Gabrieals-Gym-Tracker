@@ -8,5 +8,5 @@ data class ProfileUiState(
     val profile: Profile? = null,
     val saveProfile: Boolean = false,
     val saveRoutineList: Boolean = false,
-    val weightHeightBMIClicked: Boolean = false
+    val weightHeightBMIClicked: Int = -1
 )

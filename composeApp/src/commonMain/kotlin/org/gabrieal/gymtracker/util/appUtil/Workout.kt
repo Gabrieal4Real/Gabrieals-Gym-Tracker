@@ -1,9 +1,23 @@
 package org.gabrieal.gymtracker.util.appUtil
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import org.gabrieal.gymtracker.views.widgets.SubtitleText
+import org.gabrieal.gymtracker.views.widgets.TinyText
+import kotlin.math.round
+import kotlin.math.roundToInt
+
 val shortFormDays = listOf("M", "T", "W", "T", "F", "S", "S")
 val longFormDays =
     listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
-val planTitles = listOf("Full Body", "Push", "Pull", "Legs", "Accessory", "Upper Body", "Lower Body")
+val planTitles =
+    listOf("Full Body", "Push", "Pull", "Legs", "Accessory", "Upper Body", "Lower Body")
 val plans = listOf(
     listOf("Full Body"),
     listOf("Upper Body", "Lower Body"),
@@ -114,10 +128,12 @@ fun formatRestTime(seconds: Int): String {
         seconds <= 90 -> {
             "${seconds}s"
         }
+
         seconds < 3600 -> {
             val minutes = seconds / 60
             "${minutes}m"
         }
+
         else -> {
             val hours = seconds / 3600
             val minutes = (seconds % 3600) / 60
@@ -139,11 +155,62 @@ fun getPlanTitle(routineName: String?): String {
     return planTitle ?: "Rest"
 }
 
-fun calculateBMI(weight: Double?, height: Double?): Double? {
-    if (weight != null && height != null) {
+@Composable
+fun getBMISummary(weight: Double?, height: Double?) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        SubtitleText("Body Mass Index Summary")
+        Spacer(modifier = Modifier.height(2.dp))
+        if (weight == null || height == null) {
+            TinyText("Your BMI will be calculated based on your height and weight")
+            return
+        }
+
+        Spacer(modifier = Modifier.height(2.dp))
+
         val heightInMeters = height / 100
-        return weight / (heightInMeters * heightInMeters)
+        val bmi = weight / (heightInMeters * heightInMeters)
+        val roundedBMI = (round(bmi * 100) / 100)
+
+        val minHealthyBMI = 18.5
+        val maxHealthyBMI = 25.0
+
+        val minHealthyWeight = minHealthyBMI * heightInMeters * heightInMeters
+        val maxHealthyWeight = maxHealthyBMI * heightInMeters * heightInMeters
+
+        val roundedMinWeight = (round(minHealthyWeight * 10) / 10)
+        val roundedMaxWeight = maxHealthyWeight.roundToInt()
+
+        val weightToLose = if (weight > maxHealthyWeight) {
+            round((weight - maxHealthyWeight) * 10) / 10
+        } else null
+
+        val listOfBMIs = listOf(
+            Pair("Your BMI: ", "$roundedBMI kg/m²"),
+            Pair("Healthy BMI range: ", "18.5 kg/m² - 25.0 kg/m²"),
+            Pair("Healthy weight for your height: ", "$roundedMinWeight kg - $roundedMaxWeight kg"),
+            weightToLose?.let { Pair("Lose $it kg to reach a BMI of 25.0 kg/m²", "") }
+        )
+
+        listOfBMIs.forEach {
+            TinyText("${it?.first}${it?.second}", modifier = Modifier.fillMaxWidth())
+        }
     }
-    return null
 }
 
+fun getListForWeightHeightSpinner(weightHeightBMIClicked: Int): List<String> {
+    val list = mutableListOf<String>()
+    when (weightHeightBMIClicked) {
+        0 -> {
+            for (i in 0..250) {
+                list.add("$i KG")
+            }
+        }
+
+        1 -> {
+            for (i in 0..250) {
+                list.add("$i CM")
+            }
+        }
+    }
+    return list
+}

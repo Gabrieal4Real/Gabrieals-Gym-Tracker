@@ -48,6 +48,13 @@ expect fun ShowInputDialog(
 )
 
 @Composable
+expect fun ShowSpinner(
+    title: String,
+    options: List<String>,
+    onOptionSelected: (Int) -> Unit
+)
+
+@Composable
 expect fun ShowToast(message: String)
 
 expect fun getTodayDayName(): String

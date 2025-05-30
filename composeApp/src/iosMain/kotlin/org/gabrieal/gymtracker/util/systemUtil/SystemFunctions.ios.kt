@@ -2,13 +2,20 @@ package org.gabrieal.gymtracker.util.systemUtil
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.input.KeyboardType
-import kotlinx.cinterop.CValue
-import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.useContents
-
-import platform.UIKit.*
-import platform.Foundation.*
-import platform.darwin.NSObject
+import platform.Foundation.NSDate
+import platform.Foundation.NSDateFormatter
+import platform.Foundation.NSURL
+import platform.UIKit.UIAlertAction
+import platform.UIKit.UIAlertActionStyleCancel
+import platform.UIKit.UIAlertActionStyleDefault
+import platform.UIKit.UIAlertController
+import platform.UIKit.UIAlertControllerStyleActionSheet
+import platform.UIKit.UIAlertControllerStyleAlert
+import platform.UIKit.UIApplication
+import platform.UIKit.UIKeyboardTypeDecimalPad
+import platform.UIKit.UIKeyboardTypeDefault
+import platform.UIKit.UIKeyboardTypeNumberPad
+import platform.UIKit.UITextField
 
 @Composable
 actual fun OpenURL(url: String) {
@@ -104,8 +111,14 @@ actual fun ShowInputDialog(
 
     alertController.addTextFieldWithConfigurationHandler { textField ->
         when (type) {
-            KeyboardType.Number -> { textField?.keyboardType = UIKeyboardTypeNumberPad }
-            KeyboardType.Text -> { textField?.keyboardType = UIKeyboardTypeDefault }
+            KeyboardType.Number -> {
+                textField?.keyboardType = UIKeyboardTypeNumberPad
+            }
+
+            KeyboardType.Text -> {
+                textField?.keyboardType = UIKeyboardTypeDefault
+            }
+
             KeyboardType.Decimal -> {
                 textField?.keyboardType = UIKeyboardTypeDecimalPad
             }
@@ -133,4 +146,32 @@ actual fun ShowInputDialog(
     // Present the alert
     val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
     rootViewController?.presentViewController(alertController, animated = true, completion = null)
+}
+
+@Composable
+actual fun ShowSpinner(
+    title: String,
+    options: List<String>,
+    onOptionSelected: (Int) -> Unit
+) {
+    val alertController = UIAlertController.alertControllerWithTitle(
+        title = title,
+        message = null,
+        preferredStyle = UIAlertControllerStyleActionSheet
+    )
+    options.forEachIndexed { index, option ->
+        val action = UIAlertAction.actionWithTitle(
+            title = option,
+            style = UIAlertActionStyleDefault
+        ) { _ -> onOptionSelected(index) }
+        alertController.addAction(action)
+    }
+    val cancelAction = UIAlertAction.actionWithTitle(
+        title = "Cancel",
+        style = UIAlertActionStyleCancel,
+        handler = null
+    )
+    alertController.addAction(cancelAction)
+    val rootVC = UIApplication.sharedApplication.keyWindow?.rootViewController
+    rootVC?.presentViewController(alertController, animated = true, completion = null)
 }
