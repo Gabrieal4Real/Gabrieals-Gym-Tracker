@@ -9,6 +9,8 @@ import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.model.SelectedExercise
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.appUtil.getCurrentPlan
+import org.gabrieal.gymtracker.util.appUtil.longFormDays
+import org.gabrieal.gymtracker.util.appUtil.planTitles
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.providePreferences
@@ -63,11 +65,14 @@ class MakeAPlanViewModel {
                 .filterNot { it.day == day }
                 .toMutableList()
                 .apply {
+                    val planTitle = planTitles.find { currentPlan[index].contains(it) }
+
                     add(
                         SelectedExerciseList(
-                            position = index,
+                            position = longFormDays.indexOf(day),
                             day = day,
-                            exercises = updatedExercises
+                            exercises = updatedExercises,
+                            routineName = planTitle
                         )
                     )
                 }
@@ -77,13 +82,15 @@ class MakeAPlanViewModel {
         AppNavigator.navigateToEditPlan(
             day = currentPlan[index],
             exercises = exercises,
-            callback = callback
+            callback = callback,
+            isEditMode = _uiState.value.isEditMode
         )
     }
 
     @Composable
     fun saveRoutineList() {
-        val sortedRoutineList = _uiState.value.selectedRoutineList.sortedBy { it.position }
+        val sortedRoutineList = _uiState.value.selectedRoutineList
+        println(sortedRoutineList)
 
         getCurrentContext().let {
             providePreferences(it).putString(
@@ -99,5 +106,9 @@ class MakeAPlanViewModel {
         val activeDaysCount = _uiState.value.selectedDays.count { it }
         val routineListSize = _uiState.value.selectedRoutineList.size
         return activeDaysCount == routineListSize
+    }
+
+    fun setEditMode(isEditMode: Boolean) {
+        _uiState.update { it.copy(isEditMode = isEditMode) }
     }
 }

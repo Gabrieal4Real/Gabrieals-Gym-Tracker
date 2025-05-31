@@ -26,6 +26,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
+import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.appUtil.getCurrentPlan
 import org.gabrieal.gymtracker.util.appUtil.longFormDays
 import org.gabrieal.gymtracker.util.appUtil.planTitles
@@ -40,6 +41,7 @@ import org.gabrieal.gymtracker.views.widgets.ButtonType
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
 import org.gabrieal.gymtracker.views.widgets.CustomCard
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.IconNext
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.views.widgets.TinyItalicText
 import org.gabrieal.gymtracker.views.widgets.TinyText
@@ -49,6 +51,15 @@ object MakeAPlanScreen : Screen {
 
     fun setSelectedDay(selectedDays: List<Boolean>) {
         viewModel.setSelectedDays(selectedDays)
+    }
+
+    fun setSelectedRoutineList(routineList: List<SelectedExerciseList>) {
+        if (routineList.isEmpty()) return
+        viewModel.updateSelectedRoutineList(routineList)
+    }
+
+    fun setEditMode(isEditMode: Boolean) {
+        viewModel.setEditMode(isEditMode)
     }
 
     @OptIn(InternalVoyagerApi::class)
@@ -62,6 +73,7 @@ object MakeAPlanScreen : Screen {
         val showWarningBack = uiState.showWarningBack
         val showOverrideWarning = uiState.showOverrideWarning
         val saveRoutineList = uiState.saveRoutineList
+        val isEditMode = uiState.isEditMode
 
         BackHandler(enabled = true) {
             viewModel.setShowWarningBack(true)
@@ -130,11 +142,7 @@ object MakeAPlanScreen : Screen {
                                                 color = colors.white
                                             )
                                         } else {
-                                            Icon(
-                                                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                                contentDescription = null,
-                                                tint = colors.textPrimary
-                                            )
+                                            IconNext()
                                         }
                                     }
                                 }
@@ -173,10 +181,11 @@ object MakeAPlanScreen : Screen {
                     }
                 }
 
-                // Animated Image
-                showImage = AnimatedImage(showImage, Res.drawable.start_editing, true)
-                // Update the showImage state in the ViewModel
-                viewModel.setShowImage(showImage)
+                if (!isEditMode) {
+                    // Animated Image
+                    showImage = AnimatedImage(showImage, Res.drawable.start_editing, true)
+                    viewModel.setShowImage(showImage)
+                }
 
                 if (showWarningBack) {
                     ShowAlertDialog(

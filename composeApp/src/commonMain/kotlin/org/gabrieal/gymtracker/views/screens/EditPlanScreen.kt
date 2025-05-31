@@ -68,6 +68,11 @@ object EditPlanScreen : Screen {
         viewModel.initializePlaceholderList()
     }
 
+
+    fun setEditMode(isEditMode: Boolean) {
+        viewModel.setEditMode(isEditMode)
+    }
+
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
@@ -78,6 +83,7 @@ object EditPlanScreen : Screen {
         val showImage = uiState.showImage
         val showRemoveDialog = uiState.showRemoveDialog
         val currentClickedPosition = uiState.currentClickedPosition
+        val isEditMode = uiState.isEditMode
 
         // Main layout
         Column(
@@ -209,8 +215,10 @@ object EditPlanScreen : Screen {
                 }
 
                 // Animated Image
-                val updatedShowImage = AnimatedImage(showImage, Res.drawable.cant_decide, true)
-                viewModel.setShowImage(updatedShowImage)
+                if (!isEditMode) {
+                    val updatedShowImage = AnimatedImage(showImage, Res.drawable.cant_decide, true)
+                    viewModel.setShowImage(updatedShowImage)
+                }
 
                 // Remove exercise dialog
                 if (showRemoveDialog) {

@@ -3,6 +3,8 @@ package org.gabrieal.gymtracker.viewmodel.createSplit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.util.appUtil.longFormDays
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 class CreateSplitViewModel {
@@ -34,8 +36,44 @@ class CreateSplitViewModel {
     }
 
     fun navigateToMakeAPlan() {
-        if (isAnyDaySelected()) {
-            AppNavigator.navigateToMakeAPlan(_uiState.value.selectedDays)
+        if (!isAnyDaySelected()) return
+
+        if (_uiState.value.isEditMode) {
+            val routines = _uiState.value.selectedRoutineList.toMutableList()
+
+            _uiState.value.selectedDays.forEachIndexed { index, selected ->
+                if (!selected) {
+                    routines.removeAll { it.day == longFormDays.elementAt(index) }
+                }
+            }
+
+            AppNavigator.navigateToMakeAPlan(
+                _uiState.value.selectedDays,
+                routines,
+                _uiState.value.isEditMode
+            )
         }
+
+        AppNavigator.navigateToMakeAPlan(
+            _uiState.value.selectedDays,
+            listOf(),
+            _uiState.value.isEditMode
+        )
+    }
+
+    fun isEditMode(routines: List<SelectedExerciseList>) {
+        val currentSelectedDays = mutableListOf(false, false, false, false, false, false, false)
+
+        routines.forEach { routine ->
+            longFormDays.indexOf(routine.day).let { index ->
+                currentSelectedDays[index] = true
+            }
+        }
+
+        _uiState.value = _uiState.value.copy(
+            isEditMode = routines.isNotEmpty(),
+            selectedRoutineList = routines,
+            selectedDays = currentSelectedDays
+        )
     }
 }

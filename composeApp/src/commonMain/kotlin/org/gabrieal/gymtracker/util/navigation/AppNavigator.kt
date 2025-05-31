@@ -34,7 +34,18 @@ object AppNavigator {
         _navigationEvents.value = NavigationEvent.NavigateTo(CreateSplitScreen)
     }
 
-    fun navigateToMakeAPlan(selectedDays: List<Boolean>) {
+    fun navigateToEditSplit(routines: List<SelectedExerciseList>) {
+        CreateSplitScreen.setRoutines(routines)
+        _navigationEvents.value = NavigationEvent.NavigateTo(CreateSplitScreen)
+    }
+
+    fun navigateToMakeAPlan(
+        selectedDays: List<Boolean>,
+        routines: List<SelectedExerciseList>,
+        isEditMode: Boolean
+    ) {
+        MakeAPlanScreen.setEditMode(isEditMode)
+        MakeAPlanScreen.setSelectedRoutineList(routines)
         MakeAPlanScreen.setSelectedDay(selectedDays)
         _navigationEvents.value = NavigationEvent.NavigateTo(MakeAPlanScreen)
     }
@@ -42,11 +53,13 @@ object AppNavigator {
     fun navigateToEditPlan(
         day: String,
         exercises: List<SelectedExercise>?,
-        callback: (List<SelectedExercise>) -> Unit
+        callback: (List<SelectedExercise>) -> Unit,
+        isEditMode: Boolean
     ) {
         EditPlanScreen.setSelectedDay(day)
         EditPlanScreen.setExercises(exercises)
         EditPlanScreen.setCallback(callback)
+        EditPlanScreen.setEditMode(isEditMode)
         _navigationEvents.value = NavigationEvent.NavigateTo(EditPlanScreen)
     }
 

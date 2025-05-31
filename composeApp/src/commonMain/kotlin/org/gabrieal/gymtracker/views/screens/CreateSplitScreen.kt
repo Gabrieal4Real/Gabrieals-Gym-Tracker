@@ -29,12 +29,14 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
+import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.appUtil.plans
 import org.gabrieal.gymtracker.util.appUtil.shortFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.viewmodel.createSplit.CreateSplitViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.AnimatedImage
+import org.gabrieal.gymtracker.views.widgets.BackButtonRow
 import org.gabrieal.gymtracker.views.widgets.BigText
 import org.gabrieal.gymtracker.views.widgets.ConfirmButton
 import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
@@ -46,6 +48,10 @@ import org.gabrieal.gymtracker.views.widgets.TitleRow
 object CreateSplitScreen : Screen {
     private val viewModel = CreateSplitViewModel()
 
+    fun setRoutines(routines: List<SelectedExerciseList>) {
+        viewModel.isEditMode(routines)
+    }
+
     @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
@@ -53,14 +59,17 @@ object CreateSplitScreen : Screen {
 
         val selectedDays = uiState.selectedDays
         var showImage = uiState.showImage
+        val isEditMode = uiState.isEditMode
 
-        BackHandler(enabled = true) {}
+
+        if (!isEditMode)
+            BackHandler(enabled = true) {}
 
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TitleRow(Resources.strings.createSplit)
+            if (isEditMode) BackButtonRow("Edit Split") else TitleRow(Resources.strings.createSplit)
 
             Box(
                 modifier = Modifier
@@ -153,8 +162,10 @@ object CreateSplitScreen : Screen {
                 )
 
                 // Animated Image
-                showImage = AnimatedImage(showImage, Res.drawable.new_to_workout, false)
-                viewModel.setShowImage(showImage)
+                if (!isEditMode) {
+                    showImage = AnimatedImage(showImage, Res.drawable.new_to_workout, false)
+                    viewModel.setShowImage(showImage)
+                }
             }
         }
     }

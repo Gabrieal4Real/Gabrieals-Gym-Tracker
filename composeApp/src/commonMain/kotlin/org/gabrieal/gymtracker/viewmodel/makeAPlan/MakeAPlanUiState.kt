@@ -8,5 +8,6 @@ data class MakeAPlanUiState(
     val showImage: Boolean = true,
     val showWarningBack: Boolean = false,
     val showOverrideWarning: Boolean = false,
-    val saveRoutineList: Boolean = false
+    val saveRoutineList: Boolean = false,
+    val isEditMode: Boolean = false
 )

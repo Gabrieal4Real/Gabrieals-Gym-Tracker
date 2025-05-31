@@ -73,6 +73,7 @@ import org.gabrieal.gymtracker.views.widgets.CustomCard
 import org.gabrieal.gymtracker.views.widgets.DashedDivider
 import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.IconNext
 import org.gabrieal.gymtracker.views.widgets.LinkText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.views.widgets.TinyItalicText
@@ -386,6 +387,7 @@ object HomeTab : Tab {
 
             Row(
                 modifier = Modifier
+                    .padding(16.dp)
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .background(
@@ -399,17 +401,14 @@ object HomeTab : Tab {
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column {
                     DescriptionItalicText("Today's Workout")
                     BiggerText(
                         "${getPlanTitle(selectedRoutine?.routineName)} Day",
                     )
                 }
 
-                BiggerText(
-                    ">",
-                    modifier = Modifier.padding(16.dp)
-                )
+                BiggerText(">")
             }
         }
     }

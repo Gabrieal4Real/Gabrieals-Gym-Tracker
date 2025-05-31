@@ -2,6 +2,7 @@ package org.gabrieal.gymtracker.model
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.gabrieal.gymtracker.util.appUtil.longFormDays
 
 @Serializable
 data class ConvertedTemplate(
@@ -54,7 +55,7 @@ fun convertTemplateToConvertedTemplate(template: Template): ConvertedTemplate {
         return dayList.map { innerList ->
             innerList.map { templateList ->
                 SelectedExerciseList(
-                    position = templateList.position,
+                    position = longFormDays.indexOf(templateList.day),
                     day = templateList.day,
                     exercises = templateList.exercises.map { exercise ->
                         SelectedExercise(

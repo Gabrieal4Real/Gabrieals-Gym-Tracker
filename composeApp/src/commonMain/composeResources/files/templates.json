@@ -314,7 +314,7 @@
         ]
       },
       {
-        "position": 3,
+        "position": 2,
         "day": "Thursday",
         "exercises": [
           {"name": "Bench Press", "sets": 4, "reps": [1, 5]},
@@ -324,7 +324,7 @@
         ]
       },
       {
-        "position": 4,
+        "position": 3,
         "day": "Friday",
         "exercises": [
           {"name": "Neutral-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
@@ -334,7 +334,7 @@
         ]
       },
       {
-        "position": 2,
+        "position": 4,
         "day": "Saturday",
         "exercises": [
           {"name": "Pendulum Squat", "sets": 4, "reps": [8, 12]},

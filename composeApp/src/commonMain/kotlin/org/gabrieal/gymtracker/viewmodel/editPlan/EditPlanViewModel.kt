@@ -127,4 +127,8 @@ class EditPlanViewModel {
 
         AppNavigator.navigateBack()
     }
+
+    fun setEditMode(isEditMode: Boolean) {
+        _uiState.update { it.copy(isEditMode = isEditMode) }
+    }
 }

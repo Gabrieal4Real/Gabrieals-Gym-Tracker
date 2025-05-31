@@ -1,5 +1,7 @@
 package org.gabrieal.gymtracker.util.appUtil
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,9 +13,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import org.gabrieal.gymtracker.model.enums.bmiSegments
@@ -168,19 +173,22 @@ fun getPlanTitle(routineName: String?): String {
 
 @Composable
 fun getBMISummary(weight: Double?, height: Double?) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        if (weight == null || height == null) {
-            SubtitleText("Body Mass Index Summary")
-            Spacer(modifier = Modifier.height(2.dp))
-            TinyText("Your BMI will be calculated based on your height and weight")
-            return
-        }
+    if (weight == null || height == null) {
+        return
+    }
 
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.height(16.dp))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(16.dp))
+
+        SubtitleText("Body Mass Index Summary")
 
         val heightInMeters = height / 100
         val bmi = weight / (heightInMeters * heightInMeters)
         val roundedBMI = (round(bmi * 100) / 100)
 
+        Spacer(modifier = Modifier.height(8.dp))
         BMIBarChart(roundedBMI)
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -236,55 +244,62 @@ fun getListForWeightHeightSpinner(weightHeightBMIClicked: Int): List<String> {
 
 @Composable
 fun BMIBarChart(roundedBMI: Double) {
-    val segmentInfo = bmiSegments.map {
-        Pair(it.range, it.color)
-    }
-
     val progress = ((roundedBMI.toFloat() - 13f) / (41f - 13f)).coerceIn(0.01f, 0.99f)
-    val selectedSegment = bmiSegments.find { it.maxValue >= roundedBMI }
+    val scale by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(durationMillis = 800), label = ""
+    )
+
+    val selectedSegment = bmiSegments.find { it.maxValue >= roundedBMI } ?: bmiSegments.last()
 
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SubtitleText("Body Mass Index Summary")
-        Spacer(modifier = Modifier.height(8.dp))
         Box(modifier = Modifier.fillMaxWidth()) {
+            // Background Bar
             Card(
                 shape = RoundedCornerShape(8.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.Transparent),
-                modifier = Modifier.fillMaxWidth().align(Alignment.Center),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
             ) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        segmentInfo.forEach { segmentInfo ->
-                            Box(
-                                modifier = Modifier
-                                    .weight(segmentInfo.first)
-                                    .background(segmentInfo.second)
-                                    .height(48.dp)
-                            )
-                        }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(8.dp, RoundedCornerShape(8.dp))
+                ) {
+                    bmiSegments.forEach {
+                        Box(
+                            modifier = Modifier
+                                .weight(it.range)
+                                .height(48.dp)
+                                .background(it.color)
+                        )
                     }
                 }
             }
 
-            Row {
-                Spacer(modifier = Modifier.weight(progress))
+            // Marker
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Spacer(modifier = Modifier.weight(scale))
                 Box(
                     modifier = Modifier
                         .height(56.dp)
-                        .background(colors.white)
                         .width(3.dp)
+                        .background(colors.white)
+                        .shadow(8.dp, RoundedCornerShape(8.dp))
                 )
-                Spacer(modifier = Modifier.weight(1 - progress))
+                Spacer(modifier = Modifier.weight(1f - progress))
             }
         }
+
         Spacer(modifier = Modifier.height(8.dp))
+
         DescriptionText(
-            selectedSegment?.label ?: "Extremely Obese",
-            color = selectedSegment?.color ?: colors.lightMaroon
+            text = selectedSegment.label,
+            color = selectedSegment.color
         )
     }
 }

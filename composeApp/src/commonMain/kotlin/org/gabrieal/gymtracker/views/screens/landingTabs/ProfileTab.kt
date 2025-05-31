@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Accessibility
 import androidx.compose.material.icons.rounded.Height
 import androidx.compose.material.icons.rounded.MonitorWeight
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +30,7 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.appUtil.getBMISummary
 import org.gabrieal.gymtracker.util.appUtil.getListForWeightHeightSpinner
 import org.gabrieal.gymtracker.util.systemUtil.ShowSpinner
@@ -40,7 +39,7 @@ import org.gabrieal.gymtracker.viewmodel.profile.ProfileViewModel
 import org.gabrieal.gymtracker.views.colors
 import org.gabrieal.gymtracker.views.widgets.CustomCard
 import org.gabrieal.gymtracker.views.widgets.DashedDivider
-import org.gabrieal.gymtracker.views.widgets.DescriptionText
+import org.gabrieal.gymtracker.views.widgets.IconNext
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.views.widgets.TinyText
 import org.gabrieal.gymtracker.views.widgets.TitleRow
@@ -78,81 +77,37 @@ object ProfileTab : Tab {
             Box(
                 modifier = Modifier.fillMaxSize().background(colors.lighterBackground)
             ) {
-
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp),
                 ) {
                     item {
-                        CustomCard(
-                            enabled = true,
-                            content = {
-                                val typeOfData = listOf(
-                                    Pair(Triple(weight?.toInt(), Icons.Rounded.MonitorWeight, "KG"), {
-                                        viewModel.setWeightHeightBMIClicked(0)
-                                    }),
-                                    Pair(Triple(height?.toInt(), Icons.Rounded.Height, "CM"), {
-                                        viewModel.setWeightHeightBMIClicked(1)
-                                    }),
-                                )
-                                Column(
-                                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
-                                ) {
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth()
-                                            .padding(horizontal = 16.dp),
-                                        horizontalArrangement = Arrangement.SpaceEvenly
-                                    ) {
-                                        typeOfData.forEachIndexed { index, pair ->
-                                            val title: String =
-                                                if (pair.first.first != null) "${pair.first.first} ${pair.first.third}" else "No Data"
-                                            Column(
-                                                horizontalAlignment = Alignment.CenterHorizontally,
-                                                modifier = Modifier.clickable {
-                                                    pair.second.invoke()
-                                                }) {
-                                                Spacer(modifier = Modifier.height(2.dp))
-                                                Icon(
-                                                    painter = rememberVectorPainter(pair.first.second),
-                                                    tint = colors.textPrimary,
-                                                    contentDescription = pair.first.third
-                                                )
-                                                Spacer(modifier = Modifier.height(2.dp))
-                                                TinyText(title)
-                                            }
-                                            if (index != typeOfData.lastIndex) {
-                                                Spacer(modifier = Modifier.width(8.dp))
-                                                DashedDivider()
-                                                Spacer(modifier = Modifier.width(8.dp))
-                                            }
-                                        }
-                                    }
-
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    HorizontalDivider()
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    getBMISummary(weight, height)
-                                }
-                            }
-                        )
+                        WeightHeightCard(weight, height)
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
+
+                    item {
+                        EditRoutinesCard(routines)
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    //Edit Routines
+
+                    //Track Weight
+
+                    //Macronutrient Split Calculator
+
+                    //Protein Intake Calculator
+
+                    //TDEE (Total Daily Energy Expenditure)
+
+                    //BMI Calculator
+
+                    //Maintenance Calorie Calculator
+
+                    //Calorie Tracker
                 }
-
-                //Profile
-
-                //Edit Routines
-
-                //Macronutrient Split Calculator
-
-                //Protein Intake Calculator
-
-                //TDEE (Total Daily Energy Expenditure)
-
-                //BMI Calculator
-
-                //Maintenance Calorie Calculator
-                //Calorie Tracker
             }
         }
 
@@ -183,6 +138,78 @@ object ProfileTab : Tab {
                 }
             )
         }
+    }
+
+    private @Composable
+    fun EditRoutinesCard(routines: List<SelectedExerciseList>) {
+        CustomCard(
+            enabled = true,
+            content = {
+                Row(
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    SubtitleText("Edit Current Routine")
+                    IconNext()
+                }
+            },
+            onClick = {
+                viewModel.navigateToEditSplit(routines)
+            }
+        )
+    }
+
+    @Composable
+    fun WeightHeightCard(weight: Double?, height: Double?) {
+        CustomCard(
+            enabled = true,
+            content = {
+                val typeOfData = listOf(
+                    Pair(Triple(weight?.toInt(), Icons.Rounded.MonitorWeight, "KG"), {
+                        viewModel.setWeightHeightBMIClicked(0)
+                    }),
+                    Pair(Triple(height?.toInt(), Icons.Rounded.Height, "CM"), {
+                        viewModel.setWeightHeightBMIClicked(1)
+                    }),
+                )
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        typeOfData.forEachIndexed { index, pair ->
+                            val title: String =
+                                if (pair.first.first != null) "${pair.first.first} ${pair.first.third}" else "No Data"
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.clickable {
+                                    pair.second.invoke()
+                                }) {
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Icon(
+                                    painter = rememberVectorPainter(pair.first.second),
+                                    tint = colors.textPrimary,
+                                    contentDescription = pair.first.third
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                TinyText(title)
+                            }
+                            if (index != typeOfData.lastIndex) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                                DashedDivider()
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                        }
+                    }
+
+                    getBMISummary(weight, height)
+                }
+            }
+        )
     }
 
     override val options: TabOptions

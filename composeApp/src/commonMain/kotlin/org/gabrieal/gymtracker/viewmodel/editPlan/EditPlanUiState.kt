@@ -8,5 +8,6 @@ data class EditPlanUiState(
     val showImage: Boolean = true,
     val showRemoveDialog: Boolean = false,
     val currentClickedPosition: Int = 0,
-    val placeHolderList: List<String> = emptyList()
+    val placeHolderList: List<String> = emptyList(),
+    val isEditMode: Boolean = false
 )

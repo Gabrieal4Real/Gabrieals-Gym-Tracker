@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.util.appUtil.longFormDays
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
@@ -47,7 +48,7 @@ class HomeViewModel {
 
     @Composable
     fun saveRoutineList() {
-        val sortedRoutineList = _uiState.value.selectedRoutineList.sortedBy { it.position }
+        val sortedRoutineList = _uiState.value.selectedRoutineList
 
         getCurrentContext().let {
             providePreferences(it).putString(
@@ -65,7 +66,7 @@ class HomeViewModel {
 
     fun updateSelectedRoutineList(selectedRoutine: SelectedExerciseList) {
         uiState.value.selectedRoutineList.forEachIndexed { index, routine ->
-            if (routine.position == selectedRoutine.position) {
+            if (routine.day == selectedRoutine.day) {
                 _uiState.update {
                     it.copy(
                         selectedRoutineList = it.selectedRoutineList.toMutableList().apply {
