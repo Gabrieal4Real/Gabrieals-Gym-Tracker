@@ -2,7 +2,7 @@ package org.gabrieal.gymtracker.model
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import org.gabrieal.gymtracker.util.appUtil.longFormDays
+import org.gabrieal.gymtracker.util.app.longFormDays
 
 @Serializable
 data class ConvertedTemplate(

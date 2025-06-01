@@ -5,7 +5,6 @@ expect fun requestNotificationPermission()
 
 expect fun notifyPlatform(message: String)
 
-
 //ConfirmButton("Request Permission", onClick = {
 //    requestNotificationPermission()
 //})

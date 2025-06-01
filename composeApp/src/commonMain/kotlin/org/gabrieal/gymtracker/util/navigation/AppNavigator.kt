@@ -7,12 +7,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.gabrieal.gymtracker.model.SelectedExercise
 import org.gabrieal.gymtracker.model.SelectedExerciseList
-import org.gabrieal.gymtracker.views.screens.CreateSplitScreen
-import org.gabrieal.gymtracker.views.screens.EditPlanScreen
-import org.gabrieal.gymtracker.views.screens.MakeAPlanScreen
-import org.gabrieal.gymtracker.views.screens.StartWorkoutScreen
-import org.gabrieal.gymtracker.views.screens.landingTabs.HomeTab
-import org.gabrieal.gymtracker.views.screens.landingTabs.ViewAllWorkoutTabScreen
+import org.gabrieal.gymtracker.features.createSplit.view.CreateSplitScreen
+import org.gabrieal.gymtracker.features.editPlan.view.EditPlanScreen
+import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
+import org.gabrieal.gymtracker.features.startWorkout.view.StartWorkoutScreen
+import org.gabrieal.gymtracker.features.home.view.HomeTab
+import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
 
 
 object AppNavigator {

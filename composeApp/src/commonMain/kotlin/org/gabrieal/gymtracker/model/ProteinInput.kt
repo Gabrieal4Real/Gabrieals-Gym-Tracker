@@ -1,8 +1,7 @@
 package org.gabrieal.gymtracker.model
 
-enum class FitnessGoal {
-    MAINTENANCE, FAT_LOSS, MUSCLE_GAIN
-}
+import org.gabrieal.gymtracker.util.enums.ActivityLevel
+import org.gabrieal.gymtracker.util.enums.FitnessGoal
 
 data class ProteinInput(
     val weightKg: Double,
