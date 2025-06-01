@@ -9,7 +9,8 @@ import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.views.allExistingExerciseList
 
 class ViewAllWorkoutViewModel {
-    private val _uiState = MutableStateFlow(ViewAllWorkoutUiState(filteredWorkouts = allExistingExerciseList))
+    private val _uiState =
+        MutableStateFlow(ViewAllWorkoutUiState(filteredWorkouts = allExistingExerciseList))
 
     val uiState: StateFlow<ViewAllWorkoutUiState> = _uiState.asStateFlow()
 

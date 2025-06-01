@@ -88,7 +88,8 @@ object StartWorkoutScreen : Screen {
                         )
                         BiggerText(
                             "${getPlanTitle(selectedExerciseList?.routineName)} Day",
-                            modifier = Modifier.align(Alignment.CenterHorizontally).scale(popOut().value)
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                                .scale(popOut().value)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         AnimatedDividerWithScale()
@@ -101,7 +102,9 @@ object StartWorkoutScreen : Screen {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                             content = {
-                                items(selectedExerciseList?.exercises?.size ?: 0) { selectedExercise ->
+                                items(
+                                    selectedExerciseList?.exercises?.size ?: 0
+                                ) { selectedExercise ->
                                     ExerciseCard(selectedExerciseList, selectedExercise)
                                     Spacer(modifier = Modifier.height(8.dp))
                                 }
@@ -131,13 +134,22 @@ object StartWorkoutScreen : Screen {
                     )
                     val exercise = selectedExerciseList?.exercises?.getOrNull(selectedExercise)
                     val sets = Pair("${exercise?.sets ?: "-"} sets", Res.drawable.icon_sets)
-                    val reps = Pair("${exercise?.reps?.first ?: "-"} to ${exercise?.reps?.second ?: "-"} reps", Res.drawable.icon_reps)
-                    val timer = Pair("${formatRestTime(getCurrentTimerInSeconds(exercise?.reps))} rest", Res.drawable.icon_timer)
+                    val reps = Pair(
+                        "${exercise?.reps?.first ?: "-"} to ${exercise?.reps?.second ?: "-"} reps",
+                        Res.drawable.icon_reps
+                    )
+                    val timer = Pair(
+                        "${formatRestTime(getCurrentTimerInSeconds(exercise?.reps))} rest",
+                        Res.drawable.icon_timer
+                    )
                     val listOfPairs = listOf(sets, reps, timer)
                     Spacer(modifier = Modifier.height(8.dp))
                     Row {
                         listOfPairs.forEachIndexed { index, pair ->
-                            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.weight(1f)) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.weight(1f)
+                            ) {
                                 Image(
                                     painter = painterResource(pair.second),
                                     contentDescription = pair.first,

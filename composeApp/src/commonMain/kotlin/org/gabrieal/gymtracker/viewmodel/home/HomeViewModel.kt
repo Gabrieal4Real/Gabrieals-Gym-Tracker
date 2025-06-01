@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.model.SelectedExerciseList
-import org.gabrieal.gymtracker.util.appUtil.longFormDays
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
@@ -42,7 +41,10 @@ class HomeViewModel {
         AppNavigator.navigateToCreateSplit()
     }
 
-    fun navigateToStartWorkout(selectedExerciseList: SelectedExerciseList, callback: (SelectedExerciseList) -> Unit) {
+    fun navigateToStartWorkout(
+        selectedExerciseList: SelectedExerciseList,
+        callback: (SelectedExerciseList) -> Unit
+    ) {
         AppNavigator.navigateToStartWorkout(selectedExerciseList, callback)
     }
 

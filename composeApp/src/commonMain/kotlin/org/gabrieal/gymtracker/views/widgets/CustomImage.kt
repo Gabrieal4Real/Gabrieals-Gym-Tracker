@@ -48,12 +48,32 @@ fun AnimatedImage(showImage: Boolean, resource: DrawableResource, isLeft: Boolea
         animationVisibility = true
     }
 
-    var enterAnimation = slideInHorizontally(animationSpec = tween(600, easing = FastOutSlowInEasing)) { fullWidth -> fullWidth } + fadeIn()
-    var exitAnimation = slideOutHorizontally(animationSpec = tween(1000, easing = FastOutSlowInEasing)) { fullWidth -> fullWidth } + fadeOut()
+    var enterAnimation = slideInHorizontally(
+        animationSpec = tween(
+            600,
+            easing = FastOutSlowInEasing
+        )
+    ) { fullWidth -> fullWidth } + fadeIn()
+    var exitAnimation = slideOutHorizontally(
+        animationSpec = tween(
+            1000,
+            easing = FastOutSlowInEasing
+        )
+    ) { fullWidth -> fullWidth } + fadeOut()
 
     if (isLeft) {
-        enterAnimation = slideInHorizontally(animationSpec = tween(600, easing = FastOutSlowInEasing)) { fullWidth -> -fullWidth } + fadeIn()
-        exitAnimation = slideOutHorizontally(animationSpec = tween(1000, easing = FastOutSlowInEasing)) { fullWidth -> -fullWidth } + fadeOut()
+        enterAnimation = slideInHorizontally(
+            animationSpec = tween(
+                600,
+                easing = FastOutSlowInEasing
+            )
+        ) { fullWidth -> -fullWidth } + fadeIn()
+        exitAnimation = slideOutHorizontally(
+            animationSpec = tween(
+                1000,
+                easing = FastOutSlowInEasing
+            )
+        ) { fullWidth -> -fullWidth } + fadeOut()
     }
 
     if (!boxVisibility) return boxVisibility

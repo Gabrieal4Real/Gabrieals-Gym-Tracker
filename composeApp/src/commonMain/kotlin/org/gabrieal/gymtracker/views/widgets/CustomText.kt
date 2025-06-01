@@ -116,7 +116,12 @@ fun DescriptionItalicText(
 }
 
 @Composable
-fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary, textAlign: TextAlign = TextAlign.Start) {
+fun TinyText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textPrimary,
+    textAlign: TextAlign = TextAlign.Start
+) {
     Text(
         text,
         style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
@@ -128,7 +133,12 @@ fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = colors.
 }
 
 @Composable
-fun TinyItalicText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary, textAlign: TextAlign = TextAlign.Start) {
+fun TinyItalicText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textPrimary,
+    textAlign: TextAlign = TextAlign.Start
+) {
     Text(
         text,
         style = TextStyle(

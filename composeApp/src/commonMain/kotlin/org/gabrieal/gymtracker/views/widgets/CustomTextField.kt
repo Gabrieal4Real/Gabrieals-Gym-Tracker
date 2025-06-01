@@ -84,10 +84,10 @@ fun CustomTextField(
                             tint = colors.black,
                             modifier = Modifier.size(48.dp).align(Alignment.CenterEnd)
                                 .padding(start = 8.dp, end = 8.dp).clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = resource.second
-                            )
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = resource.second
+                                )
                         )
                     }
                 }

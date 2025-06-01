@@ -9,9 +9,9 @@ import org.gabrieal.gymtracker.model.SelectedExercise
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.views.screens.CreateSplitScreen
 import org.gabrieal.gymtracker.views.screens.EditPlanScreen
-import org.gabrieal.gymtracker.views.screens.landingTabs.HomeTab
 import org.gabrieal.gymtracker.views.screens.MakeAPlanScreen
 import org.gabrieal.gymtracker.views.screens.StartWorkoutScreen
+import org.gabrieal.gymtracker.views.screens.landingTabs.HomeTab
 import org.gabrieal.gymtracker.views.screens.landingTabs.ViewAllWorkoutTabScreen
 
 
@@ -87,7 +87,10 @@ object AppNavigator {
         _navigationEvents.value = null
     }
 
-    fun navigateToStartWorkout(selectedExerciseList: SelectedExerciseList, callback: (selectedExerciseList: SelectedExerciseList) -> Unit) {
+    fun navigateToStartWorkout(
+        selectedExerciseList: SelectedExerciseList,
+        callback: (selectedExerciseList: SelectedExerciseList) -> Unit
+    ) {
         StartWorkoutScreen.setCallback {
             callback(it)
         }

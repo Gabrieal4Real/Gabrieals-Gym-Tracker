@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Fastfood
 import androidx.compose.material.icons.rounded.Height
 import androidx.compose.material.icons.rounded.MonitorWeight
 import androidx.compose.material.icons.rounded.Person
@@ -37,10 +36,6 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import org.gabrieal.gymtracker.model.enums.ActivityLevel
-import org.gabrieal.gymtracker.model.enums.CalorieCalculator
-import org.gabrieal.gymtracker.model.enums.CalorieInput
-import org.gabrieal.gymtracker.model.enums.Gender
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.appUtil.getBMISummary
 import org.gabrieal.gymtracker.util.appUtil.getListForWeightHeightAgeSpinner
@@ -109,41 +104,14 @@ object ProfileTab : Tab {
                         CalculatorRow(
                             listOf(
                                 Triple(Icons.Rounded.WaterDrop, "Protein Intake Calculator") {
-
+                                    viewModel.navigateToProteinCalculator()
                                 },
                                 Triple(Icons.Rounded.PieChart, "Maintenance Calorie Calculator") {
-                                    val input = CalorieInput(
-                                        gender = Gender.MALE,
-                                        age = age ?: 0,
-                                        weightKg = weight ?: 0.0,
-                                        heightCm = height ?: 0.0,
-                                        activityLevel = ActivityLevel.MODERATELY_ACTIVE
-                                    )
-
-                                    val breakdown = CalorieCalculator.generateGoalBreakdown(input)
-
-                                    breakdown.forEach {
-                                        println("${it.label} (${it.weightChangePerWeekKg} kg/week): ${it.calories} kcal/day (${it.percentageOfMaintenance}%)")
-                                    }
+                                    viewModel.navigateToMaintenanceCalculator()
                                 }
                             )
                         )
                     }
-
-                    item {
-                        CalculatorRow(
-                            listOf(
-                                Triple(Icons.Rounded.MonitorWeight, "Weight Tracker") {
-
-                                },
-                                Triple(Icons.Rounded.Fastfood, "Calorie Tracker") {
-
-                                }
-                            )
-                        )
-                    }
-
-                    //Macronutrient Split Calculator
                 }
             }
         }
@@ -280,7 +248,8 @@ object ProfileTab : Tab {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         typeOfData.forEachIndexed { index, pair ->
-                            val title: String = if (pair.first.first != null) "${pair.first.first}${pair.first.third}" else "No Data"
+                            val title: String =
+                                if (pair.first.first != null) "${pair.first.first}${pair.first.third}" else "No Data"
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.weight(1f).clickable {

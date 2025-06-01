@@ -1,7 +1,6 @@
 package org.gabrieal.gymtracker.views.screens.landingTabs
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,11 +26,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
@@ -73,7 +70,6 @@ import org.gabrieal.gymtracker.views.widgets.CustomCard
 import org.gabrieal.gymtracker.views.widgets.DashedDivider
 import org.gabrieal.gymtracker.views.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.views.widgets.DescriptionText
-import org.gabrieal.gymtracker.views.widgets.IconNext
 import org.gabrieal.gymtracker.views.widgets.LinkText
 import org.gabrieal.gymtracker.views.widgets.SubtitleText
 import org.gabrieal.gymtracker.views.widgets.TinyItalicText
@@ -232,7 +228,8 @@ object HomeTab : Tab {
                     if (completedRoutine != null) {
                         BiggerText(getPlanTitle(completedRoutine.routineName))
                         Spacer(modifier = Modifier.height(2.dp))
-                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() } ?: "", textAlign = TextAlign.Center)
+                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
+                            ?: "", textAlign = TextAlign.Center)
                         return@Column
                     }
 
