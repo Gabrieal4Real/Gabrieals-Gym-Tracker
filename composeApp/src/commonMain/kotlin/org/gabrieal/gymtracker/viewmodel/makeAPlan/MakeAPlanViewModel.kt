@@ -72,7 +72,8 @@ class MakeAPlanViewModel {
                             position = longFormDays.indexOf(day),
                             day = day,
                             exercises = updatedExercises,
-                            routineName = planTitle
+                            routineName = planTitle,
+                            isCompleted = false
                         )
                     )
                 }

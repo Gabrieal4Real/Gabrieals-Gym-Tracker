@@ -224,7 +224,7 @@ fun getBMISummary(weight: Double?, height: Double?) {
     }
 }
 
-fun getListForWeightHeightSpinner(weightHeightBMIClicked: Int): List<String> {
+fun getListForWeightHeightAgeSpinner(weightHeightBMIClicked: Int): List<String> {
     val list = mutableListOf<String>()
     when (weightHeightBMIClicked) {
         0 -> {
@@ -236,6 +236,12 @@ fun getListForWeightHeightSpinner(weightHeightBMIClicked: Int): List<String> {
         1 -> {
             for (i in 0..250) {
                 list.add("$i CM")
+            }
+        }
+
+        2 -> {
+            for (i in 5..150) {
+                list.add("$i")
             }
         }
     }

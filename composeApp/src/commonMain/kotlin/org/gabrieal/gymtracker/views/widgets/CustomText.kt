@@ -64,7 +64,8 @@ fun SubtitleText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = colors.textSecondary,
-    maxLines: Int = Int.MAX_VALUE
+    maxLines: Int = Int.MAX_VALUE,
+    textAlign: TextAlign = TextAlign.Start
 ) {
     Text(
         text,
@@ -73,7 +74,8 @@ fun SubtitleText(
         fontSize = 16.sp,
         modifier = modifier,
         maxLines = maxLines,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        textAlign = textAlign
     )
 }
 
@@ -81,14 +83,16 @@ fun SubtitleText(
 fun DescriptionText(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = colors.textPrimary
+    color: Color = colors.textPrimary,
+    textAlign: TextAlign = TextAlign.Start
 ) {
     Text(
         text,
         style = TextStyle(fontFamily = MediumText(), lineHeight = 20.sp),
         color = color,
         fontSize = 14.sp,
-        modifier = modifier
+        modifier = modifier,
+        textAlign = textAlign
     )
 }
 
@@ -112,13 +116,14 @@ fun DescriptionItalicText(
 }
 
 @Composable
-fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary) {
+fun TinyText(text: String, modifier: Modifier = Modifier, color: Color = colors.textPrimary, textAlign: TextAlign = TextAlign.Start) {
     Text(
         text,
         style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
         color = color,
         fontSize = 12.sp,
-        modifier = modifier
+        modifier = modifier,
+        textAlign = textAlign
     )
 }
 
