@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -90,18 +91,29 @@ actual fun ShowInputDialog(
         title = { Text(titleMessage.first) },
         text = {
             Column {
-                Text(titleMessage.second)
-                Spacer(modifier = Modifier.height(4.dp))
-                OutlinedTextField(
+                TextField(
                     value = text,
                     onValueChange = {
-                        if (type == KeyboardType.Decimal) {
-                            if (it.isEmpty() || it.matches(Regex("^\\d*\\.?\\d*\$"))) {
+                        val decimalRegex = Regex("^\\d*\\.?\\d*\$")
+                        val numberRegex = Regex("^\\d*\$")
+
+                        when (type) {
+                            KeyboardType.Decimal -> {
+                                if (it.isEmpty() || it.matches(decimalRegex)) {
+                                    text = it
+                                }
+                            }
+                            KeyboardType.Number -> {
+                                if (it.isEmpty() || it.matches(numberRegex)) {
+                                    text = it
+                                }
+                            }
+                            else -> {
                                 text = it
                             }
                         }
                     },
-                    label = { Text("Input") },
+                    placeholder = { Text(titleMessage.second) },
                     keyboardOptions = KeyboardOptions(keyboardType = type)
                 )
             }

@@ -2,9 +2,15 @@ package org.gabrieal.gymtracker.util.systemUtil
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.input.KeyboardType
+import kotlinx.cinterop.CValue
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.useContents
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateFormatter
+import platform.Foundation.NSRange
+import platform.Foundation.NSString
 import platform.Foundation.NSURL
+import platform.Foundation.stringByReplacingCharactersInRange
 import platform.UIKit.UIAlertAction
 import platform.UIKit.UIAlertActionStyleCancel
 import platform.UIKit.UIAlertActionStyleDefault
@@ -16,6 +22,9 @@ import platform.UIKit.UIKeyboardTypeDecimalPad
 import platform.UIKit.UIKeyboardTypeDefault
 import platform.UIKit.UIKeyboardTypeNumberPad
 import platform.UIKit.UITextField
+import platform.UIKit.UITextFieldDelegateProtocol
+import platform.UIKit.*
+import platform.darwin.NSObject
 
 @Composable
 actual fun OpenURL(url: String) {
@@ -110,17 +119,15 @@ actual fun ShowInputDialog(
     )
 
     alertController.addTextFieldWithConfigurationHandler { textField ->
+        textField?.delegate = FilteringTextFieldDelegate(type)
+
         when (type) {
-            KeyboardType.Number -> {
+            KeyboardType.Number, KeyboardType.Decimal -> {
                 textField?.keyboardType = UIKeyboardTypeNumberPad
             }
 
             KeyboardType.Text -> {
                 textField?.keyboardType = UIKeyboardTypeDefault
-            }
-
-            KeyboardType.Decimal -> {
-                textField?.keyboardType = UIKeyboardTypeDecimalPad
             }
         }
     }
@@ -175,4 +182,26 @@ actual fun ShowSpinner(
     alertController.addAction(cancelAction)
     val rootVC = UIApplication.sharedApplication.keyWindow?.rootViewController
     rootVC?.presentViewController(alertController, animated = true, completion = null)
+}
+
+
+class FilteringTextFieldDelegate(
+    private val type: KeyboardType
+) : NSObject(), UITextFieldDelegateProtocol {
+
+    @ExperimentalForeignApi
+    override fun textField(
+        textField: UITextField,
+        shouldChangeCharactersInRange: CValue<NSRange>,
+        replacementString: String
+    ): Boolean {
+        val currentText = (textField.text ?: "") + replacementString
+
+        return when (type) {
+            KeyboardType.Number -> {
+                currentText.isEmpty() || currentText.matches(Regex("^\\d+$"))
+            }
+            else -> true
+        }
+    }
 }

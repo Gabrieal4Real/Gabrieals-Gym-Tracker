@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
@@ -43,6 +44,7 @@ import org.gabrieal.gymtracker.util.systemUtil.ShowSpinner
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
@@ -121,23 +123,21 @@ object ProfileTab : Tab {
         }
 
         if (weightHeightBMIClicked != -1) {
-            val list = getListForWeightHeightAgeSpinner(weightHeightBMIClicked)
-            ShowSpinner(
-                title = "Select your ${if (weightHeightBMIClicked == 0) "weight" else if (weightHeightBMIClicked == 2) "age" else "height"}",
-                options = list,
-                onOptionSelected = { index ->
-                    if (index == -1) {
-                        viewModel.setWeightHeightBMIClicked(-1)
-                        return@ShowSpinner
-                    }
+            val title = if (weightHeightBMIClicked == 0) "Weight" else if (weightHeightBMIClicked == 2) "Age" else "Height"
+            val message = "Enter your ${if (weightHeightBMIClicked == 0) "weight (kg)" else if (weightHeightBMIClicked == 1) "height (cm)" else "age"}"
+            ShowInputDialog(
+                titleMessage = Pair(title, message),
+                positiveButton = "Save" to { it ->
                     when (weightHeightBMIClicked) {
-                        0 -> profile?.weight = list[index].removeSuffix(" KG").toDouble()
-                        1 -> profile?.height = list[index].removeSuffix(" CM").toDouble()
-                        2 -> profile?.age = list[index].toInt()
+                        0 -> profile?.weight = it.toDouble()
+                        1 -> profile?.height = it.toDouble()
+                        2 -> profile?.age = it.toInt()
                     }
                     viewModel.setWeightHeightBMIClicked(-1)
                     profile?.let { viewModel.updateProfile(it) }
-                }
+                },
+                negativeButton = "Cancel" to { viewModel.setWeightHeightBMIClicked(-1) },
+                type = KeyboardType.Number
             )
         }
     }

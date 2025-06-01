@@ -400,9 +400,7 @@ object HomeTab : Tab {
             ) {
                 Column {
                     DescriptionItalicText("Today's Workout")
-                    BiggerText(
-                        "${getPlanTitle(selectedRoutine?.routineName)} Day",
-                    )
+                    BiggerText(selectedRoutine?.routineName ?: "")
                 }
 
                 BiggerText(">")
