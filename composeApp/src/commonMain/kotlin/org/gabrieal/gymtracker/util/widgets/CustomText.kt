@@ -1,9 +1,16 @@
 package org.gabrieal.gymtracker.util.widgets
 
+import androidx.compose.foundation.gestures.scrollBy
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -11,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.util.app.BoldText
 import org.gabrieal.gymtracker.util.app.ExtraBoldText
 import org.gabrieal.gymtracker.util.app.MediumText
@@ -131,6 +139,51 @@ fun TinyText(
         textAlign = textAlign
     )
 }
+
+@Composable
+fun MarqueeTinyText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textPrimary,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(text) {
+        delay(1000)
+        while (true) {
+            val maxScroll = scrollState.maxValue
+            if (maxScroll > 0) {
+                while (scrollState.value < maxScroll) {
+                    scrollState.scrollBy(1.5f)
+                    delay(16L)
+                }
+                delay(1000)
+                scrollState.scrollTo(0)
+                delay(1000)
+            } else {
+                delay(500)
+            }
+        }
+    }
+
+    Row(
+        modifier = modifier
+            .horizontalScroll(scrollState, enabled = false)
+            .clipToBounds()
+    ) {
+        Text(
+            text = text,
+            color = color,
+            fontSize = 12.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Visible,
+            style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
+            textAlign = textAlign
+        )
+    }
+}
+
 
 @Composable
 fun TinyItalicText(

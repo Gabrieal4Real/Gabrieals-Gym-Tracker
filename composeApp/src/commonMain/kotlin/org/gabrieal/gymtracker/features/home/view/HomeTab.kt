@@ -57,14 +57,14 @@ import gymtracker.composeapp.generated.resources.workout_4
 import gymtracker.composeapp.generated.resources.workout_5
 import gymtracker.composeapp.generated.resources.workout_7
 import gymtracker.composeapp.generated.resources.workout_8
+import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.getPlanTitle
 import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getTodayDayName
-import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
-import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
@@ -152,9 +152,7 @@ object HomeTab : Tab {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TitleRow(Resources.strings.appName)
-            Box(
-                modifier = Modifier.fillMaxSize().background(colors.lighterBackground)
-            ) {
+            Box(modifier = Modifier.fillMaxSize().background(colors.lighterBackground)) {
                 if (selectedRoutineList.isEmpty()) {
                     return@Box
                 }

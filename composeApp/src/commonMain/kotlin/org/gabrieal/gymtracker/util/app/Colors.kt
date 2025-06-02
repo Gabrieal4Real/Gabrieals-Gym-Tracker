@@ -22,9 +22,9 @@ abstract class AppColors {
 }
 
 object DarkColors : AppColors() {
-    override val background = Color(0xFF232323)
-    override val lighterBackground = Color(0xFF2E2E2E)
-    override val cardBackground = Color(0xFF393E46)
+    override val background = Color(0xFF1C1C1C)
+    override val lighterBackground = Color(0xFF232323)
+    override val cardBackground = Color(0xFF2F3237)
     override val borderStroke = Color(0xFF948979)
     override val textPrimary = Color(0xFFE3E3E3)
     override val textSecondary = Color(0xFFDFD0B8)

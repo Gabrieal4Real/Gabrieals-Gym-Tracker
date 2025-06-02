@@ -36,6 +36,7 @@ import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewM
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.util.widgets.BackButtonRow
@@ -132,6 +133,7 @@ object StartWorkoutScreen : Screen {
                             when (currentActiveExercise) {
                                 null -> {
                                     viewModel.startWorkout(selectedExerciseList)
+                                    AppNavigator.navigateBack()
                                 }
                                 selectedExerciseList -> {
                                     viewModel.markWorkoutAsDone()
@@ -156,6 +158,7 @@ object StartWorkoutScreen : Screen {
                     positiveButton = Pair("Proceed") {
                         viewModel.setShowWarningReplace(false)
                         viewModel.startWorkout(selectedExerciseList)
+                        AppNavigator.navigateBack()
                     },
                     negativeButton = Pair("Cancel") {
                         viewModel.setShowWarningReplace(false)

@@ -1,10 +1,15 @@
 package org.gabrieal.gymtracker.features.landing.view
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -12,30 +17,70 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import gymtracker.composeapp.generated.resources.Res
+import gymtracker.composeapp.generated.resources.workout_3
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.features.home.view.HomeTab
 import org.gabrieal.gymtracker.features.profile.view.ProfileTab
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
+import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
+import org.gabrieal.gymtracker.util.widgets.MarqueeTinyText
+import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyText
+import org.jetbrains.compose.resources.painterResource
 
 object LandingScreen : Screen {
-    @OptIn(ExperimentalAnimationApi::class)
     @Composable
     override fun Content() {
+        val landingCurrentlyActiveRoutine by remember { mutableStateOf(currentlyActiveRoutine) }
+
         TabNavigator(HomeTab) { tabNavigator ->
             Scaffold(
                 bottomBar = {
-                    NavigationBar(
-                        containerColor = colors.background,
-                    ) {
-                        TabNavigationItem(ViewAllWorkoutTabScreen)
-                        TabNavigationItem(HomeTab)
-                        TabNavigationItem(ProfileTab)
+                    Column {
+                        Box(modifier = Modifier.clickable {
+
+                        }) {
+                            Image(
+                                painter = painterResource(Res.drawable.workout_3),
+                                contentDescription = "Workout image",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.matchParentSize().blur(80.dp)
+                            )
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                if (landingCurrentlyActiveRoutine != null) {
+                                    CustomHorizontalDivider()
+                                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                                        SubtitleText("Currently Active: ${landingCurrentlyActiveRoutine?.routineName.orEmpty()}")
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        MarqueeTinyText(
+                                            landingCurrentlyActiveRoutine?.exercises?.joinToString(
+                                                ", "
+                                            ) { it.name.orEmpty() } ?: "")
+                                    }
+                                }
+                            }
+                        }
+
+                        NavigationBar(
+                            containerColor = colors.background,
+                        ) {
+                            TabNavigationItem(ViewAllWorkoutTabScreen)
+                            TabNavigationItem(HomeTab)
+                            TabNavigationItem(ProfileTab)
+                        }
                     }
                 }
             ) {
