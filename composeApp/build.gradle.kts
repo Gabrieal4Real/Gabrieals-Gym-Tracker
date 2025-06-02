@@ -40,14 +40,17 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
 
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.tab.navigator)
             implementation(libs.voyager.transitions)
+            implementation(libs.voyager.bottom.sheet.navigator)
             implementation(libs.kotlinx.serialization.json)
         }
     }

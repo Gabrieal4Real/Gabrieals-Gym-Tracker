@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
@@ -42,52 +44,55 @@ import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.jetbrains.compose.resources.painterResource
 
 object LandingScreen : Screen {
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
         val landingCurrentlyActiveRoutine by remember { mutableStateOf(currentlyActiveRoutine) }
 
-        TabNavigator(HomeTab) { tabNavigator ->
-            Scaffold(
-                bottomBar = {
-                    Column {
-                        Box(modifier = Modifier.clickable {
-
-                        }) {
-                            Image(
-                                painter = painterResource(Res.drawable.workout_3),
-                                contentDescription = "Workout image",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.matchParentSize().blur(80.dp)
-                            )
-                            Column(modifier = Modifier.fillMaxWidth()) {
-                                if (landingCurrentlyActiveRoutine != null) {
-                                    CustomHorizontalDivider()
-                                    Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                                        SubtitleText("Currently Active: ${landingCurrentlyActiveRoutine?.routineName.orEmpty()}")
-                                        Spacer(modifier = Modifier.height(2.dp))
-                                        MarqueeTinyText(
-                                            landingCurrentlyActiveRoutine?.exercises?.joinToString(
-                                                ", "
-                                            ) { it.name.orEmpty() } ?: "")
+        BottomSheetNavigator { bottomSheetNavigator ->
+            TabNavigator(HomeTab) { tabNavigator ->
+                Scaffold(
+                    bottomBar = {
+                        Column {
+                            Box(modifier = Modifier.clickable {
+//                                bottomSheetNavigator.show(ViewAllWorkoutTabScreen)
+                            }) {
+                                Image(
+                                    painter = painterResource(Res.drawable.workout_3),
+                                    contentDescription = "Workout image",
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.matchParentSize().blur(80.dp)
+                                )
+                                Column(modifier = Modifier.fillMaxWidth()) {
+                                    if (landingCurrentlyActiveRoutine != null) {
+                                        CustomHorizontalDivider()
+                                        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                                            SubtitleText("Currently Active: ${landingCurrentlyActiveRoutine?.routineName.orEmpty()}")
+                                            Spacer(modifier = Modifier.height(2.dp))
+                                            MarqueeTinyText(
+                                                landingCurrentlyActiveRoutine?.exercises?.joinToString(
+                                                    ", "
+                                                ) { it.name.orEmpty() } ?: "")
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        NavigationBar(
-                            containerColor = colors.background,
-                        ) {
-                            TabNavigationItem(ViewAllWorkoutTabScreen)
-                            TabNavigationItem(HomeTab)
-                            TabNavigationItem(ProfileTab)
+                            NavigationBar(
+                                containerColor = colors.background,
+                            ) {
+                                TabNavigationItem(ViewAllWorkoutTabScreen)
+                                TabNavigationItem(HomeTab)
+                                TabNavigationItem(ProfileTab)
+                            }
                         }
                     }
-                }
-            ) {
+                ) {
 
-                Column(modifier = Modifier.padding(it).background(colors.background)) {
-                    Crossfade(targetState = tabNavigator.current) { tab ->
-                        tab.Content()
+                    Column(modifier = Modifier.padding(it).background(colors.background)) {
+                        Crossfade(targetState = tabNavigator.current) { tab ->
+                            tab.Content()
+                        }
                     }
                 }
             }
