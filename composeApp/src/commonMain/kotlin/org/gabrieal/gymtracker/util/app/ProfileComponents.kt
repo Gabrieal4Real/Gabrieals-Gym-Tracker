@@ -185,7 +185,7 @@ fun BMIBarChart(roundedBMI: Double) {
     }
 }
 
-fun calculateProteinGrams(input: ProteinInput): Double {
+fun calculateProteinGrams(input: ProteinInput): Int {
     val multiplier = when (input.goal) {
         FitnessGoal.MAINTENANCE -> when (input.activityLevel) {
             ActivityLevel.SEDENTARY -> 1.0
@@ -196,7 +196,7 @@ fun calculateProteinGrams(input: ProteinInput): Double {
         FitnessGoal.FAT_LOSS -> 1.8
         FitnessGoal.MUSCLE_GAIN -> 2.0
     }
-    return (input.weightKg * multiplier).roundToInt().toDouble()
+    return (input.weightKg * multiplier).roundToInt()
 }
 
 fun calculateBMR(input: CalorieInput): Double {

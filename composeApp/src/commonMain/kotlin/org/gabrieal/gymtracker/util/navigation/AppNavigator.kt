@@ -5,6 +5,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.gabrieal.gymtracker.features.calculator.view.CalculatorScreen
 import org.gabrieal.gymtracker.model.SelectedExercise
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.features.createSplit.view.CreateSplitScreen
@@ -13,6 +14,7 @@ import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
 import org.gabrieal.gymtracker.features.startWorkout.view.StartWorkoutScreen
 import org.gabrieal.gymtracker.features.home.view.HomeTab
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
+import org.gabrieal.gymtracker.model.Profile
 
 
 object AppNavigator {
@@ -96,6 +98,12 @@ object AppNavigator {
         }
         StartWorkoutScreen.setSelectedExerciseList(selectedExerciseList)
         _navigationEvents.value = NavigationEvent.NavigateTo(StartWorkoutScreen)
+    }
+
+    fun navigateToCalculatorScreen(title: String, profile: Profile?) {
+        CalculatorScreen.title = title
+        profile?.let { CalculatorScreen.setProfile(it) }
+        _navigationEvents.value = NavigationEvent.NavigateTo(CalculatorScreen)
     }
 }
 

@@ -9,11 +9,8 @@ import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.model.Profile
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.model.CalorieInput
-import org.gabrieal.gymtracker.model.ProteinInput
-import org.gabrieal.gymtracker.util.app.calculateProteinGrams
 import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
-import org.gabrieal.gymtracker.util.enums.FitnessGoal
 import org.gabrieal.gymtracker.util.enums.Gender
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
@@ -84,11 +81,7 @@ class ProfileViewModel {
     }
 
     fun navigateToProteinCalculator() {
-        val protein = calculateProteinGrams(
-            ProteinInput(weightKg = uiState.value.profile?.weight ?: 0.0, goal = uiState.value.profile?.goal ?: FitnessGoal.MAINTENANCE, activityLevel = uiState.value.profile?.activityLevel ?: ActivityLevel.MODERATELY_ACTIVE)
-        )
-
-        println("Recommended protein: $protein g/day")
+        AppNavigator.navigateToCalculatorScreen("Protein Intake", uiState.value.profile)
     }
 
     fun navigateToMaintenanceCalculator() {

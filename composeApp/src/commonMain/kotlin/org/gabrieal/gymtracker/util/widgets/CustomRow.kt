@@ -8,6 +8,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,9 +22,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FilterAlt
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,8 +45,8 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 @Composable
 fun BackButtonRow(text: String, backButtonAction: (() -> Unit)? = null) {
@@ -227,6 +231,38 @@ fun Modifier.verticalColumnScrollbar(
             topLeft = Offset(this.size.width - endPadding, scrollBarStartOffset),
             size = Size(width.toPx(), scrollBarHeight)
         )
+    }
+}
+
+@Composable
+fun DropdownMenuBox(value: String, placeholderText: String, onSelected: (String) -> Unit, options: List<String>) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Column {
+        CustomNonClickableTextField(
+            value = value,
+            onClick = {
+                expanded = !expanded
+            },
+            placeholderText = placeholderText,
+        )
+        Spacer(modifier = Modifier.height(2.dp))
+        DropdownMenu(
+            modifier = Modifier.fillMaxWidth(0.8f),
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            containerColor = colors.textPrimary,
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        onSelected.invoke(option)
+                        expanded = false
+                    }
+                )
+            }
+        }
     }
 }
 
