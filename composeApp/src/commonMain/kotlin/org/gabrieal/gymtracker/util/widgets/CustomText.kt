@@ -8,7 +8,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
@@ -25,6 +29,10 @@ import org.gabrieal.gymtracker.util.app.MediumText
 import org.gabrieal.gymtracker.util.app.RegularText
 import org.gabrieal.gymtracker.util.app.SemiBoldText
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.util.app.formatRestTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Composable
 fun TitleText(text: String, color: Color = colors.textPrimary) {
@@ -141,7 +149,28 @@ fun TinyText(
 }
 
 @Composable
-fun MarqueeTinyText(
+fun TinyItalicText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textPrimary,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    Text(
+        text,
+        style = TextStyle(
+            fontFamily = RegularText(),
+            fontStyle = FontStyle.Italic,
+            lineHeight = 18.sp,
+        ),
+        color = color,
+        fontSize = 12.sp,
+        modifier = modifier,
+        textAlign = textAlign
+    )
+}
+
+@Composable
+fun MarqueeTinyItalicText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = colors.textPrimary,
@@ -178,32 +207,14 @@ fun MarqueeTinyText(
             fontSize = 12.sp,
             maxLines = 1,
             overflow = TextOverflow.Visible,
-            style = TextStyle(fontFamily = RegularText(), lineHeight = 18.sp),
+            style = TextStyle(
+                fontFamily = RegularText(),
+                fontStyle = FontStyle.Italic,
+                lineHeight = 18.sp,
+            ),
             textAlign = textAlign
         )
     }
-}
-
-
-@Composable
-fun TinyItalicText(
-    text: String,
-    modifier: Modifier = Modifier,
-    color: Color = colors.textPrimary,
-    textAlign: TextAlign = TextAlign.Start
-) {
-    Text(
-        text,
-        style = TextStyle(
-            fontFamily = RegularText(),
-            fontStyle = FontStyle.Italic,
-            lineHeight = 18.sp,
-        ),
-        color = color,
-        fontSize = 12.sp,
-        modifier = modifier,
-        textAlign = textAlign
-    )
 }
 
 @Composable
@@ -215,4 +226,21 @@ fun LinkText(text: String, modifier: Modifier = Modifier) {
         fontSize = 12.sp,
         modifier = modifier
     )
+}
+
+@OptIn(ExperimentalTime::class)
+@Composable
+fun ElapsedTimeDisplay(startTime: Instant?): String {
+    if (startTime == null) return ""
+
+    var now by remember { mutableStateOf(Clock.System.now()) }
+    LaunchedEffect(startTime) {
+        while (true) {
+            now = Clock.System.now()
+            delay(1000)
+        }
+    }
+    val elapsed = now - startTime
+
+    return formatRestTime(elapsed.inWholeSeconds.toInt())
 }

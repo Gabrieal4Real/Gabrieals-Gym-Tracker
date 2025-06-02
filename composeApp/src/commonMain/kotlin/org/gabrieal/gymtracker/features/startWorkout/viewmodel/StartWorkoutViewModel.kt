@@ -6,7 +6,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class StartWorkoutViewModel {
 
@@ -39,9 +42,14 @@ class StartWorkoutViewModel {
         this.callback = callback
     }
 
+    @OptIn(ExperimentalTime::class)
     fun startWorkout(currentActiveExercise: SelectedExerciseList?) {
         currentlyActiveRoutine = currentActiveExercise
         _uiState.update { it.copy(currentActiveExercise = currentActiveExercise) }
+
+        currentActiveExercise?.let {
+            startTime = Clock.System.now()
+        }
     }
 
     fun setShowWarningReplace(show: Boolean) {

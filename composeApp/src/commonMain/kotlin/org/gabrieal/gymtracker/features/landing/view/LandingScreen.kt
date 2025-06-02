@@ -4,8 +4,10 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
@@ -37,14 +40,17 @@ import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.features.home.view.HomeTab
 import org.gabrieal.gymtracker.features.profile.view.ProfileTab
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
+import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
-import org.gabrieal.gymtracker.util.widgets.MarqueeTinyText
+import org.gabrieal.gymtracker.util.widgets.ElapsedTimeDisplay
+import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.jetbrains.compose.resources.painterResource
+import kotlin.time.ExperimentalTime
 
 object LandingScreen : Screen {
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalTime::class)
     @Composable
     override fun Content() {
         val landingCurrentlyActiveRoutine by remember { mutableStateOf(currentlyActiveRoutine) }
@@ -55,7 +61,7 @@ object LandingScreen : Screen {
                     bottomBar = {
                         Column {
                             Box(modifier = Modifier.clickable {
-//                                bottomSheetNavigator.show(ViewAllWorkoutTabScreen)
+                                bottomSheetNavigator.show(ViewAllWorkoutTabScreen)
                             }) {
                                 Image(
                                     painter = painterResource(Res.drawable.workout_3),
@@ -67,9 +73,12 @@ object LandingScreen : Screen {
                                     if (landingCurrentlyActiveRoutine != null) {
                                         CustomHorizontalDivider()
                                         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                                            SubtitleText("Currently Active: ${landingCurrentlyActiveRoutine?.routineName.orEmpty()}")
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                SubtitleText("Currently Active: ${landingCurrentlyActiveRoutine?.routineName.orEmpty()}", modifier = Modifier.weight(1f))
+                                                TinyText(ElapsedTimeDisplay(startTime))
+                                            }
                                             Spacer(modifier = Modifier.height(2.dp))
-                                            MarqueeTinyText(
+                                            MarqueeTinyItalicText(
                                                 landingCurrentlyActiveRoutine?.exercises?.joinToString(
                                                     ", "
                                                 ) { it.name.orEmpty() } ?: "")

@@ -31,6 +31,8 @@ import org.gabrieal.gymtracker.util.systemUtil.readFile
 import org.gabrieal.gymtracker.features.landing.view.LandingScreen
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 expect fun isIOS(): Boolean
 
@@ -38,6 +40,9 @@ var allExistingExerciseList = mutableListOf<Exercise>()
 var templates = ConvertedTemplate()
 var colors: AppColors = DarkColors
 var currentlyActiveRoutine: SelectedExerciseList? = null
+
+@OptIn(ExperimentalTime::class)
+var startTime: Instant? = null
 
 @Composable
 @Preview
