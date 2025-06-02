@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
@@ -36,5 +37,14 @@ class StartWorkoutViewModel {
 
     fun setCallback(callback: (SelectedExerciseList) -> Unit) {
         this.callback = callback
+    }
+
+    fun startWorkout(currentActiveExercise: SelectedExerciseList?) {
+        currentlyActiveRoutine = currentActiveExercise
+        _uiState.update { it.copy(currentActiveExercise = currentActiveExercise) }
+    }
+
+    fun setShowWarningReplace(show: Boolean) {
+        _uiState.update { it.copy(showWarningReplace = show) }
     }
 }

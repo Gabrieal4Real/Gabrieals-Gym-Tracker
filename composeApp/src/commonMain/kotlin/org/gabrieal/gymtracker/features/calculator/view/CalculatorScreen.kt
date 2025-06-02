@@ -81,7 +81,7 @@ object CalculatorScreen : Screen {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            BackButtonRow(title)
+            BackButtonRow("Calculator")
 
             Box(
                 modifier = Modifier
@@ -95,7 +95,7 @@ object CalculatorScreen : Screen {
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                     BiggerText(
-                        "Protein Intake",
+                        title,
                         modifier = Modifier.align(Alignment.CenterHorizontally).scale(popOut().value)
                     )
                     Spacer(modifier = Modifier.height(8.dp))

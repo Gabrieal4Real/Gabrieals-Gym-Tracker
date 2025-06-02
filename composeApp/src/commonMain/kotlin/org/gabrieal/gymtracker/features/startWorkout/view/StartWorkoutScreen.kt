@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -33,6 +34,9 @@ import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.getPlanTitle
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.currentlyActiveRoutine
+import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.util.widgets.BackButtonRow
 import org.gabrieal.gymtracker.util.widgets.BiggerText
@@ -40,7 +44,6 @@ import org.gabrieal.gymtracker.util.widgets.ConfirmButton
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
-import org.gabrieal.gymtracker.util.widgets.TinyButton
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.popOut
 import org.jetbrains.compose.resources.painterResource
@@ -60,6 +63,12 @@ object StartWorkoutScreen : Screen {
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
         val selectedExerciseList = uiState.selectedExerciseList
+        val currentActiveExercise = uiState.currentActiveExercise
+        val showWarningReplace = uiState.showWarningReplace
+
+        LaunchedEffect(currentlyActiveRoutine) {
+            viewModel.startWorkout(currentlyActiveRoutine)
+        }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -111,12 +120,47 @@ object StartWorkoutScreen : Screen {
                             }
                         )
                     }
+                    val title =
+                        when (currentActiveExercise) {
+                            null -> "Start Workout"
+                            selectedExerciseList -> "Complete Workout"
+                            else -> "Replace Workout"
+                        }
                     ConfirmButton(
-                        "Complete Workout",
-                        onClick = { viewModel.markWorkoutAsDone() },
+                        title,
+                        onClick = {
+                            when (currentActiveExercise) {
+                                null -> {
+                                    viewModel.startWorkout(selectedExerciseList)
+                                }
+                                selectedExerciseList -> {
+                                    viewModel.markWorkoutAsDone()
+                                    viewModel.startWorkout(null)
+                                }
+                                else -> {
+                                    viewModel.setShowWarningReplace(true)
+                                }
+                            }
+                        },
                         modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
                     )
                 }
+            }
+
+            if (showWarningReplace) {
+                ShowAlertDialog(
+                    titleMessage = Pair(
+                        "Replace Workout",
+                        "Are you sure you want to replace your current workout with this one?"
+                    ),
+                    positiveButton = Pair("Proceed") {
+                        viewModel.setShowWarningReplace(false)
+                        viewModel.startWorkout(selectedExerciseList)
+                    },
+                    negativeButton = Pair("Cancel") {
+                        viewModel.setShowWarningReplace(false)
+                    }
+                )
             }
         }
     }
@@ -167,14 +211,6 @@ object StartWorkoutScreen : Screen {
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    TinyButton(
-                        "Start    >",
-                        onClick = {
-                            // TODO: navigate to exercise detail/screen
-                        },
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
                 }
             }
         )

@@ -29,6 +29,7 @@ import org.gabrieal.gymtracker.util.systemUtil.StringResources
 import org.gabrieal.gymtracker.util.systemUtil.language
 import org.gabrieal.gymtracker.util.systemUtil.readFile
 import org.gabrieal.gymtracker.features.landing.view.LandingScreen
+import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 expect fun isIOS(): Boolean
@@ -36,6 +37,7 @@ expect fun isIOS(): Boolean
 var allExistingExerciseList = mutableListOf<Exercise>()
 var templates = ConvertedTemplate()
 var colors: AppColors = DarkColors
+var currentlyActiveRoutine: SelectedExerciseList? = null
 
 @Composable
 @Preview
