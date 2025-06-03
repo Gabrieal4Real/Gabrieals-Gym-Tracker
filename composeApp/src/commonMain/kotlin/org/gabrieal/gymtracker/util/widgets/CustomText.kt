@@ -8,11 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
@@ -23,17 +18,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.util.app.BoldText
 import org.gabrieal.gymtracker.util.app.ExtraBoldText
 import org.gabrieal.gymtracker.util.app.MediumText
 import org.gabrieal.gymtracker.util.app.RegularText
 import org.gabrieal.gymtracker.util.app.SemiBoldText
-import org.gabrieal.gymtracker.colors
-import org.gabrieal.gymtracker.util.app.formatRestTime
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
+/**
+ * Poppins Bold with size 18
+ */
 @Composable
 fun TitleText(text: String, color: Color = colors.textPrimary) {
     Text(
@@ -45,6 +39,9 @@ fun TitleText(text: String, color: Color = colors.textPrimary) {
     )
 }
 
+/**
+ * Poppins Extra Bold with size 24
+ */
 @Composable
 fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = colors.textSecondary) {
     Text(
@@ -57,6 +54,9 @@ fun BiggerText(text: String, modifier: Modifier = Modifier, color: Color = color
     )
 }
 
+/**
+ * Poppins Semi Bold with size 20
+ */
 @Composable
 fun BigText(
     text: String,
@@ -75,6 +75,9 @@ fun BigText(
     )
 }
 
+/**
+ * Poppins Semi Bold with size 16
+ */
 @Composable
 fun SubtitleText(
     text: String,
@@ -95,6 +98,9 @@ fun SubtitleText(
     )
 }
 
+/**
+ * Poppins Medium with size 14
+ */
 @Composable
 fun DescriptionText(
     text: String,
@@ -112,6 +118,9 @@ fun DescriptionText(
     )
 }
 
+/**
+ * Poppins Medium Italic with size 14
+ */
 @Composable
 fun DescriptionItalicText(
     text: String,
@@ -131,6 +140,9 @@ fun DescriptionItalicText(
     )
 }
 
+/**
+ * Poppins Regular with size 12
+ */
 @Composable
 fun TinyText(
     text: String,
@@ -148,6 +160,9 @@ fun TinyText(
     )
 }
 
+/**
+ * Poppins Regular Italic with size 12
+ */
 @Composable
 fun TinyItalicText(
     text: String,
@@ -169,6 +184,9 @@ fun TinyItalicText(
     )
 }
 
+/**
+ * Poppins Regular Italic with size 12, with marquee and auto scrolling
+ */
 @Composable
 fun MarqueeTinyItalicText(
     text: String,
@@ -217,6 +235,9 @@ fun MarqueeTinyItalicText(
     }
 }
 
+/**
+ * Poppins Regular with size 12, with blue link
+ */
 @Composable
 fun LinkText(text: String, modifier: Modifier = Modifier) {
     Text(
@@ -226,21 +247,4 @@ fun LinkText(text: String, modifier: Modifier = Modifier) {
         fontSize = 12.sp,
         modifier = modifier
     )
-}
-
-@OptIn(ExperimentalTime::class)
-@Composable
-fun ElapsedTimeDisplay(startTime: Instant?): String {
-    if (startTime == null) return ""
-
-    var now by remember { mutableStateOf(Clock.System.now()) }
-    LaunchedEffect(startTime) {
-        while (true) {
-            now = Clock.System.now()
-            delay(1000)
-        }
-    }
-    val elapsed = now - startTime
-
-    return formatRestTime(elapsed.inWholeSeconds.toInt())
 }

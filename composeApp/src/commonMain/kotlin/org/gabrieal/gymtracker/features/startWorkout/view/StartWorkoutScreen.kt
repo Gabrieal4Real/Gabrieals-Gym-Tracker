@@ -36,6 +36,7 @@ import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewM
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
+import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
@@ -48,6 +49,8 @@ import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.popOut
 import org.jetbrains.compose.resources.painterResource
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 object StartWorkoutScreen : Screen {
     private val viewModel = StartWorkoutViewModel()
@@ -60,6 +63,7 @@ object StartWorkoutScreen : Screen {
         viewModel.setCallback(selectedExerciseList)
     }
 
+    @OptIn(ExperimentalTime::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
@@ -133,6 +137,7 @@ object StartWorkoutScreen : Screen {
                             when (currentActiveExercise) {
                                 null -> {
                                     viewModel.startWorkout(selectedExerciseList)
+                                    startTime = Clock.System.now()
                                     AppNavigator.navigateBack()
                                 }
                                 selectedExerciseList -> {
@@ -158,6 +163,7 @@ object StartWorkoutScreen : Screen {
                     positiveButton = Pair("Proceed") {
                         viewModel.setShowWarningReplace(false)
                         viewModel.startWorkout(selectedExerciseList)
+                        startTime = Clock.System.now()
                         AppNavigator.navigateBack()
                     },
                     negativeButton = Pair("Cancel") {

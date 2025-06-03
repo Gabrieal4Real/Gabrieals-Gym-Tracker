@@ -42,14 +42,9 @@ class StartWorkoutViewModel {
         this.callback = callback
     }
 
-    @OptIn(ExperimentalTime::class)
     fun startWorkout(currentActiveExercise: SelectedExerciseList?) {
         currentlyActiveRoutine = currentActiveExercise
         _uiState.update { it.copy(currentActiveExercise = currentActiveExercise) }
-
-        currentActiveExercise?.let {
-            startTime = Clock.System.now()
-        }
     }
 
     fun setShowWarningReplace(show: Boolean) {

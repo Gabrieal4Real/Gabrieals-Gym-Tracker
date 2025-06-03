@@ -118,7 +118,7 @@ fun formatRestTime(seconds: Int): String {
 
         seconds < 3600 -> {
             val minutes = seconds / 60
-            "${minutes}m"
+            "${minutes}m ${seconds % 60}s"
         }
 
         else -> {

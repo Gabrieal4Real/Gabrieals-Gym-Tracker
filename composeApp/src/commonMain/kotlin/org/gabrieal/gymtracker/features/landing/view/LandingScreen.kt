@@ -4,7 +4,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,12 +19,13 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -38,11 +38,14 @@ import gymtracker.composeapp.generated.resources.workout_3
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.features.home.view.HomeTab
+import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
 import org.gabrieal.gymtracker.features.profile.view.ProfileTab
+import org.gabrieal.gymtracker.features.startWorkout.view.CurrentlyActiveWorkoutScreen
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
+import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.startTime
+import org.gabrieal.gymtracker.util.app.ElapsedTimeDisplay
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
-import org.gabrieal.gymtracker.util.widgets.ElapsedTimeDisplay
 import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyText
@@ -50,41 +53,28 @@ import org.jetbrains.compose.resources.painterResource
 import kotlin.time.ExperimentalTime
 
 object LandingScreen : Screen {
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalTime::class)
+    private val viewModel = LandingViewModel()
+
+    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     override fun Content() {
-        val landingCurrentlyActiveRoutine by remember { mutableStateOf(currentlyActiveRoutine) }
+        val uiState by viewModel.uiState.collectAsState()
+        val landingCurrentlyActiveRoutine = uiState.currentlyActiveRoutine
 
-        BottomSheetNavigator { bottomSheetNavigator ->
+        LaunchedEffect(Unit) {
+            viewModel.setCurrentlyActiveRoutine(currentlyActiveRoutine)
+        }
+
+        BottomSheetNavigator(
+            sheetBackgroundColor = Color.Transparent,
+            sheetContentColor = Color.Transparent
+        ) { bottomSheetNavigator ->
             TabNavigator(HomeTab) { tabNavigator ->
                 Scaffold(
                     bottomBar = {
                         Column {
-                            Box(modifier = Modifier.clickable {
-                                bottomSheetNavigator.show(ViewAllWorkoutTabScreen)
-                            }) {
-                                Image(
-                                    painter = painterResource(Res.drawable.workout_3),
-                                    contentDescription = "Workout image",
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.matchParentSize().blur(80.dp)
-                                )
-                                Column(modifier = Modifier.fillMaxWidth()) {
-                                    if (landingCurrentlyActiveRoutine != null) {
-                                        CustomHorizontalDivider()
-                                        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                SubtitleText("Currently Active: ${landingCurrentlyActiveRoutine?.routineName.orEmpty()}", modifier = Modifier.weight(1f))
-                                                TinyText(ElapsedTimeDisplay(startTime))
-                                            }
-                                            Spacer(modifier = Modifier.height(2.dp))
-                                            MarqueeTinyItalicText(
-                                                landingCurrentlyActiveRoutine?.exercises?.joinToString(
-                                                    ", "
-                                                ) { it.name.orEmpty() } ?: "")
-                                        }
-                                    }
-                                }
+                            landingCurrentlyActiveRoutine?.let {
+                                CurrentlyActiveWorkout(it, bottomSheetNavigator)
                             }
 
                             NavigationBar(
@@ -103,6 +93,41 @@ object LandingScreen : Screen {
                             tab.Content()
                         }
                     }
+                }
+            }
+        }
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Composable
+    fun CurrentlyActiveWorkout(
+        landingCurrentlyActiveRoutine: SelectedExerciseList,
+        bottomSheetNavigator: BottomSheetNavigator
+    ) {
+        Box(modifier = Modifier.clickable {
+            bottomSheetNavigator.show(CurrentlyActiveWorkoutScreen)
+        }) {
+            Image(
+                painter = painterResource(Res.drawable.workout_3),
+                contentDescription = "Workout image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize().blur(80.dp)
+            )
+            Column(modifier = Modifier.fillMaxWidth()) {
+                CustomHorizontalDivider()
+                Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        SubtitleText(
+                            "Currently Active: ${landingCurrentlyActiveRoutine.routineName.orEmpty()}",
+                            modifier = Modifier.weight(1f)
+                        )
+                        TinyText(ElapsedTimeDisplay(startTime))
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
+                    MarqueeTinyItalicText(
+                        landingCurrentlyActiveRoutine?.exercises?.joinToString(
+                            ", "
+                        ) { it.name.orEmpty() } ?: "")
                 }
             }
         }
