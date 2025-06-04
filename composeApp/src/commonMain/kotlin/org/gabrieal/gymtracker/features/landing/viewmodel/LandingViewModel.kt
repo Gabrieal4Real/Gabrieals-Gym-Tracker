@@ -16,4 +16,8 @@ class LandingViewModel : ViewModel() {
             it.copy(currentlyActiveRoutine = currentlyActiveRoutine)
         }
     }
+
+    fun resetCompletedList() {
+
+    }
 }

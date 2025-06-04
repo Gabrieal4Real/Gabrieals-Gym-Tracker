@@ -11,6 +11,7 @@ import org.gabrieal.gymtracker.model.SelectedExercise
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.features.createSplit.view.CreateSplitScreen
 import org.gabrieal.gymtracker.features.editPlan.view.EditPlanScreen
+import org.gabrieal.gymtracker.features.loginRegister.view.LoginRegisterBottomSheet
 import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
 import org.gabrieal.gymtracker.features.startWorkout.view.StartWorkoutScreen
 import org.gabrieal.gymtracker.features.startWorkout.view.CurrentlyActiveWorkoutBottomSheet
@@ -111,6 +112,10 @@ object AppNavigator {
     fun openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine: SelectedExerciseList) {
         CurrentlyActiveWorkoutBottomSheet.setSelectedExerciseList(landingCurrentlyActiveRoutine)
         bottomSheetNavigatorInstance?.show(CurrentlyActiveWorkoutBottomSheet)
+    }
+
+    fun openBottomSheetLoginRegisterScreen() {
+        bottomSheetNavigatorInstance?.show(LoginRegisterBottomSheet)
     }
 }
 
