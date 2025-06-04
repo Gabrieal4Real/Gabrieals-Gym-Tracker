@@ -31,6 +31,7 @@ import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.features.editPlan.viewmodel.EditPlanViewModel
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.util.app.getPlanTitle
 import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.util.widgets.AnimatedImage
 import org.gabrieal.gymtracker.util.widgets.BackButtonRow
@@ -90,10 +91,6 @@ object EditPlanScreen : Screen {
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            var planTitle = planTitles.find { day.contains(it) }
-            if (planTitle.equals("Legs")) {
-                planTitle = "Leg"
-            }
             BackButtonRow("Edit Plan")
             Box {
                 // Main editing area
@@ -114,7 +111,7 @@ object EditPlanScreen : Screen {
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         BiggerText(
-                            "${planTitle} Day",
+                            "${getPlanTitle(planTitles.find { day.contains(it) })} Day",
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                                 .scale(popOut().value)
                         )

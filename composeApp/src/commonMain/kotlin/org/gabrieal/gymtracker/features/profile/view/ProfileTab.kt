@@ -37,14 +37,12 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.getBMISummary
-import org.gabrieal.gymtracker.util.app.getListForWeightHeightAgeSpinner
-import org.gabrieal.gymtracker.util.systemUtil.ShowSpinner
-import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
-import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
-import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
+import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
@@ -123,8 +121,10 @@ object ProfileTab : Tab {
         }
 
         if (weightHeightBMIClicked != -1) {
-            val title = if (weightHeightBMIClicked == 0) "Weight" else if (weightHeightBMIClicked == 2) "Age" else "Height"
-            val message = "Enter your ${if (weightHeightBMIClicked == 0) "weight (kg)" else if (weightHeightBMIClicked == 1) "height (cm)" else "age"}"
+            val title =
+                if (weightHeightBMIClicked == 0) "Weight" else if (weightHeightBMIClicked == 2) "Age" else "Height"
+            val message =
+                "Enter your ${if (weightHeightBMIClicked == 0) "weight (kg)" else if (weightHeightBMIClicked == 1) "height (cm)" else "age"}"
             ShowInputDialog(
                 titleMessage = Pair(title, message),
                 positiveButton = "Save" to { it ->
@@ -141,7 +141,6 @@ object ProfileTab : Tab {
             )
         }
     }
-
 
     @Composable
     fun CalculatorRow(cards: List<Triple<ImageVector, String, () -> Unit>>) {
@@ -208,7 +207,7 @@ object ProfileTab : Tab {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    SubtitleText("Edit Current Routine")
+                    SubtitleText("View My Workouts")
                     IconNext()
                 }
             },

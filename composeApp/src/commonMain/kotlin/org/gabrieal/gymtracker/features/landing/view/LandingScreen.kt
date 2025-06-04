@@ -40,11 +40,11 @@ import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.features.home.view.HomeTab
 import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
 import org.gabrieal.gymtracker.features.profile.view.ProfileTab
-import org.gabrieal.gymtracker.features.startWorkout.view.CurrentlyActiveWorkoutScreen
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTimeDisplay
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
 import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
@@ -69,12 +69,15 @@ object LandingScreen : Screen {
             sheetBackgroundColor = Color.Transparent,
             sheetContentColor = Color.Transparent
         ) { bottomSheetNavigator ->
+            LaunchedEffect(bottomSheetNavigator) {
+                AppNavigator.setBottomSheetNavigator(bottomSheetNavigator)
+            }
             TabNavigator(HomeTab) { tabNavigator ->
                 Scaffold(
                     bottomBar = {
                         Column {
                             landingCurrentlyActiveRoutine?.let {
-                                CurrentlyActiveWorkout(it, bottomSheetNavigator)
+                                CurrentlyActiveWorkout(it)
                             }
 
                             NavigationBar(
@@ -101,11 +104,10 @@ object LandingScreen : Screen {
     @OptIn(ExperimentalTime::class)
     @Composable
     fun CurrentlyActiveWorkout(
-        landingCurrentlyActiveRoutine: SelectedExerciseList,
-        bottomSheetNavigator: BottomSheetNavigator
+        landingCurrentlyActiveRoutine: SelectedExerciseList
     ) {
         Box(modifier = Modifier.clickable {
-            bottomSheetNavigator.show(CurrentlyActiveWorkoutScreen)
+            AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine)
         }) {
             Image(
                 painter = painterResource(Res.drawable.workout_3),

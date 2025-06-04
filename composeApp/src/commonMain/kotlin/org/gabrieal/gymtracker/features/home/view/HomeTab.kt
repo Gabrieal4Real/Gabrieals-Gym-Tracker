@@ -60,7 +60,6 @@ import gymtracker.composeapp.generated.resources.workout_8
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
 import org.gabrieal.gymtracker.model.SelectedExerciseList
-import org.gabrieal.gymtracker.util.app.getPlanTitle
 import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
@@ -224,7 +223,7 @@ object HomeTab : Tab {
                     //check if any routine of the week is completed
                     val completedRoutine = selectedRoutineList.find { it.isCompleted }
                     if (completedRoutine != null) {
-                        BiggerText(getPlanTitle(completedRoutine.routineName))
+                        BiggerText(completedRoutine.routineName ?: "Rest")
                         Spacer(modifier = Modifier.height(2.dp))
                         TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
                             ?: "", textAlign = TextAlign.Center)
@@ -251,7 +250,7 @@ object HomeTab : Tab {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     SubtitleText("What's for tomorrow".uppercase())
-                    BiggerText(getPlanTitle(followingDayRoutine?.routineName))
+                    BiggerText(followingDayRoutine?.routineName ?: "Rest")
                     Spacer(modifier = Modifier.height(2.dp))
                     if (followingDayRoutine != null) {
                         TinyItalicText(followingDayRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
@@ -398,7 +397,7 @@ object HomeTab : Tab {
             ) {
                 Column {
                     DescriptionItalicText("Today's Workout")
-                    BiggerText(selectedRoutine?.routineName ?: "")
+                    BiggerText(selectedRoutine?.routineName ?: "Rest Day")
                 }
 
                 BiggerText(">")

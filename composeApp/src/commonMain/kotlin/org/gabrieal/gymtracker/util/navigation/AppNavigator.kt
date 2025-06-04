@@ -2,6 +2,7 @@ package org.gabrieal.gymtracker.util.navigation
 
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,13 +13,14 @@ import org.gabrieal.gymtracker.features.createSplit.view.CreateSplitScreen
 import org.gabrieal.gymtracker.features.editPlan.view.EditPlanScreen
 import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
 import org.gabrieal.gymtracker.features.startWorkout.view.StartWorkoutScreen
-import org.gabrieal.gymtracker.features.home.view.HomeTab
+import org.gabrieal.gymtracker.features.startWorkout.view.CurrentlyActiveWorkoutBottomSheet
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
 import org.gabrieal.gymtracker.model.Profile
 
 
 object AppNavigator {
     private var navigatorInstance: Navigator? = null
+    private var bottomSheetNavigatorInstance: BottomSheetNavigator? = null
 
     private val _navigationEvents = MutableStateFlow<NavigationEvent?>(null)
     val navigationEvents: StateFlow<NavigationEvent?> = _navigationEvents.asStateFlow()
@@ -28,8 +30,8 @@ object AppNavigator {
         navigatorInstance = navigator
     }
 
-    fun navigateToHome() {
-        _navigationEvents.value = NavigationEvent.NavigateTo(HomeTab)
+    fun setBottomSheetNavigator(navigator: BottomSheetNavigator) {
+        bottomSheetNavigatorInstance = navigator
     }
 
     fun navigateToCreateSplit() {
@@ -104,6 +106,11 @@ object AppNavigator {
         CalculatorScreen.title = title
         profile?.let { CalculatorScreen.setProfile(it) }
         _navigationEvents.value = NavigationEvent.NavigateTo(CalculatorScreen)
+    }
+
+    fun openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine: SelectedExerciseList) {
+        CurrentlyActiveWorkoutBottomSheet.setSelectedExerciseList(landingCurrentlyActiveRoutine)
+        bottomSheetNavigatorInstance?.show(CurrentlyActiveWorkoutBottomSheet)
     }
 }
 

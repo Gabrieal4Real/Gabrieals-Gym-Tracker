@@ -34,8 +34,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-expect fun isIOS(): Boolean
-
 var allExistingExerciseList = mutableListOf<Exercise>()
 var templates = ConvertedTemplate()
 var colors: AppColors = DarkColors

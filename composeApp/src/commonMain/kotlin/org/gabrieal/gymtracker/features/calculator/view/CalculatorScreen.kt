@@ -7,20 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.WaterDrop
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,31 +20,25 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.icon_protein
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.features.calculator.viewmodel.CalculatorViewModel
-import org.gabrieal.gymtracker.features.editPlan.view.EditPlanScreen
 import org.gabrieal.gymtracker.model.Profile
 import org.gabrieal.gymtracker.model.ProteinInput
 import org.gabrieal.gymtracker.util.app.calculateProteinGrams
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal
-import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.util.widgets.BackButtonRow
 import org.gabrieal.gymtracker.util.widgets.BiggerText
-import org.gabrieal.gymtracker.util.widgets.ConfirmButton
 import org.gabrieal.gymtracker.util.widgets.CustomTextField
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.DropdownMenuBox
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
-import org.gabrieal.gymtracker.util.widgets.TitleRow
 import org.gabrieal.gymtracker.util.widgets.popOut
 import org.jetbrains.compose.resources.painterResource
 
@@ -96,7 +80,8 @@ object CalculatorScreen : Screen {
                     )
                     BiggerText(
                         title,
-                        modifier = Modifier.align(Alignment.CenterHorizontally).scale(popOut().value)
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                            .scale(popOut().value)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     AnimatedDividerWithScale()
