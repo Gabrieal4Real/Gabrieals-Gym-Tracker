@@ -172,7 +172,7 @@ fun BMIBarChart(roundedBMI: Double) {
                         .background(colors.white)
                         .shadow(8.dp, RoundedCornerShape(8.dp))
                 )
-                Spacer(modifier = Modifier.weight(1f - progress))
+                Spacer(modifier = Modifier.weight(1f - scale))
             }
         }
 

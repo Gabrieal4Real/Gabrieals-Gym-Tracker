@@ -107,7 +107,7 @@ object LandingScreen : Screen {
         landingCurrentlyActiveRoutine: SelectedExerciseList
     ) {
         Box(modifier = Modifier.clickable {
-            AppNavigator.openBottomSheetLoginRegisterScreen()
+            AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine)
         }) {
             Image(
                 painter = painterResource(Res.drawable.workout_3),

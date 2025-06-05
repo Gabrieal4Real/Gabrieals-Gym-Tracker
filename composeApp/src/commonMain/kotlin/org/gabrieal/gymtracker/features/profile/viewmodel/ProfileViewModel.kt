@@ -46,10 +46,18 @@ class ProfileViewModel {
         }
     }
 
-    fun updateProfile(profile: Profile) {
-        _uiState.update { it.copy(profile = profile) }
+    private fun updateProfile(update: (Profile) -> Profile) {
+        val currentProfile = _uiState.value.profile ?: Profile()
+        val updatedProfile = update(currentProfile)
+        _uiState.update { it.copy(profile = updatedProfile) }
         saveProfile()
     }
+
+    fun updateWeight(weight: Double?) = updateProfile { it.copy(weight = weight) }
+
+    fun updateHeight(height: Double?) = updateProfile { it.copy(height = height) }
+
+    fun updateAge(age: Int?) = updateProfile { it.copy(age = age) }
 
     private fun saveProfile() {
         val profile = _uiState.value.profile

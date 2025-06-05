@@ -71,9 +71,7 @@ class ViewAllWorkoutViewModel {
     }
 
     fun openYoutubeSearch(workoutName: String) {
-        val searchUrl = "https://www.youtube.com/results?search_query=how+to+do+${
-            workoutName.replace(" ", "+")
-        }"
+        val searchUrl = "https://www.youtube.com/results?search_query=how+to+do+${workoutName.replace(" ", "+")}"
         _uiState.update { it.copy(youtubeUrlToOpen = searchUrl) }
     }
 

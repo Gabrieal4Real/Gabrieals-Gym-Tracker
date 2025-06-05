@@ -6,6 +6,5 @@ import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 data class ProfileUiState(
     val selectedRoutineList: List<SelectedExerciseList> = emptyList(),
     val profile: Profile? = null,
-    val saveRoutineList: Boolean = false,
     val weightHeightBMIClicked: Int = -1,
 )

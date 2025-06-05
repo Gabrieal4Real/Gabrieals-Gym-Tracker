@@ -38,6 +38,7 @@ import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.getBMISummary
@@ -61,11 +62,6 @@ object ProfileTab : Tab {
 
         val routines = uiState.selectedRoutineList
         val profile = uiState.profile
-        val weight = profile?.weight
-        val height = profile?.height
-        val age = profile?.age
-
-        val saveRoutineList = uiState.saveRoutineList
         val weightHeightBMIClicked = uiState.weightHeightBMIClicked
 
         val context = getCurrentContext()
@@ -90,7 +86,7 @@ object ProfileTab : Tab {
                         .padding(16.dp),
                 ) {
                     item {
-                        WeightHeightAgeCard(weight, height, age)
+                        ProfileCard(profile)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
 
@@ -122,14 +118,13 @@ object ProfileTab : Tab {
                 "Enter your ${if (weightHeightBMIClicked == 0) "weight (kg)" else if (weightHeightBMIClicked == 1) "height (cm)" else "age"}"
             ShowInputDialog(
                 titleMessage = Pair(title, message),
-                positiveButton = "Save" to { it ->
+                positiveButton = "Save" to {
                     when (weightHeightBMIClicked) {
-                        0 -> profile?.weight = it.toDouble()
-                        1 -> profile?.height = it.toDouble()
-                        2 -> profile?.age = it.toInt()
+                        0 -> viewModel.updateWeight(it.toDouble())
+                        1 -> viewModel.updateHeight(it.toDouble())
+                        2 -> viewModel.updateAge(it.toInt())
                     }
                     viewModel.setWeightHeightBMIClicked(-1)
-                    profile?.let { viewModel.updateProfile(it) }
                 },
                 negativeButton = "Cancel" to { viewModel.setWeightHeightBMIClicked(-1) },
                 type = KeyboardType.Number
@@ -213,7 +208,11 @@ object ProfileTab : Tab {
     }
 
     @Composable
-    fun WeightHeightAgeCard(weight: Double?, height: Double?, age: Int?) {
+    fun ProfileCard(profile: Profile?) {
+        val weight = profile?.weight
+        val height = profile?.height
+        val age = profile?.age
+
         CustomCard(
             enabled = true,
             content = {
