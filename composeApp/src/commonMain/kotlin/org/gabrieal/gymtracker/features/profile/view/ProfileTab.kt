@@ -66,7 +66,6 @@ object ProfileTab : Tab {
         val age = profile?.age
 
         val saveRoutineList = uiState.saveRoutineList
-        val saveProfile = uiState.saveProfile
         val weightHeightBMIClicked = uiState.weightHeightBMIClicked
 
         val context = getCurrentContext()
@@ -114,10 +113,6 @@ object ProfileTab : Tab {
                     }
                 }
             }
-        }
-
-        if (saveProfile) {
-            viewModel.saveProfile()
         }
 
         if (weightHeightBMIClicked != -1) {

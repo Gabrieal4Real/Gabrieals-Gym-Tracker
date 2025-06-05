@@ -1,22 +1,19 @@
 package org.gabrieal.gymtracker.features.profile.viewmodel
 
-import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.serialization.json.Json
+import org.gabrieal.gymtracker.model.CalorieInput
 import org.gabrieal.gymtracker.model.Profile
 import org.gabrieal.gymtracker.model.SelectedExerciseList
-import org.gabrieal.gymtracker.model.CalorieInput
 import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.Gender
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getProfileFromSharedPreferences
 import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.providePreferences
+import org.gabrieal.gymtracker.util.systemUtil.setProfileToSharedPreferences
 
 class ProfileViewModel {
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -31,14 +28,10 @@ class ProfileViewModel {
     }
 
     private fun loadRoutines() {
-        val routines = getSelectedRoutineListFromSharedPreferences(context)
+        val routines = getSelectedRoutineListFromSharedPreferences()
         _uiState.update {
-            if (routines.isEmpty()) {
-                return
-            }
-            it.copy(
-                selectedRoutineList = routines
-            )
+            if (routines.isEmpty()) { return }
+            it.copy(selectedRoutineList = routines)
         }
     }
 
@@ -47,7 +40,7 @@ class ProfileViewModel {
     }
 
     private fun loadProfile() {
-        val profile = getProfileFromSharedPreferences(context)
+        val profile = getProfileFromSharedPreferences()
         _uiState.update {
             it.copy(profile = profile)
         }
@@ -55,25 +48,12 @@ class ProfileViewModel {
 
     fun updateProfile(profile: Profile) {
         _uiState.update { it.copy(profile = profile) }
-        setProfile(true)
+        saveProfile()
     }
 
-    @Composable
-    fun saveProfile() {
+    private fun saveProfile() {
         val profile = _uiState.value.profile
-
-        getCurrentContext().let {
-            providePreferences(it).putString(
-                "profile",
-                Json.encodeToString(profile)
-            )
-            setProfile(false)
-
-        }
-    }
-
-    fun setProfile(save: Boolean) {
-        _uiState.update { it.copy(saveProfile = save) }
+        profile?.let { setProfileToSharedPreferences(it) }
     }
 
     fun navigateToEditSplit(routines: List<SelectedExerciseList>) {

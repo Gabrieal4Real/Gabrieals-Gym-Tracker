@@ -4,6 +4,23 @@ import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.model.Profile
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 
+expect fun providePreferences(): SharedPreferences
+
+inline fun <reified T> saveToPreferences(key: String, value: T) {
+    val json = Json.encodeToString(value)
+    providePreferences().putString(key, json)
+}
+
+inline fun <reified T> loadFromPreferences(key: String, default: T): T {
+    return try {
+        val json = providePreferences().getString(key)
+        Json.decodeFromString(json)
+    } catch (ex: Exception) {
+        println("decodeFromStringError for key \"$key\": ${ex.message}")
+        default
+    }
+}
+
 interface SharedPreferences {
     fun putString(key: String, value: String)
     fun getString(key: String, defaultValue: String = ""): String
@@ -14,34 +31,18 @@ interface SharedPreferences {
     fun clear()
 }
 
-expect fun providePreferences(context: Any?): SharedPreferences
-
-
-fun getSelectedRoutineListFromSharedPreferences(context: Any?): MutableList<SelectedExerciseList> {
-    var selectedRoutineList = mutableListOf<SelectedExerciseList>()
-
-    try {
-        selectedRoutineList = Json.decodeFromString<MutableList<SelectedExerciseList>>(
-            providePreferences(context).getString("selectedRoutineList")
-        )
-    } catch (ex: Exception) {
-        println("decodeFromStringError: ${ex.message} ")
-    }
-
-    return selectedRoutineList
+fun setSelectedRoutineListToSharedPreferences(list: List<SelectedExerciseList>) {
+    saveToPreferences("selectedRoutineList", list)
 }
 
+fun getSelectedRoutineListFromSharedPreferences(): MutableList<SelectedExerciseList> {
+    return loadFromPreferences("selectedRoutineList", mutableListOf())
+}
 
-fun getProfileFromSharedPreferences(context: Any?): Profile {
-    var profile = Profile()
+fun setProfileToSharedPreferences(profile: Profile) {
+    saveToPreferences("profile", profile)
+}
 
-    try {
-        profile = Json.decodeFromString<Profile>(
-            providePreferences(context).getString("profile")
-        )
-    } catch (ex: Exception) {
-        println("decodeFromStringError: ${ex.message} ")
-    }
-
-    return profile
+fun getProfileFromSharedPreferences(): Profile {
+    return loadFromPreferences("profile", Profile())
 }

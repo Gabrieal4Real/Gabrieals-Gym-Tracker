@@ -14,6 +14,7 @@ import org.gabrieal.gymtracker.util.app.planTitles
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.providePreferences
+import org.gabrieal.gymtracker.util.systemUtil.setSelectedRoutineListToSharedPreferences
 
 class MakeAPlanViewModel {
     private val _uiState = MutableStateFlow(MakeAPlanUiState())
@@ -39,10 +40,6 @@ class MakeAPlanViewModel {
 
     fun setOverrideWarning(show: Boolean) {
         _uiState.update { it.copy(showOverrideWarning = show) }
-    }
-
-    fun setSaveRoutineList(save: Boolean) {
-        _uiState.update { it.copy(saveRoutineList = save) }
     }
 
     fun updateSelectedRoutineList(routineList: List<SelectedExerciseList>) {
@@ -88,18 +85,10 @@ class MakeAPlanViewModel {
         )
     }
 
-    @Composable
     fun saveRoutineList() {
         val sortedRoutineList = _uiState.value.selectedRoutineList
-
-        getCurrentContext().let {
-            providePreferences(it).putString(
-                "selectedRoutineList",
-                Json.encodeToString(sortedRoutineList)
-            )
-            AppNavigator.navigateToRoot()
-            setSaveRoutineList(false)
-        }
+        setSelectedRoutineListToSharedPreferences(sortedRoutineList)
+        AppNavigator.navigateToRoot()
     }
 
     fun areAllActiveDaysEdited(): Boolean {

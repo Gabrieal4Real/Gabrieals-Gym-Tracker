@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,14 +23,11 @@ import org.gabrieal.gymtracker.util.systemUtil.httpClient
 object LoginRegisterBottomSheet : Screen {
     val firebaseService = FirebaseService(httpClient)
     val loginRegisterRepoImpl = LoginRegisterRepoImpl(firebaseService)
-    val loginRegisterViewModel = LoginRegisterViewModel(loginRegisterRepoImpl)
+    val viewModel = LoginRegisterViewModel(loginRegisterRepoImpl)
 
     @Composable
     override fun Content() {
-
-        LaunchedEffect(Unit) {
-            loginRegisterViewModel.registerNewUser("danieljayarajan@gmail.com", "qwertyuiop123")
-        }
+        val uiState by viewModel.uiState.collectAsState()
 
         Box(
             modifier = Modifier.fillMaxWidth()

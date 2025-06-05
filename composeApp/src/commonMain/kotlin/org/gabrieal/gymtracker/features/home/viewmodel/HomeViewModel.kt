@@ -1,16 +1,13 @@
 package org.gabrieal.gymtracker.features.home.viewmodel
 
-import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.providePreferences
+import org.gabrieal.gymtracker.util.systemUtil.setSelectedRoutineListToSharedPreferences
 
 class HomeViewModel {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -24,7 +21,7 @@ class HomeViewModel {
     }
 
     private fun loadRoutines() {
-        val routines = getSelectedRoutineListFromSharedPreferences(context)
+        val routines = getSelectedRoutineListFromSharedPreferences()
         _uiState.update {
             if (routines.isEmpty()) {
                 navigateToCreateSplit()
@@ -48,22 +45,10 @@ class HomeViewModel {
         AppNavigator.navigateToStartWorkout(selectedExerciseList, callback)
     }
 
-    @Composable
-    fun saveRoutineList() {
+    private fun saveRoutineList() {
         val sortedRoutineList = _uiState.value.selectedRoutineList
-
-        getCurrentContext().let {
-            providePreferences(it).putString(
-                "selectedRoutineList",
-                Json.encodeToString(sortedRoutineList)
-            )
-            AppNavigator.navigateToRoot()
-            setSaveRoutineList(false)
-        }
-    }
-
-    private fun setSaveRoutineList(save: Boolean) {
-        _uiState.update { it.copy(saveRoutineList = save) }
+        setSelectedRoutineListToSharedPreferences(sortedRoutineList)
+        AppNavigator.navigateToRoot()
     }
 
     fun updateSelectedRoutine(selectedRoutine: SelectedExerciseList) {
@@ -76,7 +61,7 @@ class HomeViewModel {
                         }
                     )
                 }
-                setSaveRoutineList(true)
+                saveRoutineList()
             }
         }
     }

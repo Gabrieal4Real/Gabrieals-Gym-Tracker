@@ -36,6 +36,6 @@ class IOSPreferences : SharedPreferences {
     }
 }
 
-actual fun providePreferences(context: Any?): SharedPreferences {
+actual fun providePreferences(): SharedPreferences {
     return IOSPreferences()
 }

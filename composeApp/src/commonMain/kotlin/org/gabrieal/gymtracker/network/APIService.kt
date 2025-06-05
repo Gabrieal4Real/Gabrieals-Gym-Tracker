@@ -18,10 +18,23 @@ object APIService {
     private val projectId = "gabrieal-gym-tracker"
 
     fun registerUrl(): String = "$authBaseUrl/accounts:signUp?key=$apiKey"
-
+    fun loginUrl(): String = "$authBaseUrl/accounts:signInWithPassword?key=$apiKey"
     fun userDocumentPath(uid: String): String = "$firestoreBaseUrl/projects/$projectId/databases/(default)/documents/users/$uid"
 }
 
+fun Map<String, Any>.getDocumentBody(): Map<String, Any> {
+    return mapOf(
+        "fields" to this.mapValues { entry ->
+            when (val value = entry.value) {
+                is String -> mapOf("stringValue" to value)
+                is Boolean -> mapOf("booleanValue" to value)
+                is Int -> mapOf("integerValue" to value)
+                is Double, is Float -> mapOf("doubleValue" to value)
+                else -> mapOf("stringValue" to value)
+            }
+        }
+    )
+}
 suspend inline fun <reified T> HttpClient.makeRequest(
     method: HttpMethod,
     url: String,

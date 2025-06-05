@@ -115,7 +115,6 @@ object HomeTab : Tab {
         val uiState by viewModel.uiState.collectAsState()
 
         val selectedRoutineList = uiState.selectedRoutineList
-        val saveRoutineList = uiState.saveRoutineList
 
         val todayRoutine =
             selectedRoutineList.find { it.day.equals(getTodayDayName(), ignoreCase = false) }
@@ -201,10 +200,6 @@ object HomeTab : Tab {
                         }
                     }
                 }
-            }
-
-            if (saveRoutineList) {
-                viewModel.saveRoutineList()
             }
         }
     }

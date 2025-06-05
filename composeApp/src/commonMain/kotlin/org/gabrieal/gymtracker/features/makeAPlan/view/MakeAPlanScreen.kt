@@ -69,7 +69,6 @@ object MakeAPlanScreen : Screen {
         var showImage = uiState.showImage
         val showWarningBack = uiState.showWarningBack
         val showOverrideWarning = uiState.showOverrideWarning
-        val saveRoutineList = uiState.saveRoutineList
         val isEditMode = uiState.isEditMode
 
         BackHandler(enabled = true) {
@@ -171,15 +170,15 @@ object MakeAPlanScreen : Screen {
                         ConfirmButton(
                             "Let's Pump It Up",
                             onClick = {
-                                viewModel.setSaveRoutineList(true)
+                                viewModel.saveRoutineList()
                             },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
                 }
 
+                // Animated Image
                 if (!isEditMode) {
-                    // Animated Image
                     showImage = AnimatedImage(showImage, Res.drawable.start_editing, true)
                     viewModel.setShowImage(showImage)
                 }
@@ -214,11 +213,6 @@ object MakeAPlanScreen : Screen {
                             viewModel.setOverrideWarning(false)
                         }
                     )
-                }
-
-                // Process save routine list
-                if (saveRoutineList) {
-                    viewModel.saveRoutineList()
                 }
             }
         }
