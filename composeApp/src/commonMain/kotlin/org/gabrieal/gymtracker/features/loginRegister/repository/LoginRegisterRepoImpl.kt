@@ -1,6 +1,6 @@
 package org.gabrieal.gymtracker.features.loginRegister.repository
 
-import org.gabrieal.gymtracker.network.FirebaseService
+import org.gabrieal.gymtracker.data.network.FirebaseService
 
 class LoginRegisterRepoImpl(private val firebaseService: FirebaseService): LoginRegisterRepo {
     override suspend fun registerAndSave(

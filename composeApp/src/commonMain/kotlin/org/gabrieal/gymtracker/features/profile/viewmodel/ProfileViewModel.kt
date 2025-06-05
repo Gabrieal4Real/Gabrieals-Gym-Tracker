@@ -4,9 +4,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.gabrieal.gymtracker.model.CalorieInput
-import org.gabrieal.gymtracker.model.Profile
-import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.CalorieInput
+import org.gabrieal.gymtracker.data.model.Profile
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.Gender

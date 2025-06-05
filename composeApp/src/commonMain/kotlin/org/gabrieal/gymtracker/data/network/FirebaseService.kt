@@ -1,11 +1,19 @@
-package org.gabrieal.gymtracker.network
+package org.gabrieal.gymtracker.data.network
 
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
-import org.gabrieal.gymtracker.model.AuthResponse
-import org.gabrieal.gymtracker.model.RegisterRequest
+import org.gabrieal.gymtracker.data.model.AuthResponse
+import org.gabrieal.gymtracker.data.model.RegisterRequest
 
 class FirebaseService(private val client: HttpClient) {
+    suspend fun loginWithEmail(email: String, password: String): Pair<Boolean, AuthResponse> {
+        return client.makeRequest(
+            method = HttpMethod.Post,
+            url = APIService.loginUrl(),
+            body = RegisterRequest(email, password)
+        )
+    }
+
     suspend fun registerWithEmail(email: String, password: String): Pair<Boolean, AuthResponse> {
         return client.makeRequest(
             method = HttpMethod.Post,

@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.model
+package org.gabrieal.gymtracker.data.model
 
 import kotlinx.serialization.Serializable
 import org.gabrieal.gymtracker.util.enums.ActivityLevel

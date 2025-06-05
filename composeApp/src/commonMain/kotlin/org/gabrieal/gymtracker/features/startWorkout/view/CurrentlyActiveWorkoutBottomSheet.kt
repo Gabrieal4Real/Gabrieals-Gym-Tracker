@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
-import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 
 object CurrentlyActiveWorkoutBottomSheet : Screen {

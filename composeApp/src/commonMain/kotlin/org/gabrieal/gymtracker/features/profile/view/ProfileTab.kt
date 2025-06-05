@@ -39,7 +39,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
-import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.getBMISummary
 import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext

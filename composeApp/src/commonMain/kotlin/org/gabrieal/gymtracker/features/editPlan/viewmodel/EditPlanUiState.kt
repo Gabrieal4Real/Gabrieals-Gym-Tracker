@@ -1,6 +1,6 @@
 package org.gabrieal.gymtracker.features.editPlan.viewmodel
 
-import org.gabrieal.gymtracker.model.SelectedExercise
+import org.gabrieal.gymtracker.data.model.SelectedExercise
 
 data class EditPlanUiState(
     val day: String = "",

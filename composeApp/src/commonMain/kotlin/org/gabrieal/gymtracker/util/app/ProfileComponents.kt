@@ -21,10 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.gabrieal.gymtracker.model.ProteinInput
-import org.gabrieal.gymtracker.model.BMISegment
-import org.gabrieal.gymtracker.model.CalorieGoalResult
-import org.gabrieal.gymtracker.model.CalorieInput
+import org.gabrieal.gymtracker.data.model.ProteinInput
+import org.gabrieal.gymtracker.data.model.BMISegment
+import org.gabrieal.gymtracker.data.model.CalorieGoalResult
+import org.gabrieal.gymtracker.data.model.CalorieInput
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal

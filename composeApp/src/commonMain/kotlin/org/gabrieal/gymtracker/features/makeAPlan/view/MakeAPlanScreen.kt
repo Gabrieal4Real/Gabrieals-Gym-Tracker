@@ -23,7 +23,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
-import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.getCurrentPlan
 import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.app.planTitles

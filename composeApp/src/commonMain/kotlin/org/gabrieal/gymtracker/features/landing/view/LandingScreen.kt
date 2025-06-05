@@ -41,7 +41,7 @@ import org.gabrieal.gymtracker.features.home.view.HomeTab
 import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
 import org.gabrieal.gymtracker.features.profile.view.ProfileTab
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
-import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTimeDisplay
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -107,7 +107,7 @@ object LandingScreen : Screen {
         landingCurrentlyActiveRoutine: SelectedExerciseList
     ) {
         Box(modifier = Modifier.clickable {
-            AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine)
+            AppNavigator.openBottomSheetLoginRegisterScreen()
         }) {
             Image(
                 painter = painterResource(Res.drawable.workout_3),

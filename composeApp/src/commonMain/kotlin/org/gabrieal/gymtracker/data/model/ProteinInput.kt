@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.model
+package org.gabrieal.gymtracker.data.model
 
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal

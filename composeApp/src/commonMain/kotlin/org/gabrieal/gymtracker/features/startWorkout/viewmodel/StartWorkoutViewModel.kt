@@ -5,11 +5,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.gabrieal.gymtracker.currentlyActiveRoutine
-import org.gabrieal.gymtracker.model.SelectedExerciseList
-import org.gabrieal.gymtracker.startTime
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import kotlin.time.Clock
-import kotlin.time.ExperimentalTime
 
 class StartWorkoutViewModel {
 

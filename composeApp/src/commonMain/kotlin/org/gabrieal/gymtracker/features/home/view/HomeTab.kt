@@ -59,7 +59,7 @@ import gymtracker.composeapp.generated.resources.workout_7
 import gymtracker.composeapp.generated.resources.workout_8
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
-import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext

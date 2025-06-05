@@ -28,14 +28,13 @@ import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.icon_reps
 import gymtracker.composeapp.generated.resources.icon_sets
 import gymtracker.composeapp.generated.resources.icon_timer
-import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.getPlanTitle
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
-import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
 import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog

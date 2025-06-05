@@ -20,11 +20,11 @@
 -dontwarn androidx.compose.**
 
 # Keep your model classes
--keep class org.gabrieal.gymtracker.model.** { *; }
--keep class org.gabrieal.gymtracker.model.enums.** { *; }
+-keep class org.gabrieal.gymtracker.data.** { *; }
+-keep class org.gabrieal.gymtracker.data.enums.** { *; }
 
 # Keep Exercise class for JSON serialization
--keepclassmembers class org.gabrieal.gymtracker.model.Exercise {
+-keepclassmembers class org.gabrieal.gymtracker.data.model.Exercise {
     <fields>;
 }
 

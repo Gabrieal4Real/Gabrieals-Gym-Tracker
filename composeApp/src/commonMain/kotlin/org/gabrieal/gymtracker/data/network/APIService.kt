@@ -1,4 +1,4 @@
-package org.gabrieal.gymtracker.network
+package org.gabrieal.gymtracker.data.network
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

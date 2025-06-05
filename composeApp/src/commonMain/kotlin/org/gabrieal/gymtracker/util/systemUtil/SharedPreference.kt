@@ -1,8 +1,8 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
 import kotlinx.serialization.json.Json
-import org.gabrieal.gymtracker.model.Profile
-import org.gabrieal.gymtracker.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.Profile
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 
 expect fun providePreferences(): SharedPreferences
 

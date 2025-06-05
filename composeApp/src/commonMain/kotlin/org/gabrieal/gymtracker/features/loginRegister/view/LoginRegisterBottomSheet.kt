@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -17,13 +18,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.features.loginRegister.repository.LoginRegisterRepoImpl
 import org.gabrieal.gymtracker.features.loginRegister.viewmodel.LoginRegisterViewModel
-import org.gabrieal.gymtracker.network.FirebaseService
-import org.gabrieal.gymtracker.util.systemUtil.httpClient
+import org.gabrieal.gymtracker.data.network.FirebaseService
+import org.gabrieal.gymtracker.data.network.httpClient
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object LoginRegisterBottomSheet : Screen {
-    val firebaseService = FirebaseService(httpClient)
-    val loginRegisterRepoImpl = LoginRegisterRepoImpl(firebaseService)
-    val viewModel = LoginRegisterViewModel(loginRegisterRepoImpl)
+object LoginRegisterBottomSheet : Screen, KoinComponent {
+    val viewModel: LoginRegisterViewModel by inject()
 
     @Composable
     override fun Content() {

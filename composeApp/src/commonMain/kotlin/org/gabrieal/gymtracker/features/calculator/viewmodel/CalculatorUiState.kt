@@ -1,6 +1,6 @@
 package org.gabrieal.gymtracker.features.calculator.viewmodel
 
-import org.gabrieal.gymtracker.model.Profile
+import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal
 
