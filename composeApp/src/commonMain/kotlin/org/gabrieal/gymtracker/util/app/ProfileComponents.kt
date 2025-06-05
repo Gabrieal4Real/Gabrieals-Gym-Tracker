@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -29,6 +30,7 @@ import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal
 import org.gabrieal.gymtracker.util.enums.Gender
+import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyText
@@ -52,51 +54,54 @@ fun getBMISummary(weight: Double?, height: Double?) {
         return
     }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(16.dp))
-        HorizontalDivider()
-        Spacer(modifier = Modifier.height(16.dp))
+    CustomCard(
+        enabled = true,
+        content = {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                SubtitleText("Body Mass Index Summary")
 
-        SubtitleText("Body Mass Index Summary")
+                val heightInMeters = height / 100
+                val bmi = weight / (heightInMeters * heightInMeters)
+                val roundedBMI = (round(bmi * 100) / 100)
 
-        val heightInMeters = height / 100
-        val bmi = weight / (heightInMeters * heightInMeters)
-        val roundedBMI = (round(bmi * 100) / 100)
+                Spacer(modifier = Modifier.height(8.dp))
+                BMIBarChart(roundedBMI)
+                Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
-        BMIBarChart(roundedBMI)
-        Spacer(modifier = Modifier.height(8.dp))
+                val minHealthyBMI = 18.5
+                val maxHealthyBMI = 25.0
 
-        val minHealthyBMI = 18.5
-        val maxHealthyBMI = 25.0
+                val minHealthyWeight = minHealthyBMI * heightInMeters * heightInMeters
+                val maxHealthyWeight = maxHealthyBMI * heightInMeters * heightInMeters
 
-        val minHealthyWeight = minHealthyBMI * heightInMeters * heightInMeters
-        val maxHealthyWeight = maxHealthyBMI * heightInMeters * heightInMeters
+                val roundedMinWeight = (round(minHealthyWeight * 10) / 10)
+                val roundedMaxWeight = maxHealthyWeight.roundToInt()
 
-        val roundedMinWeight = (round(minHealthyWeight * 10) / 10)
-        val roundedMaxWeight = maxHealthyWeight.roundToInt()
+                val weightToLose = if (weight > maxHealthyWeight) {
+                    round((weight - maxHealthyWeight) * 10) / 10
+                } else null
 
-        val weightToLose = if (weight > maxHealthyWeight) {
-            round((weight - maxHealthyWeight) * 10) / 10
-        } else null
+                val weightToGain = if (weight < minHealthyWeight) {
+                    round((minHealthyWeight - weight) * 10) / 10
+                } else null
 
-        val weightToGain = if (weight < minHealthyWeight) {
-            round((minHealthyWeight - weight) * 10) / 10
-        } else null
+                val listOfBMIs = mutableListOf(
+                    Pair("Your BMI: ", "$roundedBMI kg/m²"),
+                    Pair("Healthy BMI range: ", "18.5 kg/m² - 25.0 kg/m²"),
+                    Pair("Healthy weight for your height: ", "$roundedMinWeight kg - $roundedMaxWeight kg"),
+                )
 
-        val listOfBMIs = mutableListOf(
-            Pair("Your BMI: ", "$roundedBMI kg/m²"),
-            Pair("Healthy BMI range: ", "18.5 kg/m² - 25.0 kg/m²"),
-            Pair("Healthy weight for your height: ", "$roundedMinWeight kg - $roundedMaxWeight kg"),
-        )
+                weightToLose?.let { listOfBMIs.add(Pair("Lose $it kg to reach a BMI of 25.0 kg/m²", "")) }
+                weightToGain?.let { listOfBMIs.add(Pair("Gain $it kg to reach a BMI of 18.5 kg/m²", "")) }
 
-        weightToLose?.let { listOfBMIs.add(Pair("Lose $it kg to reach a BMI of 25.0 kg/m²", "")) }
-        weightToGain?.let { listOfBMIs.add(Pair("Gain $it kg to reach a BMI of 18.5 kg/m²", "")) }
-
-        listOfBMIs.forEach {
-            TinyText("${it.first}${it.second}", modifier = Modifier.fillMaxWidth())
+                listOfBMIs.forEach {
+                    TinyText("${it.first}${it.second}", modifier = Modifier.fillMaxWidth())
+                }
+            }
         }
-    }
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
 }
 
 fun getListForWeightHeightAgeSpinner(weightHeightBMIClicked: Int): List<String> {

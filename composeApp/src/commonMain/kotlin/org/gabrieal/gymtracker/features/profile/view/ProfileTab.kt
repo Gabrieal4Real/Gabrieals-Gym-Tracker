@@ -15,12 +15,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Height
 import androidx.compose.material.icons.rounded.MonitorWeight
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonOutline
+import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.PieChart
 import androidx.compose.material.icons.rounded.WaterDrop
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,13 +47,18 @@ import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.getBMISummary
 import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
+import org.gabrieal.gymtracker.util.widgets.BigText
+import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.IconNext
+import org.gabrieal.gymtracker.util.widgets.LinkText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
+import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.TitleRow
+import org.gabrieal.gymtracker.util.widgets.TitleText
 
 object ProfileTab : Tab {
     private val viewModel = ProfileViewModel()
@@ -87,12 +95,14 @@ object ProfileTab : Tab {
                 ) {
                     item {
                         ProfileCard(profile)
-                        Spacer(modifier = Modifier.height(8.dp))
                     }
 
                     item {
                         EditRoutinesCard(routines)
-                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+
+                    item {
+                        getBMISummary(profile?.weight, profile?.height)
                     }
 
                     item {
@@ -205,6 +215,8 @@ object ProfileTab : Tab {
                 viewModel.navigateToEditSplit(routines)
             }
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 
     @Composable
@@ -231,6 +243,38 @@ object ProfileTab : Tab {
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp)
                 ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            viewModel.navigateToLoginRegister()
+                        },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.AccountCircle,
+                            contentDescription = "Profile",
+                            tint = colors.textPrimary,
+                            modifier = Modifier.size(60.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column {
+                            val name = profile?.userName ?: "Not Logged In"
+                            val gender = profile?.gender?.name ?: "Tap to login or register"
+                            val isUserRegistered = name != "Not Logged In"
+
+                            SubtitleText(name.uppercase())
+                            TinyText(gender)
+
+                            if (isUserRegistered) {
+                                LinkText("You're not logged in")
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    HorizontalDivider()
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -261,11 +305,11 @@ object ProfileTab : Tab {
                             }
                         }
                     }
-
-                    getBMISummary(weight, height)
                 }
             }
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
     }
 
     override val options: TabOptions

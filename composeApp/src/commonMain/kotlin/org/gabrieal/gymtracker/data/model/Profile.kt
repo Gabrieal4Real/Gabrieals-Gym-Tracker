@@ -12,5 +12,7 @@ data class Profile(
     var age: Int? = null,
     var goal: FitnessGoal? = null,
     var activityLevel: ActivityLevel? = null,
-    var gender: Gender? = null
+    var gender: Gender? = null,
+    var email: String? = null,
+    var userName: String? = null,
 )

@@ -114,8 +114,14 @@ object AppNavigator {
         bottomSheetNavigatorInstance?.show(CurrentlyActiveWorkoutBottomSheet)
     }
 
-    fun openBottomSheetLoginRegisterScreen() {
+    fun openBottomSheetLoginRegisterScreen(profile: Profile?, callback: (Profile?) -> Unit) {
+        LoginRegisterBottomSheet.setProfile(profile ?: Profile())
+        LoginRegisterBottomSheet.setCallback(callback)
         bottomSheetNavigatorInstance?.show(LoginRegisterBottomSheet)
+    }
+
+    fun dismissBottomSheet() {
+        bottomSheetNavigatorInstance?.hide()
     }
 }
 

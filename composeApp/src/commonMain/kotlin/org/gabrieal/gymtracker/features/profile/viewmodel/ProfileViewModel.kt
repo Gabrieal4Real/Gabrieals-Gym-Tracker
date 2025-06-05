@@ -87,5 +87,14 @@ class ProfileViewModel {
             println("${it.label} (${it.weightChangePerWeekKg} kg/week): ${it.calories} kcal/day (${it.percentageOfMaintenance}%)")
         }
     }
+
+    fun navigateToLoginRegister() {
+        val callback = { profile: Profile? ->
+            _uiState.update { it.copy(profile = profile) }
+            saveProfile()
+        }
+
+        AppNavigator.openBottomSheetLoginRegisterScreen(profile = uiState.value.profile, callback = callback)
+    }
 }
 
