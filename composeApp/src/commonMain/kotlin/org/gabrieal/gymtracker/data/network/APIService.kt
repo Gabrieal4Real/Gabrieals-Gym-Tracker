@@ -10,6 +10,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
@@ -21,6 +22,12 @@ import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.long
 import kotlinx.serialization.json.longOrNull
+import org.gabrieal.gymtracker.data.model.FirebaseInfo
+import org.gabrieal.gymtracker.data.network.APIService.refreshTokenUrl
+import org.gabrieal.gymtracker.util.systemUtil.getFirebaseInfoFromSharedPreferences
+import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 object APIService {
     private val authBaseUrl = "https://identitytoolkit.googleapis.com/v1"
@@ -30,6 +37,7 @@ object APIService {
 
     fun registerUrl(): String = "$authBaseUrl/accounts:signUp?key=$apiKey"
     fun loginUrl(): String = "$authBaseUrl/accounts:signInWithPassword?key=$apiKey"
+    fun refreshTokenUrl(): String = "https://securetoken.googleapis.com/v1/token?key=$apiKey"
     fun userDocumentPath(uid: String): String = "$firestoreBaseUrl/projects/$projectId/databases/(default)/documents/users/$uid"
 }
 
@@ -105,4 +113,80 @@ suspend inline fun <reified T> HttpClient.makeRequest(
     }
 
     return Pair(response.status.isSuccess(), response.body())
+}
+
+@Serializable
+data class RefreshTokenResponse(
+    val access_token: String = "",
+    val expires_in: String = "",
+    val token_type: String = "",
+    val refresh_token: String = "",
+    val id_token: String = "",
+    val user_id: String = "",
+    val project_id: String = ""
+)
+
+@OptIn(ExperimentalTime::class)
+suspend inline fun <reified T : Any> HttpClient.makeAuthenticatedRequest(
+    method: HttpMethod,
+    url: String,
+    headers: Map<String, String> = emptyMap(),
+    body: Any? = null,
+    refreshTokenIfNeeded: Boolean = true
+): Pair<Boolean, T> {
+    // First attempt with current token
+    var result = makeRequest<T>(method, url, headers, body)
+
+    // Check if we need to handle token refresh
+    if (!result.first && refreshTokenIfNeeded && isUnauthorizedError(result.second)) {
+        println("Token expired, attempting to refresh")
+
+        // Get the stored Firebase info with refresh token
+        val firebaseInfo = getFirebaseInfoFromSharedPreferences()
+
+        if (!firebaseInfo.refreshToken.isNullOrEmpty()) {
+            // Try to refresh the token
+            val refreshResult = makeRequest<RefreshTokenResponse>(
+                method = HttpMethod.Post,
+                url = refreshTokenUrl(),
+                body = mapOf(
+                    "grant_type" to "refresh_token",
+                    "refresh_token" to firebaseInfo.refreshToken
+                )
+            )
+
+            if (refreshResult.first) {
+                // Update the stored Firebase info with new tokens
+                val tokenResponse = refreshResult.second
+                val newFirebaseInfo = FirebaseInfo(
+                    uid = tokenResponse.user_id,
+                    token = tokenResponse.id_token,
+                    refreshToken = tokenResponse.refresh_token,
+                    expiresAt = Clock.System.now().toEpochMilliseconds() + (tokenResponse.expires_in.toLongOrNull() ?: 3600L) * 1000
+                )
+
+                setFirebaseInfoToSharedPreferences(newFirebaseInfo)
+
+                // Update the Authorization header with the new token
+                val updatedHeaders = headers.toMutableMap()
+                if (headers.containsKey("Authorization")) {
+                    updatedHeaders["Authorization"] = "Bearer ${tokenResponse.id_token}"
+                }
+
+                // Retry the original request with the new token
+                result = makeRequest(method, url, updatedHeaders, body)
+            }
+        }
+    }
+
+    return result
+}
+
+fun isUnauthorizedError(response: Any): Boolean {
+    if (response is Map<*, *> && response["error"] is Map<*, *>) {
+        val error = response["error"] as Map<*, *>
+        val code = error["code"]
+        return code == 401.0 || code == 401 || error["status"] == "UNAUTHENTICATED"
+    }
+    return false
 }

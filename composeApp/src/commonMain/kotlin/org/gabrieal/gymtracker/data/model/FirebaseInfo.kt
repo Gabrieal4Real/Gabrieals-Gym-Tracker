@@ -6,4 +6,6 @@ import kotlinx.serialization.Serializable
 data class FirebaseInfo(
     var uid: String? = null,
     var token: String? = null,
+    var refreshToken: String? = null,
+    var expiresAt: Long? = null
 )

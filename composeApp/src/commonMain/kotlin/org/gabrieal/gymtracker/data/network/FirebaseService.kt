@@ -2,6 +2,7 @@ package org.gabrieal.gymtracker.data.network
 
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
+import io.ktor.http.Url
 import org.gabrieal.gymtracker.data.model.AuthResponse
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.RegisterRequest
@@ -25,7 +26,7 @@ class FirebaseService(private val client: HttpClient) {
 
     suspend fun saveUserData(uid: String, idToken: String, profile: Profile): Pair<Boolean, Any> {
         try {
-            return client.makeRequest(
+            return client.makeAuthenticatedRequest(
                 method = HttpMethod.Patch,
                 headers = mapOf("Authorization" to "Bearer $idToken"),
                 url = APIService.userDocumentPath(uid),
