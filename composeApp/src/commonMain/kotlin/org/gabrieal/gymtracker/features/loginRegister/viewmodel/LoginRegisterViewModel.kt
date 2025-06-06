@@ -13,6 +13,7 @@ import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.features.loginRegister.repository.LoginRegisterRepo
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.systemUtil.Loader
 import org.gabrieal.gymtracker.util.systemUtil.getFirebaseInfoFromSharedPreferences
 import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
 
@@ -22,78 +23,64 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
     private val _uiState = MutableStateFlow(LoginRegisterUiState())
     val uiState: StateFlow<LoginRegisterUiState> = _uiState.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
-
     private var callback: ((Profile?) -> Unit)? = null
 
-    fun setProfile(profile: Profile) {
-        _uiState.update { it.copy(profile = profile) }
-    }
+    fun setProfile(profile: Profile) = _uiState.update { it.copy(profile = profile) }
 
     fun setCallback(callback: (Profile?) -> Unit) {
         this.callback = callback
     }
 
     fun changeRegisterMode() {
-        _uiState.update { it.copy(isRegisterMode = !uiState.value.isRegisterMode) }
+        _uiState.update { it.copy(isRegisterMode = !it.isRegisterMode) }
     }
 
-    fun loginExistingUser(email: String, password: String) {
+    fun loginExistingUser(email: String, password: String) = performAuth(email, password, isRegister = false)
+
+    fun registerNewUser(email: String, password: String) = performAuth(email, password, isRegister = true)
+
+    private fun performAuth(email: String, password: String, isRegister: Boolean) {
         viewModelScope.launch {
-            _isLoading.value = true
+            Loader.show()
             try {
-                val authResponse = loginRegisterRepo.loginUser(email, password)
+                val authResponse = if (isRegister) {
+                    loginRegisterRepo.registerUser(email, password)
+                } else {
+                    loginRegisterRepo.loginUser(email, password)
+                }
+
                 setFirebaseInfoToSharedPreferences(
                     FirebaseInfo(
                         uid = authResponse.localId,
                         token = authResponse.idToken
                     )
                 )
+
                 saveUser()
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun registerNewUser(email: String, password: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            try {
-                val authResponse = loginRegisterRepo.registerUser(email, password)
-                setFirebaseInfoToSharedPreferences(
-                    FirebaseInfo(
-                        uid = authResponse.localId,
-                        token = authResponse.idToken
-                    )
-                )
-                saveUser()
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
-                _isLoading.value = false
+                Loader.hide()
             }
         }
     }
 
     private fun saveUser() {
         val firebaseInfo = getFirebaseInfoFromSharedPreferences()
-        if (firebaseInfo.uid.isNullOrEmpty() || firebaseInfo.token.isNullOrEmpty()) {
-            _isLoading.value = false
-            return
-        }
+        if (firebaseInfo.uid.isNullOrBlank() || firebaseInfo.token.isNullOrBlank()) return
 
         viewModelScope.launch {
-            _isLoading.value = true
+            Loader.show()
             try {
+                updateProfile(uiState.value.email, uiState.value.userName)
+
                 val isSuccess = loginRegisterRepo.saveUser(
                     firebaseInfo.uid!!,
                     firebaseInfo.token!!,
                     uiState.value.profile
                 )
                 if (isSuccess) {
+                    clearUserInput()
                     callback?.invoke(uiState.value.profile)
                     AppNavigator.dismissBottomSheet()
                     clear()
@@ -101,26 +88,33 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {
-                _isLoading.value = false
+                Loader.hide()
             }
         }
     }
 
-    private fun updateProfile(update: (Profile) -> Profile) {
-        val currentProfile = _uiState.value.profile
-        val updatedProfile = update(currentProfile)
-        _uiState.update { it.copy(profile = updatedProfile) }
+    private fun clearUserInput() {
+        _uiState.update { it.copy(userName = "", email = "", password = "") }
     }
 
-    fun updateProfileEmail(email: String) = updateProfile { it.copy(email = email) }
+    private fun updateProfile(email: String? = null, userName: String? = null) {
+        val currentProfile = _uiState.value.profile
+        val updatedProfile = currentProfile.copy(
+            email = email ?: currentProfile.email,
+            userName = userName ?: currentProfile.userName
+        )
+        _uiState.update { it.copy(profile = updatedProfile) }
+    }
 
     private fun clear() {
         viewModelScope.cancel()
     }
 
-    fun updatePassword(password: String) {
-        _uiState.update { it.copy(password = password) }
-    }
+    fun updateError() = _uiState.update { it.copy(error = null) }
 
-    fun updateProfileName(userName: String) = updateProfile { it.copy(userName = userName) }
+    fun updateName(userName: String) = _uiState.update { it.copy(userName = userName) }
+
+    fun updateEmail(email: String) = _uiState.update { it.copy(email = email) }
+
+    fun updatePassword(password: String) = _uiState.update { it.copy(password = password) }
 }

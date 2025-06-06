@@ -14,7 +14,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Height
 import androidx.compose.material.icons.rounded.MonitorWeight
@@ -30,6 +33,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,6 +49,7 @@ import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.util.app.getBMISummary
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
@@ -69,6 +74,7 @@ object ProfileTab : Tab {
         val profile = uiState.profile
         val weightHeightBMIClicked = uiState.weightHeightBMIClicked
         val firebaseInfo = uiState.firebaseInfo
+        val loggingOut = uiState.loggingOut
 
         val context = getCurrentContext()
 
@@ -117,6 +123,18 @@ object ProfileTab : Tab {
                     }
                 }
             }
+        }
+
+        if (loggingOut) {
+            ShowAlertDialog(
+                Pair("Logout", "Are you sure you want to logout?"),
+                positiveButton = "Logout" to {
+                    viewModel.logout()
+                },
+                negativeButton = "Cancel" to {
+                    viewModel.setLoggingOut(false)
+                }
+            )
         }
 
         if (weightHeightBMIClicked != -1) {
@@ -174,9 +192,7 @@ object ProfileTab : Tab {
                 },
                 content = {
                     Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -201,7 +217,7 @@ object ProfileTab : Tab {
             enabled = true,
             content = {
                 Row(
-                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -238,16 +254,11 @@ object ProfileTab : Tab {
                         viewModel.setWeightHeightBMIClicked(2)
                     },
                 )
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp)
-                ) {
+                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp)) {
                     Row(
                         modifier = Modifier.fillMaxWidth().clickable {
                             if (firebaseInfo?.uid == null || firebaseInfo.token == null) {
                                 viewModel.navigateToLoginRegister()
-                            } else {
-                                setFirebaseInfoToSharedPreferences(FirebaseInfo(uid = null, token = null))
-                                viewModel.loadFirebaseInfo()
                             }
                         },
                         verticalAlignment = Alignment.CenterVertically
@@ -270,6 +281,23 @@ object ProfileTab : Tab {
                             if (firebaseInfo?.uid == null || firebaseInfo.token == null) {
                                 LinkText("You're not logged in")
                             }
+                        }
+                        if (firebaseInfo?.uid != null && firebaseInfo.token != null) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.Logout,
+                                contentDescription = "Logout",
+                                tint = colors.white,
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(colors.deleteRed)
+                                    .clickable {
+                                        viewModel.setLoggingOut(true)
+                                    }
+                                    .padding(6.dp)
+                            )
                         }
                     }
 

@@ -8,5 +8,6 @@ data class ProfileUiState(
     val selectedRoutineList: List<SelectedExerciseList> = emptyList(),
     val profile: Profile? = null,
     val weightHeightBMIClicked: Int = -1,
-    val firebaseInfo: FirebaseInfo? = null
+    val firebaseInfo: FirebaseInfo? = null,
+    val loggingOut: Boolean = false
 )

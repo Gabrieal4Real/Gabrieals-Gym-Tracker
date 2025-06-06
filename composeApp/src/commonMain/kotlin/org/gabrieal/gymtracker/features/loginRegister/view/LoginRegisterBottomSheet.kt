@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,6 +24,7 @@ import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.features.loginRegister.viewmodel.LoginRegisterViewModel
 import org.gabrieal.gymtracker.util.app.isValidEmail
 import org.gabrieal.gymtracker.util.app.isValidPassword
+import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.util.widgets.ConfirmButton
 import org.gabrieal.gymtracker.util.widgets.CustomTextField
 import org.gabrieal.gymtracker.util.widgets.LinkText
@@ -46,15 +48,22 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
 
-        val profile = uiState.profile
         val isRegisterMode = uiState.isRegisterMode
+        val userName = uiState.userName
+        val email = uiState.email
         val password = uiState.password
+        val error = uiState.error
 
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f)
                 .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                 .background(colors.background)
         ) {
+            if (!error.isNullOrBlank()) {
+                ShowToast(error)
+                viewModel.updateError()
+            }
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -68,9 +77,9 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
                         TinyItalicText("Username")
                         Spacer(modifier = Modifier.height(8.dp))
                         CustomTextField(
-                            value = profile.userName ?: "",
+                            value = userName ?: "",
                             onValueChange = { userName ->
-                                viewModel.updateProfileName(userName)
+                                viewModel.updateName(userName)
                             },
                             placeholderText = "John Wick",
                         )
@@ -82,9 +91,9 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     CustomTextField(
-                        value = profile.email ?: "",
+                        value = email ?: "",
                         onValueChange = { email ->
-                            viewModel.updateProfileEmail(email)
+                            viewModel.updateEmail(email)
                         },
                         placeholderText = "jonathan.wick@continental.com",
                     )
@@ -104,22 +113,24 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
 
                     Spacer(modifier = Modifier.weight(1f))
 
+                    TinyItalicText("You don't need an account to use this app, but you can create one if you want.")
+                    Spacer(modifier = Modifier.height(4.dp))
                     ConfirmButton(
                         if (isRegisterMode) "Register" else "Login",
                         onClick = {
                             if (isRegisterMode) {
                                 viewModel.registerNewUser(
-                                    email = profile.email ?: "",
+                                    email = email ?: "",
                                     password = password ?: ""
                                 )
                             } else {
                                 viewModel.loginExistingUser(
-                                    email = profile.email ?: "",
+                                    email = email ?: "",
                                     password = password ?: ""
                                 )
                             }
                         },
-                        enabled = isEnabled(isRegisterMode, profile, password),
+                        enabled = isEnabled(isRegisterMode, userName, email, password),
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -134,12 +145,17 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
         }
     }
 
-    private fun isEnabled(isRegisterMode: Boolean, profile: Profile, password: String?): Boolean {
-        val isEmailValid = !profile.email.isNullOrBlank() && profile.email.isValidEmail()
+    private fun isEnabled(
+        isRegisterMode: Boolean,
+        userName: String?,
+        email: String?,
+        password: String?
+    ): Boolean {
+        val isEmailValid = !email.isNullOrBlank() && email.isValidEmail()
         val isPasswordValid = !password.isNullOrBlank() && password.isValidPassword()
 
         return if (isRegisterMode) {
-            !profile.userName.isNullOrBlank() && isEmailValid && isPasswordValid
+            !userName.isNullOrBlank() && isEmailValid && isPasswordValid
         } else {
             isEmailValid && isPasswordValid
         }

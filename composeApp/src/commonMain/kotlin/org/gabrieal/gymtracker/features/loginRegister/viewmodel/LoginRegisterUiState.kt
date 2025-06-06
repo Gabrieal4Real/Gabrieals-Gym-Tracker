@@ -7,5 +7,7 @@ data class LoginRegisterUiState(
     val error: String? = null,
     val profile: Profile = Profile(),
     val isRegisterMode: Boolean = false,
+    val userName: String? = null,
+    val email: String? = null,
     val password: String? = null
 )

@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.gabrieal.gymtracker.data.model.CalorieInput
+import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
@@ -14,6 +15,7 @@ import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.getFirebaseInfoFromSharedPreferences
 import org.gabrieal.gymtracker.util.systemUtil.getProfileFromSharedPreferences
 import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
+import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
 import org.gabrieal.gymtracker.util.systemUtil.setProfileToSharedPreferences
 
 class ProfileViewModel {
@@ -32,7 +34,9 @@ class ProfileViewModel {
     private fun loadRoutines() {
         val routines = getSelectedRoutineListFromSharedPreferences()
         _uiState.update {
-            if (routines.isEmpty()) { return }
+            if (routines.isEmpty()) {
+                return
+            }
             it.copy(selectedRoutineList = routines)
         }
     }
@@ -44,7 +48,7 @@ class ProfileViewModel {
         }
     }
 
-    fun loadFirebaseInfo() {
+    private fun loadFirebaseInfo() {
         val firebaseInfo = getFirebaseInfoFromSharedPreferences()
         _uiState.update {
             it.copy(firebaseInfo = firebaseInfo)
@@ -104,7 +108,25 @@ class ProfileViewModel {
             loadFirebaseInfo()
         }
 
-        AppNavigator.openBottomSheetLoginRegisterScreen(profile = uiState.value.profile, callback = callback)
+        AppNavigator.openBottomSheetLoginRegisterScreen(
+            profile = uiState.value.profile,
+            callback = callback
+        )
+    }
+
+    fun setLoggingOut(loggingOut: Boolean) {
+        _uiState.update { it.copy(loggingOut = loggingOut) }
+    }
+
+    fun logout() {
+        setFirebaseInfoToSharedPreferences(
+            FirebaseInfo(
+                uid = null,
+                token = null
+            )
+        )
+        loadFirebaseInfo()
+        setLoggingOut(false)
     }
 }
 
