@@ -20,7 +20,6 @@ import androidx.compose.material.icons.rounded.Height
 import androidx.compose.material.icons.rounded.MonitorWeight
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonOutline
-import androidx.compose.material.icons.rounded.PersonPinCircle
 import androidx.compose.material.icons.rounded.PieChart
 import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material3.HorizontalDivider
@@ -41,24 +40,22 @@ import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
-import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.util.app.getBMISummary
 import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
-import org.gabrieal.gymtracker.util.widgets.BigText
-import org.gabrieal.gymtracker.util.widgets.BiggerText
+import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.IconNext
 import org.gabrieal.gymtracker.util.widgets.LinkText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
-import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.TitleRow
-import org.gabrieal.gymtracker.util.widgets.TitleText
 
 object ProfileTab : Tab {
     private val viewModel = ProfileViewModel()
@@ -71,6 +68,7 @@ object ProfileTab : Tab {
         val routines = uiState.selectedRoutineList
         val profile = uiState.profile
         val weightHeightBMIClicked = uiState.weightHeightBMIClicked
+        val firebaseInfo = uiState.firebaseInfo
 
         val context = getCurrentContext()
 
@@ -94,7 +92,7 @@ object ProfileTab : Tab {
                         .padding(16.dp),
                 ) {
                     item {
-                        ProfileCard(profile)
+                        ProfileCard(profile, firebaseInfo)
                     }
 
                     item {
@@ -220,7 +218,7 @@ object ProfileTab : Tab {
     }
 
     @Composable
-    fun ProfileCard(profile: Profile?) {
+    fun ProfileCard(profile: Profile?, firebaseInfo: FirebaseInfo?) {
         val weight = profile?.weight
         val height = profile?.height
         val age = profile?.age
@@ -245,7 +243,12 @@ object ProfileTab : Tab {
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth().clickable {
-                            viewModel.navigateToLoginRegister()
+                            if (firebaseInfo?.uid == null || firebaseInfo.token == null) {
+                                viewModel.navigateToLoginRegister()
+                            } else {
+                                setFirebaseInfoToSharedPreferences(FirebaseInfo(uid = null, token = null))
+                                viewModel.loadFirebaseInfo()
+                            }
                         },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -259,13 +262,12 @@ object ProfileTab : Tab {
                         Spacer(modifier = Modifier.width(8.dp))
                         Column {
                             val name = profile?.userName ?: "Not Logged In"
-                            val gender = profile?.gender?.name ?: "Tap to login or register"
-                            val isUserRegistered = name != "Not Logged In"
+                            val gender = profile?.gender?.name ?: "Gender Unspecified"
 
                             SubtitleText(name.uppercase())
                             TinyText(gender)
 
-                            if (isUserRegistered) {
+                            if (firebaseInfo?.uid == null || firebaseInfo.token == null) {
                                 LinkText("You're not logged in")
                             }
                         }

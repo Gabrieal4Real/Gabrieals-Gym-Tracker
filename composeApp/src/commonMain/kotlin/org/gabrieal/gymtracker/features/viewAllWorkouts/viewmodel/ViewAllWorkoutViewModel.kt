@@ -4,9 +4,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import org.gabrieal.gymtracker.allExistingExerciseList
 import org.gabrieal.gymtracker.util.enums.MuscleGroup
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import org.gabrieal.gymtracker.allExistingExerciseList
 
 class ViewAllWorkoutViewModel {
     private val _uiState =

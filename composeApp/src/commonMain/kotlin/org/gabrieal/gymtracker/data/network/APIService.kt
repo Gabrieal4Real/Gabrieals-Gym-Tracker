@@ -10,6 +10,17 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.double
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.long
+import kotlinx.serialization.json.longOrNull
 
 object APIService {
     private val authBaseUrl = "https://identitytoolkit.googleapis.com/v1"
@@ -22,19 +33,58 @@ object APIService {
     fun userDocumentPath(uid: String): String = "$firestoreBaseUrl/projects/$projectId/databases/(default)/documents/users/$uid"
 }
 
-fun Map<String, Any>.getDocumentBody(): Map<String, Any> {
+fun JsonObject.toFirestoreMap(): Map<String, Any> {
     return mapOf(
-        "fields" to this.mapValues { entry ->
-            when (val value = entry.value) {
-                is String -> mapOf("stringValue" to value)
-                is Boolean -> mapOf("booleanValue" to value)
-                is Int -> mapOf("integerValue" to value)
-                is Double, is Float -> mapOf("doubleValue" to value)
-                else -> mapOf("stringValue" to value)
+        "fields" to this.mapValues { (_, value) ->
+            when (value) {
+                is JsonPrimitive -> when {
+                    value.isString -> mapOf("stringValue" to value.toString())
+                    value.booleanOrNull != null -> mapOf("booleanValue" to value.boolean.toString())
+                    value.longOrNull != null -> mapOf("integerValue" to value.long.toString())
+                    value.doubleOrNull != null -> mapOf("doubleValue" to value.double.toString())
+                    else -> mapOf("stringValue" to value.toString())
+                }
+
+                is JsonArray -> mapOf(
+                    "arrayValue" to mapOf(
+                        "values" to value.mapNotNull { element ->
+                            when (element) {
+                                is JsonPrimitive -> when {
+                                    element.isString -> mapOf("stringValue" to element.toString())
+                                    element.booleanOrNull != null -> mapOf("booleanValue" to element.boolean.toString())
+                                    element.longOrNull != null -> mapOf("integerValue" to element.long.toString())
+                                    element.doubleOrNull != null -> mapOf("doubleValue" to element.double.toString())
+                                    else -> null
+                                }
+
+                                is JsonObject -> mapOf("mapValue" to mapOf("fields" to element.toFirestoreMap()["fields"]!!))
+                                else -> null
+                            }
+                        }
+                    )
+                )
+
+                is JsonObject -> mapOf(
+                    "mapValue" to mapOf("fields" to value.toFirestoreMap()["fields"]!!)
+                )
+
+                else -> mapOf("stringValue" to value.toString())
             }
         }
     )
 }
+
+inline fun <reified T> T.toFirestoreDocument(): Map<String, Any> {
+    val json = Json.encodeToJsonElement(this)
+
+    if (json !is JsonObject) {
+        println("Expected JsonObject but got ${json::class.simpleName}")
+        throw IllegalArgumentException("Expected JsonObject but got ${json::class.simpleName}")
+    }
+
+    return json.toFirestoreMap()
+}
+
 suspend inline fun <reified T> HttpClient.makeRequest(
     method: HttpMethod,
     url: String,
@@ -52,10 +102,6 @@ suspend inline fun <reified T> HttpClient.makeRequest(
         body?.let {
             setBody(it)
         }
-    }
-
-    if (!response.status.isSuccess()) {
-        throw Exception("Request failed: ${response.status}")
     }
 
     return Pair(response.status.isSuccess(), response.body())

@@ -42,7 +42,6 @@ fun decodeTemplate(template: String): ConvertedTemplate {
     var tempTemplate = Template()
     try {
         tempTemplate = json.decodeFromString<Template>(template.trim())
-
     } catch (e: Exception) {
         println("decodeFromStringError: ${e.message} ")
     }

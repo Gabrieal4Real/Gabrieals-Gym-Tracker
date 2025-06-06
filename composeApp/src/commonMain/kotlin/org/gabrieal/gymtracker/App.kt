@@ -16,11 +16,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
-import org.gabrieal.gymtracker.data.di.appModule
 import org.gabrieal.gymtracker.data.model.ConvertedTemplate
 import org.gabrieal.gymtracker.data.model.Exercise
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.decodeExercises
 import org.gabrieal.gymtracker.data.model.decodeTemplate
+import org.gabrieal.gymtracker.features.landing.view.LandingScreen
 import org.gabrieal.gymtracker.util.app.AppColors
 import org.gabrieal.gymtracker.util.app.DarkColors
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -29,10 +30,7 @@ import org.gabrieal.gymtracker.util.systemUtil.StringFactory
 import org.gabrieal.gymtracker.util.systemUtil.StringResources
 import org.gabrieal.gymtracker.util.systemUtil.language
 import org.gabrieal.gymtracker.util.systemUtil.readFile
-import org.gabrieal.gymtracker.features.landing.view.LandingScreen
-import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.core.context.startKoin
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 

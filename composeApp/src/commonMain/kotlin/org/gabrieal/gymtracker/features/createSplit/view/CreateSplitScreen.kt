@@ -29,12 +29,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.new_to_workout
+import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.features.createSplit.viewmodel.CreateSplitViewModel
 import org.gabrieal.gymtracker.util.app.plans
 import org.gabrieal.gymtracker.util.app.shortFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
-import org.gabrieal.gymtracker.features.createSplit.viewmodel.CreateSplitViewModel
-import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.util.widgets.AnimatedImage
 import org.gabrieal.gymtracker.util.widgets.BackButtonRow
 import org.gabrieal.gymtracker.util.widgets.BigText

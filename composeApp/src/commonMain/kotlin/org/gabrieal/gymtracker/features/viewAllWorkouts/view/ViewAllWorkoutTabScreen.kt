@@ -34,11 +34,11 @@ import gymtracker.composeapp.generated.resources.tier_1
 import gymtracker.composeapp.generated.resources.tier_2
 import gymtracker.composeapp.generated.resources.tier_3
 import gymtracker.composeapp.generated.resources.youtube
-import org.gabrieal.gymtracker.util.systemUtil.OpenURL
-import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
-import org.gabrieal.gymtracker.features.viewAllWorkouts.viewmodel.ViewAllWorkoutViewModel
 import org.gabrieal.gymtracker.allExistingExerciseList
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.features.viewAllWorkouts.viewmodel.ViewAllWorkoutViewModel
+import org.gabrieal.gymtracker.util.systemUtil.OpenURL
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.widgets.BackButtonRow
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomTextField

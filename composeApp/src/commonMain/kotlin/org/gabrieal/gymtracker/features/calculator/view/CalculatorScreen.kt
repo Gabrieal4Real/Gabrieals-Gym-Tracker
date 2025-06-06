@@ -24,9 +24,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.icon_protein
 import org.gabrieal.gymtracker.colors
-import org.gabrieal.gymtracker.features.calculator.viewmodel.CalculatorViewModel
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.ProteinInput
+import org.gabrieal.gymtracker.features.calculator.viewmodel.CalculatorViewModel
 import org.gabrieal.gymtracker.util.app.calculateProteinGrams
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal

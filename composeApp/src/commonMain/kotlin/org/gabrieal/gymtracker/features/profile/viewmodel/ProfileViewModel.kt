@@ -11,6 +11,7 @@ import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.Gender
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.systemUtil.getFirebaseInfoFromSharedPreferences
 import org.gabrieal.gymtracker.util.systemUtil.getProfileFromSharedPreferences
 import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
 import org.gabrieal.gymtracker.util.systemUtil.setProfileToSharedPreferences
@@ -25,6 +26,7 @@ class ProfileViewModel {
         context = newContext
         loadRoutines()
         loadProfile()
+        loadFirebaseInfo()
     }
 
     private fun loadRoutines() {
@@ -35,15 +37,22 @@ class ProfileViewModel {
         }
     }
 
-    fun setWeightHeightBMIClicked(weightHeightBMIClicked: Int) {
-        _uiState.update { it.copy(weightHeightBMIClicked = weightHeightBMIClicked) }
-    }
-
     private fun loadProfile() {
         val profile = getProfileFromSharedPreferences()
         _uiState.update {
             it.copy(profile = profile)
         }
+    }
+
+    fun loadFirebaseInfo() {
+        val firebaseInfo = getFirebaseInfoFromSharedPreferences()
+        _uiState.update {
+            it.copy(firebaseInfo = firebaseInfo)
+        }
+    }
+
+    fun setWeightHeightBMIClicked(weightHeightBMIClicked: Int) {
+        _uiState.update { it.copy(weightHeightBMIClicked = weightHeightBMIClicked) }
     }
 
     private fun updateProfile(update: (Profile) -> Profile) {
@@ -92,6 +101,7 @@ class ProfileViewModel {
         val callback = { profile: Profile? ->
             _uiState.update { it.copy(profile = profile) }
             saveProfile()
+            loadFirebaseInfo()
         }
 
         AppNavigator.openBottomSheetLoginRegisterScreen(profile = uiState.value.profile, callback = callback)

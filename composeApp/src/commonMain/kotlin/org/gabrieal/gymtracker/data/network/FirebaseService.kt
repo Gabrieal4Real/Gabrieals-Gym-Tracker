@@ -11,7 +11,7 @@ class FirebaseService(private val client: HttpClient) {
         return client.makeRequest(
             method = HttpMethod.Post,
             url = APIService.loginUrl(),
-            body = RegisterRequest(email, password)
+            body = RegisterRequest(email, password, true)
         )
     }
 
@@ -19,18 +19,21 @@ class FirebaseService(private val client: HttpClient) {
         return client.makeRequest(
             method = HttpMethod.Post,
             url = APIService.registerUrl(),
-            body = RegisterRequest(email, password)
+            body = RegisterRequest(email, password, true)
         )
     }
 
     suspend fun saveUserData(uid: String, idToken: String, profile: Profile): Pair<Boolean, Any> {
-
-
-        return client.makeRequest(
-            method = HttpMethod.Patch,
-            headers = mapOf("Authorization" to "Bearer $idToken"),
-            url = APIService.userDocumentPath(uid),
-            body = profile
-        )
+        try {
+            return client.makeRequest(
+                method = HttpMethod.Patch,
+                headers = mapOf("Authorization" to "Bearer $idToken"),
+                url = APIService.userDocumentPath(uid),
+                body = profile.toFirestoreDocument()
+            )
+        } catch (e: Exception) {
+            println("Failed to save user data: ${e.message}")
+            return Pair(false, "Failed to save user data: ${e.message}")
+        }
     }
 }

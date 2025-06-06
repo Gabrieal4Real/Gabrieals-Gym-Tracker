@@ -24,14 +24,14 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.cant_decide
+import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExercise
+import org.gabrieal.gymtracker.features.editPlan.viewmodel.EditPlanViewModel
+import org.gabrieal.gymtracker.util.app.getPlanTitle
 import org.gabrieal.gymtracker.util.app.planTitles
 import org.gabrieal.gymtracker.util.app.repRanges
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
-import org.gabrieal.gymtracker.features.editPlan.viewmodel.EditPlanViewModel
-import org.gabrieal.gymtracker.colors
-import org.gabrieal.gymtracker.util.app.getPlanTitle
 import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.util.widgets.AnimatedImage
 import org.gabrieal.gymtracker.util.widgets.BackButtonRow

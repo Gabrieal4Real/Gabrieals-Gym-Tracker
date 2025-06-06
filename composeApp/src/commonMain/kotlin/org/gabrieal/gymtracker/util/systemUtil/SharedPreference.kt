@@ -1,6 +1,7 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
 import kotlinx.serialization.json.Json
+import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 
@@ -45,4 +46,12 @@ fun setProfileToSharedPreferences(profile: Profile) {
 
 fun getProfileFromSharedPreferences(): Profile {
     return loadFromPreferences("profile", Profile())
+}
+
+fun setFirebaseInfoToSharedPreferences(firebaseInfo: FirebaseInfo) {
+    saveToPreferences("firebaseInfo", firebaseInfo)
+}
+
+fun getFirebaseInfoFromSharedPreferences(): FirebaseInfo {
+    return loadFromPreferences("firebaseInfo", FirebaseInfo())
 }

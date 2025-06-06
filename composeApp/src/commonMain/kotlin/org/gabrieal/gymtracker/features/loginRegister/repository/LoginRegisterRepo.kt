@@ -1,8 +1,10 @@
 package org.gabrieal.gymtracker.features.loginRegister.repository
 
+import org.gabrieal.gymtracker.data.model.AuthResponse
 import org.gabrieal.gymtracker.data.model.Profile
 
 interface LoginRegisterRepo {
-    suspend fun registerAndSave(email: String, password: String, profile: Profile): Boolean
-    suspend fun loginAndSave(email: String, password: String, profile: Profile): Boolean
+    suspend fun registerUser(email: String, password: String): AuthResponse
+    suspend fun loginUser(email: String, password: String): AuthResponse
+    suspend fun saveUser(uid: String, idToken: String, profile: Profile): Boolean
 }
