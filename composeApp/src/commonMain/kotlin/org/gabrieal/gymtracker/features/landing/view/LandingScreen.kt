@@ -44,7 +44,11 @@ import org.gabrieal.gymtracker.features.profile.view.ProfileTab
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
 import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTimeDisplay
+import org.gabrieal.gymtracker.util.app.resetAllCompletedStatus
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.util.systemUtil.ShowToast
+import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
 import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
@@ -60,9 +64,11 @@ object LandingScreen : Screen {
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
         val landingCurrentlyActiveRoutine = uiState.currentlyActiveRoutine
+        val resetCompletedList = uiState.resetCompletedList
 
         LaunchedEffect(Unit) {
             viewModel.setCurrentlyActiveRoutine(currentlyActiveRoutine)
+            viewModel.resetCompletedList()
         }
 
         BottomSheetNavigator(
@@ -98,6 +104,11 @@ object LandingScreen : Screen {
                     }
                 }
             }
+        }
+
+        if (resetCompletedList) {
+            ShowToast("It's a brand new week! Your completed workouts have been reset.")
+            viewModel.setCompletedRoutineList(false)
         }
     }
 

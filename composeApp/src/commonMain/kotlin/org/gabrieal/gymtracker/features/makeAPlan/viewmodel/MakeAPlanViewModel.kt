@@ -10,7 +10,11 @@ import org.gabrieal.gymtracker.util.app.getCurrentPlan
 import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.app.planTitles
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
+import org.gabrieal.gymtracker.util.systemUtil.getMondayOrSameInstant
 import org.gabrieal.gymtracker.util.systemUtil.setSelectedRoutineListToSharedPreferences
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class MakeAPlanViewModel {
     private val _uiState = MutableStateFlow(MakeAPlanUiState())
@@ -47,6 +51,7 @@ class MakeAPlanViewModel {
         AppNavigator.navigateBack()
     }
 
+    @OptIn(ExperimentalTime::class)
     fun navigateToEditPlan(index: Int, day: String) {
         val selectedDays = _uiState.value.selectedDays
         val currentPlan = getCurrentPlan(selectedDays)
@@ -66,7 +71,8 @@ class MakeAPlanViewModel {
                             day = day,
                             exercises = updatedExercises,
                             routineName = planTitle,
-                            isCompleted = false
+                            isCompleted = false,
+                            startingDate = formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
                         )
                     )
                 }

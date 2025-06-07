@@ -26,8 +26,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import java.text.SimpleDateFormat
+import java.time.ZoneId
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+import kotlin.time.toJavaInstant
 
 @Composable
 actual fun OpenURL(url: String) {
@@ -35,12 +41,10 @@ actual fun OpenURL(url: String) {
         Intent.ACTION_VIEW,
         url.toUri()
     )
-    LocalContext.current.startActivity(browserIntent)
-}
 
-@Composable
-actual fun getCurrentContext(): Any? {
-    return LocalContext.current
+    val context = activityReference ?: return
+
+    context.startActivity(browserIntent)
 }
 
 @Composable
@@ -167,4 +171,41 @@ actual fun ShowSpinner(
             }
         }
     )
+}
+
+@OptIn(ExperimentalTime::class)
+actual fun formatInstantToDate(
+    instant: Instant,
+    pattern: String
+): String {
+    val date = Date(instant.toEpochMilliseconds())
+    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+    formatter.timeZone = TimeZone.getDefault()
+    return formatter.format(date)
+}
+
+@OptIn(ExperimentalTime::class)
+actual fun parseDateToInstant(dateString: String, pattern: String): Instant {
+    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+    formatter.timeZone = TimeZone.getDefault()
+    val date: Date = formatter.parse(dateString) ?: error("Invalid date format")
+    return Instant.fromEpochMilliseconds(date.time)
+}
+
+@OptIn(ExperimentalTime::class)
+actual fun getMondayOrSameInstant(instant: Instant): Instant {
+    val calendar = Calendar.getInstance().apply {
+        timeInMillis = instant.toEpochMilliseconds()
+    }
+
+    val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
+    val daysToSubtract = if (dayOfWeek == Calendar.MONDAY) 0 else (dayOfWeek + 5) % 7
+    calendar.add(Calendar.DAY_OF_MONTH, -daysToSubtract)
+
+    calendar.set(Calendar.HOUR_OF_DAY, 0)
+    calendar.set(Calendar.MINUTE, 0)
+    calendar.set(Calendar.SECOND, 0)
+    calendar.set(Calendar.MILLISECOND, 0)
+
+    return Instant.fromEpochMilliseconds(calendar.timeInMillis)
 }

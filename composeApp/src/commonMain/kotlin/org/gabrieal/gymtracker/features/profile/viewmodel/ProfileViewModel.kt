@@ -22,10 +22,8 @@ class ProfileViewModel {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    private var context: Any? = null
 
-    fun updateContext(newContext: Any?) {
-        context = newContext
+    fun updateContext() {
         loadRoutines()
         loadProfile()
         loadFirebaseInfo()

@@ -17,9 +17,11 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.double
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.long
 import kotlinx.serialization.json.longOrNull
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
@@ -78,6 +80,21 @@ inline fun <reified T> T.toFirestoreDocument(): Map<String, Any> {
     }
     return json.toFirestoreMap()
 }
+
+inline fun <reified T> fromFirestoreDocument(document: JsonObject): T {
+    val json = Json { ignoreUnknownKeys = true }
+
+    val fields = document["fields"]?.jsonObjectOrNull()
+        ?: error("Missing 'fields' object in Firestore document")
+
+    val decoded = JsonObject(fields.mapValues { (_, v) ->
+        v.jsonObject.values.first()
+    })
+
+    return json.decodeFromJsonElement(decoded)
+}
+
+fun JsonElement.jsonObjectOrNull(): JsonObject? = this as? JsonObject
 
 suspend inline fun <reified T> HttpClient.makeRequest(
     method: HttpMethod,

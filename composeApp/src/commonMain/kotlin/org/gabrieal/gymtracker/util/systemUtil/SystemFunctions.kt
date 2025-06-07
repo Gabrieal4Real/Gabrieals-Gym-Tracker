@@ -9,6 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.KeyboardType
 import gymtracker.composeapp.generated.resources.Res.readBytes
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
@@ -28,9 +30,6 @@ fun readFile(path: String): String {
 
 @Composable
 expect fun OpenURL(url: String)
-
-@Composable
-expect fun getCurrentContext(): Any?
 
 @Composable
 expect fun ShowAlertDialog(
@@ -58,3 +57,12 @@ expect fun ShowSpinner(
 expect fun ShowToast(message: String)
 
 expect fun getTodayDayName(): String
+
+@OptIn(ExperimentalTime::class)
+expect fun formatInstantToDate(instant: Instant, pattern: String): String
+
+@OptIn(ExperimentalTime::class)
+expect fun parseDateToInstant(dateString: String, pattern: String): Instant
+
+@OptIn(ExperimentalTime::class)
+expect fun getMondayOrSameInstant(instant: Instant): Instant

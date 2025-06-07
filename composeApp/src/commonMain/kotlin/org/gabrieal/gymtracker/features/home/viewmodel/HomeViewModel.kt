@@ -13,10 +13,7 @@ class HomeViewModel {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private var context: Any? = null
-
-    fun updateContext(newContext: Any?) {
-        context = newContext
+    fun updateContext() {
         loadRoutines()
     }
 

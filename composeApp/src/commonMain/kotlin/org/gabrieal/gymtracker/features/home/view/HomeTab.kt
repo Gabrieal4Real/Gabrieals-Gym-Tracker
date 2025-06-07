@@ -62,7 +62,6 @@ import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
 import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
-import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
 import org.gabrieal.gymtracker.util.systemUtil.getTodayDayName
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.CustomCard
@@ -137,12 +136,10 @@ object HomeTab : Tab {
         val animateCurrentAspectRatio by animateFloatAsState(targetValue = currentAspectRatio)
         val animateCurrentBackgroundOpacity by animateFloatAsState(targetValue = currentBackgroundOpacity)
 
-        val context = getCurrentContext()
-
         BackHandler(enabled = true) {}
 
-        LaunchedEffect(context) {
-            viewModel.updateContext(context)
+        LaunchedEffect(Unit) {
+            viewModel.updateContext()
         }
 
         Column(

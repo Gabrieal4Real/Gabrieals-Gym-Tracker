@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
@@ -51,8 +50,6 @@ import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.util.app.getBMISummary
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
-import org.gabrieal.gymtracker.util.systemUtil.getCurrentContext
-import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
@@ -76,12 +73,10 @@ object ProfileTab : Tab {
         val firebaseInfo = uiState.firebaseInfo
         val loggingOut = uiState.loggingOut
 
-        val context = getCurrentContext()
-
         BackHandler(enabled = true) {}
 
-        LaunchedEffect(context) {
-            viewModel.updateContext(context)
+        LaunchedEffect(Unit) {
+            viewModel.updateContext()
         }
 
         Column(
@@ -192,7 +187,8 @@ object ProfileTab : Tab {
                 },
                 content = {
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 16.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -254,7 +250,9 @@ object ProfileTab : Tab {
                         viewModel.setWeightHeightBMIClicked(2)
                     },
                 )
-                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp)) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp)
+                ) {
                     Row(
                         modifier = Modifier.fillMaxWidth().clickable {
                             if (firebaseInfo?.uid == null || firebaseInfo.token == null) {

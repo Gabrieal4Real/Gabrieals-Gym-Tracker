@@ -75,4 +75,23 @@ class AuthService (private val client: HttpClient) {
             Pair(false, e.message.orEmpty())
         }
     }
+
+    suspend fun getUserData(uid: String, idToken: String): Pair<Boolean, Profile> {
+        return try {
+            val (success, jsonElement) = client.makeAuthenticatedRequest<JsonObject>(
+                method = HttpMethod.Get,
+                url = APIService.userDocumentPath(uid),
+                headers = mapOf("Authorization" to "Bearer $idToken")
+            )
+
+            if (!success) return Pair(false, Profile())
+
+            val user = fromFirestoreDocument<Profile>(jsonElement)
+            Pair(true, user)
+
+        } catch (e: Exception) {
+            println("Failed to getUserData: ${e.message}")
+            Pair(false, Profile())
+        }
+    }
 }

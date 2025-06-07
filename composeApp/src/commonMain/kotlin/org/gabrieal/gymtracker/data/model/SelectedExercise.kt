@@ -15,5 +15,6 @@ data class SelectedExerciseList(
     var day: String? = null,
     var exercises: List<SelectedExercise>? = null,
     var routineName: String? = null,
-    var isCompleted: Boolean = false
+    var isCompleted: Boolean = false,
+    var startingDate: String? = null
 )

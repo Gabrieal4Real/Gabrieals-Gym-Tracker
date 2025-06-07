@@ -5,12 +5,23 @@ import androidx.compose.ui.text.input.KeyboardType
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
+import platform.Foundation.NSCalendar
+import platform.Foundation.NSCalendarUnitDay
+import platform.Foundation.NSCalendarUnitMonth
+import platform.Foundation.NSCalendarUnitWeekday
+import platform.Foundation.NSCalendarUnitYear
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateFormatter
+import platform.Foundation.NSLocale
 import platform.Foundation.NSRange
 import platform.Foundation.NSString
+import platform.Foundation.NSTimeZone
 import platform.Foundation.NSURL
+import platform.Foundation.dateWithTimeIntervalSince1970
+import platform.Foundation.localeWithLocaleIdentifier
 import platform.Foundation.stringByReplacingCharactersInRange
+import platform.Foundation.systemTimeZone
+import platform.Foundation.timeIntervalSince1970
 import platform.UIKit.UIAlertAction
 import platform.UIKit.UIAlertActionStyleCancel
 import platform.UIKit.UIAlertActionStyleDefault
@@ -25,6 +36,8 @@ import platform.UIKit.UITextField
 import platform.UIKit.UITextFieldDelegateProtocol
 import platform.UIKit.*
 import platform.darwin.NSObject
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @Composable
 actual fun OpenURL(url: String) {
@@ -38,11 +51,6 @@ actual fun OpenURL(url: String) {
             }
         )
     }
-}
-
-@Composable
-actual fun getCurrentContext(): Any? {
-    return null
 }
 
 @Composable
@@ -204,4 +212,47 @@ class FilteringTextFieldDelegate(
             else -> true
         }
     }
+}
+
+@OptIn(ExperimentalTime::class)
+actual fun formatInstantToDate(
+    instant: Instant,
+    pattern: String
+): String {
+    val date = NSDate.dateWithTimeIntervalSince1970(instant.epochSeconds.toDouble())
+    val formatter = NSDateFormatter()
+    formatter.dateFormat = pattern
+    formatter.locale = NSLocale.localeWithLocaleIdentifier("en_US_POSIX")
+    return formatter.stringFromDate(date)
+}
+
+@OptIn(ExperimentalTime::class)
+actual fun parseDateToInstant(dateString: String, pattern: String): Instant {
+    val formatter = NSDateFormatter()
+    formatter.dateFormat = pattern
+    formatter.locale = NSLocale.localeWithLocaleIdentifier("en_US_POSIX")
+    formatter.timeZone = NSTimeZone.systemTimeZone
+
+    val date = formatter.dateFromString(dateString) ?: error("Invalid date string: $dateString")
+    val epochSeconds = date.timeIntervalSince1970
+    return Instant.fromEpochMilliseconds((epochSeconds * 1000).toLong())
+}
+
+
+@OptIn(ExperimentalTime::class)
+actual fun getMondayOrSameInstant(instant: Instant): Instant {
+    val calendar = NSCalendar.currentCalendar()
+    val date = NSDate.dateWithTimeIntervalSince1970(instant.epochSeconds.toDouble())
+    val weekday = calendar.component(NSCalendarUnitWeekday, date)
+    val daysToSubtract = if (weekday.toInt() == 2) 0 else (weekday + 5) % 7
+    val mondayDate = calendar.dateByAddingUnit(NSCalendarUnitDay, -daysToSubtract, date, 0u)
+
+    val components = mondayDate?.let {
+        calendar.components(NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay,
+            it
+        )
+    }
+    val startOfMonday = components?.let { calendar.dateFromComponents(it) }
+
+    return Instant.fromEpochSeconds(startOfMonday?.timeIntervalSince1970?.toLong() ?: 0)
 }

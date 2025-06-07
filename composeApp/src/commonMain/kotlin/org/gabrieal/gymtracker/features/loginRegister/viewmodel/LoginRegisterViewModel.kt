@@ -56,7 +56,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
                     )
                 )
 
-                saveUser()
+                if (isRegister) registerUser() else fetchUser()
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {
@@ -65,9 +65,33 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
         }
     }
 
-    private fun saveUser() {
+    private fun fetchUser() {
         val firebaseInfo = getFirebaseInfoFromSharedPreferences()
-        if (firebaseInfo.uid.isNullOrBlank() || firebaseInfo.token.isNullOrBlank()) return
+        if (firebaseInfo.uid.isNullOrBlank() || firebaseInfo.token.isNullOrBlank()) {
+            _uiState.update { it.copy(error = "Something went wrong") }
+            return
+        }
+
+        viewModelScope.launch {
+            Loader.show()
+            try {
+                val profile = loginRegisterRepo.fetchUser(firebaseInfo.uid!!, firebaseInfo.token!!)
+                _uiState.update { it.copy(profile = profile) }
+                returnUser()
+            } catch (e: Exception) {
+                _uiState.update { it.copy(error = e.message) }
+            } finally {
+                Loader.hide()
+            }
+        }
+    }
+
+    private fun registerUser() {
+        val firebaseInfo = getFirebaseInfoFromSharedPreferences()
+        if (firebaseInfo.uid.isNullOrBlank() || firebaseInfo.token.isNullOrBlank()) {
+            _uiState.update { it.copy(error = "Something went wrong") }
+            return
+        }
 
         viewModelScope.launch {
             Loader.show()
@@ -79,18 +103,21 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
                     firebaseInfo.token!!,
                     uiState.value.profile
                 )
-                if (isSuccess) {
-                    clearUserInput()
-                    callback?.invoke(uiState.value.profile)
-                    AppNavigator.dismissBottomSheet()
-                    clear()
-                }
+
+                if (isSuccess) returnUser()
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {
                 Loader.hide()
             }
         }
+    }
+
+    private fun returnUser() {
+        Loader.hide()
+        clearUserInput()
+        callback?.invoke(uiState.value.profile)
+        AppNavigator.dismissBottomSheet()
     }
 
     private fun clearUserInput() {
@@ -104,10 +131,6 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
             userName = userName ?: currentProfile.userName
         )
         _uiState.update { it.copy(profile = updatedProfile) }
-    }
-
-    private fun clear() {
-        viewModelScope.cancel()
     }
 
     fun updateError() = _uiState.update { it.copy(error = null) }

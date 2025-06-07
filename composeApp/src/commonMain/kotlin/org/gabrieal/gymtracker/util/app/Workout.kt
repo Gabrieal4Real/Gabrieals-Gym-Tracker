@@ -1,5 +1,14 @@
 package org.gabrieal.gymtracker.util.app
 
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
+import org.gabrieal.gymtracker.util.systemUtil.getMondayOrSameInstant
+import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
+import org.gabrieal.gymtracker.util.systemUtil.setSelectedRoutineListToSharedPreferences
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+
 val shortFormDays = listOf("M", "T", "W", "T", "F", "S", "S")
 val longFormDays =
     listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -140,4 +149,27 @@ fun getPlanTitle(routineName: String?): String {
     }
 
     return planTitle ?: "Rest"
+}
+
+@OptIn(ExperimentalTime::class)
+fun resetAllCompletedStatus(selectedRoutineList: List<SelectedExerciseList>): Boolean {
+    val firstRoutine = selectedRoutineList.getOrNull(0) ?: return false
+
+    val date = firstRoutine.startingDate ?: return false
+
+    val today = Clock.System.now()
+    val daysDifference = today.toEpochMilliseconds() - parseDateToInstant(date, "dd-MM-yyyy HH:mm:ss").toEpochMilliseconds()
+
+    if (daysDifference < 7 * 24 * 60 * 60 * 1000) {
+        return false
+    }
+
+    selectedRoutineList.forEach {
+        it.isCompleted = false
+        it.startingDate = formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
+    }
+
+    setSelectedRoutineListToSharedPreferences(selectedRoutineList)
+
+    return true
 }

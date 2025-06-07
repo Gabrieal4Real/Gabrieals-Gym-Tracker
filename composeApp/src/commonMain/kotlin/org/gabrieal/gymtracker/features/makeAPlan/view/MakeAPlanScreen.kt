@@ -32,6 +32,8 @@ import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.app.planTitles
 import org.gabrieal.gymtracker.util.systemUtil.Resources
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
+import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
+import org.gabrieal.gymtracker.util.systemUtil.getMondayOrSameInstant
 import org.gabrieal.gymtracker.util.widgets.AnimatedImage
 import org.gabrieal.gymtracker.util.widgets.BackButtonRow
 import org.gabrieal.gymtracker.util.widgets.ButtonType
@@ -42,6 +44,8 @@ import org.gabrieal.gymtracker.util.widgets.IconNext
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 object MakeAPlanScreen : Screen {
     private val viewModel = MakeAPlanViewModel()
@@ -218,6 +222,7 @@ object MakeAPlanScreen : Screen {
         }
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun getTemplate(selectedDays: List<Boolean>) {
         val dayCount = selectedDays.count { it }
 
@@ -238,6 +243,8 @@ object MakeAPlanScreen : Screen {
                     val planTitle =
                         planTitles.find { getCurrentPlan(selectedDays)[index].contains(it) }
                     template[fullDayIndex].routineName = planTitle
+                    template[fullDayIndex].startingDate =
+                        formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
                     fullDayIndex++
                 }
             }
