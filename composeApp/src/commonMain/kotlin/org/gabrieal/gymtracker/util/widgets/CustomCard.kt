@@ -11,6 +11,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,8 @@ import org.jetbrains.compose.resources.painterResource
 fun CustomCard(
     enabled: Boolean,
     onClick: (() -> Unit)? = null,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
+    backgroundEnabled: Boolean = true
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -51,7 +53,7 @@ fun CustomCard(
                     painter = painterResource(Res.drawable.card_background),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
+                    modifier = Modifier.matchParentSize().blur(if (backgroundEnabled) 0.5.dp else 2.dp)
                 )
 
                 content.invoke(this@Card)

@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.gabrieal.gymtracker.currentlyActiveRoutine
+import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
@@ -47,4 +48,5 @@ class StartWorkoutViewModel {
     fun setShowWarningReplace(show: Boolean) {
         _uiState.update { it.copy(showWarningReplace = show) }
     }
+
 }

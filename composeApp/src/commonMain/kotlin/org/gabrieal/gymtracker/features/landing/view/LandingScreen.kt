@@ -43,7 +43,7 @@ import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
 import org.gabrieal.gymtracker.features.profile.view.ProfileTab
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
 import org.gabrieal.gymtracker.startTime
-import org.gabrieal.gymtracker.util.app.ElapsedTimeDisplay
+import org.gabrieal.gymtracker.util.app.ElapsedTime
 import org.gabrieal.gymtracker.util.app.resetAllCompletedStatus
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
@@ -134,7 +134,7 @@ object LandingScreen : Screen {
                             "Currently Active: ${landingCurrentlyActiveRoutine.routineName.orEmpty()}",
                             modifier = Modifier.weight(1f)
                         )
-                        TinyText(ElapsedTimeDisplay(startTime))
+                        TinyText(ElapsedTime(startTime))
                     }
                     Spacer(modifier = Modifier.height(2.dp))
                     MarqueeTinyItalicText(

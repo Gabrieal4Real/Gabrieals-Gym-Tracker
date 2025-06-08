@@ -14,7 +14,7 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun ElapsedTimeDisplay(startTime: Instant?): String {
+fun ElapsedTime(startTime: Instant?): String {
     if (startTime == null) return ""
 
     var now by remember { mutableStateOf(Clock.System.now()) }
