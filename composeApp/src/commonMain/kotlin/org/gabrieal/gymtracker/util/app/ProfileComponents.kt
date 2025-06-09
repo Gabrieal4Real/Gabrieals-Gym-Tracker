@@ -56,7 +56,10 @@ fun getBMISummary(weight: Double?, height: Double?) {
     CustomCard(
         enabled = true,
         content = {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth().padding(16.dp)
+            ) {
                 SubtitleText("Body Mass Index Summary")
 
                 val heightInMeters = height / 100
@@ -87,11 +90,18 @@ fun getBMISummary(weight: Double?, height: Double?) {
                 val listOfBMIs = mutableListOf(
                     Pair("Your BMI: ", "$roundedBMI kg/m²"),
                     Pair("Healthy BMI range: ", "18.5 kg/m² - 25.0 kg/m²"),
-                    Pair("Healthy weight for your height: ", "$roundedMinWeight kg - $roundedMaxWeight kg"),
+                    Pair(
+                        "Healthy weight for your height: ",
+                        "$roundedMinWeight kg - $roundedMaxWeight kg"
+                    ),
                 )
 
-                weightToLose?.let { listOfBMIs.add(Pair("Lose $it kg to reach a BMI of 25.0 kg/m²", "")) }
-                weightToGain?.let { listOfBMIs.add(Pair("Gain $it kg to reach a BMI of 18.5 kg/m²", "")) }
+                weightToLose?.let {
+                    listOfBMIs.add(Pair("Lose $it kg to reach a BMI of 25.0 kg/m²", ""))
+                }
+                weightToGain?.let {
+                    listOfBMIs.add(Pair("Gain $it kg to reach a BMI of 18.5 kg/m²", ""))
+                }
 
                 listOfBMIs.forEach {
                     TinyText("${it.first}${it.second}", modifier = Modifier.fillMaxWidth())
@@ -197,6 +207,7 @@ fun calculateProteinGrams(input: ProteinInput): Int {
             ActivityLevel.MODERATELY_ACTIVE -> 1.4
             ActivityLevel.VERY_ACTIVE, ActivityLevel.SUPER_ACTIVE -> 1.6
         }
+
         FitnessGoal.FAT_LOSS -> 1.8
         FitnessGoal.MUSCLE_GAIN -> 2.0
     }

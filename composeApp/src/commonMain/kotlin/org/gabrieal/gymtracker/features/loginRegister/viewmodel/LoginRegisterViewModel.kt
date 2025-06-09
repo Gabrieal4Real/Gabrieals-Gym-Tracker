@@ -3,7 +3,6 @@ package org.gabrieal.gymtracker.features.loginRegister.viewmodel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,9 +34,11 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
         _uiState.update { it.copy(isRegisterMode = !it.isRegisterMode) }
     }
 
-    fun loginExistingUser(email: String, password: String) = performAuth(email, password, isRegister = false)
+    fun loginExistingUser(email: String, password: String) =
+        performAuth(email, password, isRegister = false)
 
-    fun registerNewUser(email: String, password: String) = performAuth(email, password, isRegister = true)
+    fun registerNewUser(email: String, password: String) =
+        performAuth(email, password, isRegister = true)
 
     private fun performAuth(email: String, password: String, isRegister: Boolean) {
         viewModelScope.launch {

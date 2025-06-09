@@ -28,6 +28,7 @@ import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.ProteinInput
 import org.gabrieal.gymtracker.features.calculator.viewmodel.CalculatorViewModel
 import org.gabrieal.gymtracker.util.app.calculateProteinGrams
+import org.gabrieal.gymtracker.util.app.isValidNumber
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal
 import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
@@ -95,8 +96,7 @@ object CalculatorScreen : Screen {
                             CustomTextField(
                                 value = weight?.let { "$it" } ?: "",
                                 onValueChange = { weight ->
-                                    val numberRegex = Regex("^\\d*\$")
-                                    if (weight.isEmpty() || weight.matches(numberRegex)) {
+                                    if (weight.isEmpty() || weight.isValidNumber()) {
                                         viewModel.setWeight(weight.toIntOrNull())
                                     }
                                 },

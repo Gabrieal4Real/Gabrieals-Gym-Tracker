@@ -39,6 +39,8 @@ import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTime
 import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
+import org.gabrieal.gymtracker.util.app.isValidDecimal
+import org.gabrieal.gymtracker.util.app.isValidNumber
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomTextField
 import org.gabrieal.gymtracker.util.widgets.CustomUnderlinedTextField
@@ -64,7 +66,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
         val completedVolume = uiState.completedVolume
         val completedSets = uiState.exerciseSets.sumOf { it -> it.count { it } }
         val totalSets = selectedExerciseList?.exercises?.sumOf { it.sets ?: 0 }
-        
+
         Box(
             modifier = Modifier.fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
@@ -193,7 +195,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                         CustomTextField(
                             value = exerciseWeights,
                             onValueChange = { weight ->
-                                if (weight.matches(Regex("^\\d*(\\.\\d*)?$")) && weight.length <= 5)
+                                if (weight.isValidDecimal() && weight.length <= 5)
                                     viewModel.updateWeight(index, weight)
                             },
                             placeholderText = "75.0",
@@ -230,9 +232,9 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                                 CustomUnderlinedTextField(
                                     keyboardType = KeyboardType.Number,
                                     value = exerciseReps[position],
-                                    onValueChange = {
-                                        if (!exerciseSets[position] && it.matches(Regex("^\\d*$")) && it.length <= 5)
-                                            viewModel.updateReps(index, it, position)
+                                    onValueChange = { reps ->
+                                        if (!exerciseSets[position] && reps.isValidNumber() && reps.length <= 5)
+                                            viewModel.updateReps(index, reps, position)
                                     },
                                     placeholderText = "-",
                                     modifier = Modifier.weight(1f)

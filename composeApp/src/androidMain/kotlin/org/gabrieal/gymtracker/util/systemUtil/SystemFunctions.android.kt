@@ -25,6 +25,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import org.gabrieal.gymtracker.util.app.isValidDecimal
+import org.gabrieal.gymtracker.util.app.isValidNumber
 import java.text.SimpleDateFormat
 import java.time.ZoneId
 import java.util.Calendar
@@ -95,18 +97,15 @@ actual fun ShowInputDialog(
                 TextField(
                     value = text,
                     onValueChange = {
-                        val decimalRegex = Regex("^\\d*\\.?\\d*\$")
-                        val numberRegex = Regex("^\\d*\$")
-
                         when (type) {
                             KeyboardType.Decimal -> {
-                                if (it.isEmpty() || it.matches(decimalRegex)) {
+                                if (it.isEmpty() || it.isValidDecimal()) {
                                     text = it
                                 }
                             }
 
                             KeyboardType.Number -> {
-                                if (it.isEmpty() || it.matches(numberRegex)) {
+                                if (it.isEmpty() || it.isValidNumber()) {
                                     text = it
                                 }
                             }

@@ -244,7 +244,10 @@ object MakeAPlanScreen : Screen {
                         planTitles.find { getCurrentPlan(selectedDays)[index].contains(it) }
                     template[fullDayIndex].routineName = planTitle
                     template[fullDayIndex].startingDate =
-                        formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
+                        formatInstantToDate(
+                            getMondayOrSameInstant(Clock.System.now()),
+                            "dd-MM-yyyy HH:mm:ss"
+                        )
                     fullDayIndex++
                 }
             }

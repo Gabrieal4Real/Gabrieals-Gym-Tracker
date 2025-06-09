@@ -139,10 +139,12 @@ object StartWorkoutScreen : Screen {
                                     startTime = Clock.System.now()
                                     AppNavigator.navigateBack()
                                 }
+
                                 selectedExerciseList -> {
                                     viewModel.markWorkoutAsDone()
                                     viewModel.startWorkout(null)
                                 }
+
                                 else -> {
                                     viewModel.setShowWarningReplace(true)
                                 }

@@ -84,15 +84,29 @@ class StartWorkoutViewModel {
     }
 
     fun updateWeight(index: Int, weight: String) {
-        _uiState.update { it.copy(exerciseWeights = it.exerciseWeights.toMutableList().apply { this[index] = weight }) }
+        _uiState.update {
+            it.copy(
+                exerciseWeights = it.exerciseWeights.toMutableList().apply { this[index] = weight })
+        }
     }
 
     fun updateReps(index: Int, reps: String, repIndex: Int) {
-        _uiState.update { it.copy(exerciseReps = it.exerciseReps.toMutableList().apply { this[index] = this[index].toMutableList().apply { this[repIndex] = reps } }) }
+        _uiState.update {
+            it.copy(
+                exerciseReps = it.exerciseReps.toMutableList().apply {
+                    this[index] = this[index].toMutableList().apply { this[repIndex] = reps }
+                })
+        }
     }
 
     fun updateExerciseSets(index: Int, position: Int) {
-        _uiState.update { it.copy(exerciseSets = it.exerciseSets.toMutableList().apply { this[index] = this[index].toMutableList().apply { this[position] = !this[position] } }) }
+        _uiState.update {
+            it.copy(
+                exerciseSets = it.exerciseSets.toMutableList().apply {
+                    this[index] =
+                        this[index].toMutableList().apply { this[position] = !this[position] }
+                })
+        }
     }
 
     fun toggleSetCompleted() {

@@ -53,7 +53,8 @@ fun CustomCard(
                     painter = painterResource(Res.drawable.card_background),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize().blur(if (backgroundEnabled) 0.5.dp else 2.dp)
+                    modifier = Modifier.matchParentSize()
+                        .blur(if (backgroundEnabled) 0.5.dp else 2.dp)
                 )
 
                 content.invoke(this@Card)

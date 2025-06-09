@@ -15,14 +15,11 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.boolean
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.double
 import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.long
 import kotlinx.serialization.json.longOrNull
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.RefreshTokenResponse
@@ -69,7 +66,9 @@ fun JsonElement.toFirestoreValue(): Map<String, Any>? = when (this) {
 
 fun JsonObject.toFirestoreMap(): Map<String, Any> {
     return mapOf(
-        "fields" to mapValues { (_, value) -> value.toFirestoreValue() ?: mapOf("stringValue" to value.toString()) }
+        "fields" to mapValues { (_, value) ->
+            value.toFirestoreValue() ?: mapOf("stringValue" to value.toString())
+        }
     )
 }
 

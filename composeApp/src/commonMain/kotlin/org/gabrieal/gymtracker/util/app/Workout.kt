@@ -1,7 +1,6 @@
 package org.gabrieal.gymtracker.util.app
 
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
-import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
 import org.gabrieal.gymtracker.util.systemUtil.getMondayOrSameInstant
 import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
@@ -166,7 +165,8 @@ fun resetAllCompletedStatus(selectedRoutineList: List<SelectedExerciseList>): Bo
 
     selectedRoutineList.forEach {
         it.isCompleted = false
-        it.startingDate = formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
+        it.startingDate =
+            formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
     }
 
     setSelectedRoutineListToSharedPreferences(selectedRoutineList)

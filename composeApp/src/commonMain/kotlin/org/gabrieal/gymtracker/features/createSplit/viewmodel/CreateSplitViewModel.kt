@@ -71,10 +71,12 @@ class CreateSplitViewModel {
             }
         }
 
-        _uiState.update { it.copy(
-            isEditMode = routines.isNotEmpty(),
-            selectedRoutineList = routines,
-            selectedDays = currentSelectedDays,
-        ) }
+        _uiState.update {
+            it.copy(
+                isEditMode = routines.isNotEmpty(),
+                selectedRoutineList = routines,
+                selectedDays = currentSelectedDays,
+            )
+        }
     }
 }

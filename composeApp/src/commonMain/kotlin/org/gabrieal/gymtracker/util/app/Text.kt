@@ -7,6 +7,22 @@ fun String?.isValidEmail(): Boolean {
 
 fun String?.isValidPassword(): Boolean {
     // At least 8 characters, with at least one uppercase, one lowercase, one digit, and one special character
-    val passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$".toRegex()
+    val passwordRegex =
+        "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@\$!%*?&])[A-Za-z\\d@\$!%*?&]{8,}$".toRegex()
     return passwordRegex.matches(this ?: "")
+}
+
+fun String?.isValidName(): Boolean {
+    val nameRegex = "^[a-zA-Z ]+$".toRegex()
+    return nameRegex.matches(this ?: "")
+}
+
+fun String?.isValidNumber(): Boolean {
+    val numberRegex = "^\\d*$".toRegex()
+    return numberRegex.matches(this ?: "")
+}
+
+fun String?.isValidDecimal(): Boolean {
+    val decimalRegex = "^\\d*(\\.\\d*)?$".toRegex()
+    return decimalRegex.matches(this ?: "")
 }

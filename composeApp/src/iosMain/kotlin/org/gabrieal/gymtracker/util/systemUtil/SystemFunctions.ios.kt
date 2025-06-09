@@ -5,6 +5,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
+import org.gabrieal.gymtracker.util.app.isValidNumber
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSCalendarUnitMonth
@@ -207,7 +208,7 @@ class FilteringTextFieldDelegate(
 
         return when (type) {
             KeyboardType.Number -> {
-                currentText.isEmpty() || currentText.matches(Regex("^\\d+$"))
+                currentText.isEmpty() || currentText.isValidNumber()
             }
             else -> true
         }

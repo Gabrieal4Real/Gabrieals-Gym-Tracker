@@ -235,7 +235,12 @@ fun Modifier.verticalColumnScrollbar(
 }
 
 @Composable
-fun DropdownMenuBox(value: String, placeholderText: String, onSelected: (String) -> Unit, options: List<String>) {
+fun DropdownMenuBox(
+    value: String,
+    placeholderText: String,
+    onSelected: (String) -> Unit,
+    options: List<String>
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Column {

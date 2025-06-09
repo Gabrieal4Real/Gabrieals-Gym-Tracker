@@ -3,9 +3,8 @@ package org.gabrieal.gymtracker.features.loginRegister.repository
 import org.gabrieal.gymtracker.data.model.AuthResponse
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.network.AuthService
-import org.gabrieal.gymtracker.data.network.fromFirestoreDocument
 
-class LoginRegisterRepoImpl(private val authService: AuthService): LoginRegisterRepo {
+class LoginRegisterRepoImpl(private val authService: AuthService) : LoginRegisterRepo {
     override suspend fun registerUser(email: String, password: String): AuthResponse {
         return authService.registerWithEmail(email, password).second
     }

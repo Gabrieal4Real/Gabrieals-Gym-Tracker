@@ -44,11 +44,8 @@ import org.gabrieal.gymtracker.features.profile.view.ProfileTab
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
 import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTime
-import org.gabrieal.gymtracker.util.app.resetAllCompletedStatus
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
-import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
 import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
@@ -138,7 +135,7 @@ object LandingScreen : Screen {
                     }
                     Spacer(modifier = Modifier.height(2.dp))
                     MarqueeTinyItalicText(
-                        landingCurrentlyActiveRoutine?.exercises?.joinToString(
+                        landingCurrentlyActiveRoutine.exercises?.joinToString(
                             ", "
                         ) { it.name.orEmpty() } ?: "")
                 }
