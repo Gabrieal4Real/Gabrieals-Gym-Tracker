@@ -8,5 +8,5 @@ data class StartWorkoutUiState(
     val showWarningReplace: Boolean = false,
 
     val completedVolume: Int = 0,
-    val completedSets: Int = 0
+    val completedSets: Int = 0,
 )

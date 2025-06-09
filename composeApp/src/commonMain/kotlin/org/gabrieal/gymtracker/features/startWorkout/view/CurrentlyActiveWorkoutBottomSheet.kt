@@ -12,10 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.CheckCircleOutline
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material.icons.rounded.Timer
@@ -26,11 +29,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import org.gabrieal.gymtracker.colors
@@ -41,10 +44,13 @@ import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTime
 import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
+import org.gabrieal.gymtracker.util.widgets.ButtonType
+import org.gabrieal.gymtracker.util.widgets.ConfirmButton
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.LinkText
+import org.gabrieal.gymtracker.util.widgets.TinyButton
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import kotlin.time.ExperimentalTime
 
@@ -134,49 +140,117 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
     }
 
     @Composable
-    fun ExerciseItem(
-        exercise: SelectedExercise,
-    ) {
+    fun ExerciseItem(exercise: SelectedExercise) {
         var expanded by remember { mutableStateOf(false) }
-        var isCompletedList = remember { (List(exercise.sets ?: 0) { false }).toMutableStateList() }
+        val setCount = exercise.sets ?: 0
+        val isCompletedList = remember { MutableList(setCount) { false }.toMutableStateList() }
 
         CustomCard(
             backgroundEnabled = false,
             enabled = true,
-            onClick = {
-                expanded = !expanded
-            },
+            onClick = { expanded = !expanded },
             content = {
-                Row(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                    ) {
-                        DescriptionText(exercise.name ?: "")
-                        if (!expanded) {
-                            TinyText(
-                                isCompletedList.count { it }.toString() + " / ${exercise.sets ?: 0} done",
-                                color = colors.textSecondary
-                            )
-                            return@Column
+                Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+                    // Header Section
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            DescriptionText(exercise.name.orEmpty())
+
+                            if (!expanded) {
+                                TinyText(
+                                    "${isCompletedList.count { it }} / $setCount done",
+                                    color = colors.textSecondary
+                                )
+                                return@Column
+                            }
+
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Timer,
+                                    contentDescription = "Timer",
+                                    tint = colors.slightlyDarkerLinkBlue
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                LinkText(
+                                    "Rest Timer: ${
+                                        formatRestTime(getCurrentTimerInSeconds(exercise.reps))
+                                    }"
+                                )
+                            }
+                        }
+
+                        Icon(
+                            imageVector = if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
+                            contentDescription = "Expandable",
+                            tint = colors.white
+                        )
+                    }
+
+                    // Expanded Set List
+                    if (expanded) {
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Headers
+                        Row(modifier = Modifier.fillMaxWidth()) {
+                            listOf("Set", "Previous", "KG", "Reps", "").forEach {
+                                TinyText(
+                                    it.uppercase(),
+                                    textAlign = TextAlign.Center,
+                                    modifier = if (it.isNotEmpty()) Modifier.weight(1f) else Modifier.weight(1f).width(28.dp),
+                                    color = colors.textSecondary
+                                )
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(4.dp))
-                        Row (verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                imageVector = Icons.Rounded.Timer,
-                                contentDescription = "Timer",
-                                tint = colors.slightlyDarkerLinkBlue
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            LinkText("Rest Timer: ${formatRestTime(getCurrentTimerInSeconds(exercise.reps))}")
-                        }
-                    }
 
-                    Icon(
-                        imageVector = if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
-                        contentDescription = "Expandable",
-                        tint = colors.white
-                    )
+                        // Set Rows
+                        repeat(setCount) { index ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                DescriptionText(
+                                    "${index + 1}",
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                TinyText(
+                                    "-",
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                DescriptionText(
+                                    "10",
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                DescriptionText(
+                                    "12",
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Icon(
+                                    imageVector = if (isCompletedList[index]) Icons.Rounded.CheckCircle else Icons.Rounded.CheckCircleOutline,
+                                    contentDescription = "Completed",
+                                    tint = if (isCompletedList[index]) colors.checkMarkGreen else colors.placeholderColor,
+                                    modifier = Modifier.size(28.dp).weight(1f).clickable {
+                                        isCompletedList[index] = !isCompletedList[index]
+                                    }
+                                )
+                            }
+                        }
+
+                        TinyButton(
+                            modifier = Modifier.fillMaxWidth(0.8f).padding(top = 8.dp).align(Alignment.CenterHorizontally),
+                            text = "+ Add Set",
+                            onClick = {
+                                
+                            },
+                            buttonType = ButtonType.OUTLINE
+                        )
+                    }
                 }
             }
         )

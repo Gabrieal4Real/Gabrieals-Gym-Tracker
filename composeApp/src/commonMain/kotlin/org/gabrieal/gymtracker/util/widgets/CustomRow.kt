@@ -76,11 +76,11 @@ fun TitleRow(text: String) {
 }
 
 @Composable
-fun CustomHorizontalDivider() {
+fun CustomHorizontalDivider(ratio: Float = 1f) {
     HorizontalDivider(
         color = colors.borderStroke,
         thickness = 1.dp,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(ratio)
     )
 }
 

@@ -42,6 +42,12 @@ enum class ButtonType(
         borderColor = colors.lightMaroon,
         textColor = colors.white
     ),
+    OUTLINE(
+        containerColor = colors.background,
+        disabledContentColor = colors.background,
+        borderColor = colors.linkBlue,
+        textColor = colors.white
+    )
 }
 
 @Composable
