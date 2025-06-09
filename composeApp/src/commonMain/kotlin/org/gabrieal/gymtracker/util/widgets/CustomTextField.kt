@@ -8,18 +8,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.gabrieal.gymtracker.colors
@@ -109,7 +114,7 @@ fun CustomNonClickableTextField(
     )
 
     CompositionLocalProvider(LocalTextSelectionColors provides customSelectionColors) {
-        Box (modifier = Modifier.clickable {
+        Box(modifier = Modifier.clickable {
             onClick.invoke()
         }) {
             OutlinedTextField(
@@ -122,7 +127,7 @@ fun CustomNonClickableTextField(
                         modifier = Modifier.align(Alignment.CenterStart)
                     )
                 },
-                onValueChange = {  },
+                onValueChange = { },
                 textStyle = TextStyle(
                     fontFamily = MediumText(),
                     lineHeight = 20.sp,
@@ -165,6 +170,59 @@ fun CustomNonClickableTextField(
                         )
                     }
                 }
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomUnderlinedTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholderText: String,
+    modifier: Modifier = Modifier,
+    keyboardType: KeyboardType = KeyboardType.Text
+) {
+    val customSelectionColors = TextSelectionColors(
+        handleColor = colors.slightlyDarkerLinkBlue,
+        backgroundColor = colors.linkBlue
+    )
+
+    CompositionLocalProvider(LocalTextSelectionColors provides customSelectionColors) {
+        Box(modifier = modifier) {
+            TextField(
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
+                value = value,
+                placeholder = {
+                    TinyItalicText(
+                        placeholderText,
+                        color = colors.placeholderColor,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                },
+                onValueChange = onValueChange,
+                textStyle = TextStyle(
+                    fontFamily = MediumText(),
+                    lineHeight = 12.sp,
+                    color = colors.white,
+                    textAlign = TextAlign.Center
+                ),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = colors.slightlyDarkerLinkBlue,
+                    unfocusedIndicatorColor = colors.borderStroke,
+                    cursorColor = colors.slightlyDarkerLinkBlue,
+                    focusedTextColor = colors.black,
+                    unfocusedTextColor = colors.black,
+                    focusedPlaceholderColor = colors.placeholderColor,
+                    unfocusedPlaceholderColor = colors.placeholderColor,
+                    focusedLabelColor = colors.slightlyDarkerLinkBlue,
+                    unfocusedLabelColor = colors.borderStroke,
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent
+                )
             )
         }
     }

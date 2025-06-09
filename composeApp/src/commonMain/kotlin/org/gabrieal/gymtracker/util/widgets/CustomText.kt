@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -106,7 +107,8 @@ fun DescriptionText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = colors.textPrimary,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    textDecoration: TextDecoration = TextDecoration.None
 ) {
     Text(
         text,
@@ -114,7 +116,8 @@ fun DescriptionText(
         color = color,
         fontSize = 14.sp,
         modifier = modifier,
-        textAlign = textAlign
+        textAlign = textAlign,
+        textDecoration = textDecoration
     )
 }
 

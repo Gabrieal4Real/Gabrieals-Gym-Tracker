@@ -1,6 +1,5 @@
 package org.gabrieal.gymtracker.features.startWorkout.view
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,18 +20,14 @@ import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.CheckCircleOutline
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material.icons.rounded.Timer
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -44,13 +39,13 @@ import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTime
 import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
-import org.gabrieal.gymtracker.util.widgets.ButtonType
-import org.gabrieal.gymtracker.util.widgets.ConfirmButton
 import org.gabrieal.gymtracker.util.widgets.CustomCard
+import org.gabrieal.gymtracker.util.widgets.CustomTextField
+import org.gabrieal.gymtracker.util.widgets.CustomUnderlinedTextField
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.LinkText
-import org.gabrieal.gymtracker.util.widgets.TinyButton
+import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import kotlin.time.ExperimentalTime
 
@@ -59,17 +54,17 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
 
     fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) {
         viewModel.setSelectedExerciseList(selectedExerciseList)
+        viewModel.initializeCompletedSets(selectedExerciseList)
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
         val selectedExerciseList = uiState.selectedExerciseList
         val completedVolume = uiState.completedVolume
-        val completedSets = uiState.completedSets
+        val completedSets = uiState.exerciseSets.sumOf { it -> it.count { it } }
         val totalSets = selectedExerciseList?.exercises?.sumOf { it.sets ?: 0 }
-
+        
         Box(
             modifier = Modifier.fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
@@ -82,16 +77,22 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                 ActiveWorkoutHeader(completedSets, totalSets)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    stickyHeader {
-                        DurationVolumeSetCard(completedVolume, completedSets)
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 0.dp, start = 16.dp, end = 16.dp)
+                ) {
+                    DurationVolumeSetCard(completedVolume, completedSets)
+                }
 
+                LazyColumn(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
                     selectedExerciseList?.exercises?.let {
                         items(it.size) { index ->
-                            ExerciseItem(it[index])
+                            ExerciseItem(index, it[index])
                         }
+                    }
+
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
@@ -99,14 +100,14 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
     }
 
     @Composable
-    fun ActiveWorkoutHeader(completedSets: Int?, totalSets: Int?) {
+    fun ActiveWorkoutHeader(completedSets: Int, totalSets: Int?) {
 
     }
 
 
     @OptIn(ExperimentalTime::class)
     @Composable
-    fun DurationVolumeSetCard(completedVolume: Int, completedSets: Int) {
+    fun DurationVolumeSetCard(completedVolume: Double, completedSets: Int) {
         CustomCard(
             enabled = false,
             content = {
@@ -124,8 +125,8 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-                            DescriptionText(titleMessage[index].first)
-                            TinyText(titleMessage[index].second.toString())
+                            TinyText(titleMessage[index].first)
+                            DescriptionText(titleMessage[index].second.toString())
                         }
 
                         if (index != titleMessage.lastIndex) {
@@ -140,121 +141,123 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
     }
 
     @Composable
-    fun ExerciseItem(exercise: SelectedExercise) {
-        var expanded by remember { mutableStateOf(false) }
+    fun ExerciseItem(index: Int, exercise: SelectedExercise) {
+        val uiState by viewModel.uiState.collectAsState()
+        val exerciseName = exercise.name.orEmpty()
         val setCount = exercise.sets ?: 0
-        val isCompletedList = remember { MutableList(setCount) { false }.toMutableStateList() }
+        val expanded = uiState.expandedExercises[index]
+        val exerciseWeights = uiState.exerciseWeights[index]
+        val exerciseReps = uiState.exerciseReps[index]
+        val exerciseSets = uiState.exerciseSets[index]
+        val completedSets = uiState.exerciseSets[index].count { it }
 
         CustomCard(
             backgroundEnabled = false,
             enabled = true,
-            onClick = { expanded = !expanded },
+            onClick = { viewModel.toggleExerciseExpanded(index) },
             content = {
                 Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    // Header Section
+                    // Header
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.weight(1f)) {
-                            DescriptionText(exercise.name.orEmpty())
-
+                            DescriptionText(exerciseName)
                             if (!expanded) {
                                 TinyText(
-                                    "${isCompletedList.count { it }} / $setCount done",
+                                    "$completedSets / $setCount done",
                                     color = colors.textSecondary
                                 )
                                 return@Column
                             }
-
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Timer,
-                                    contentDescription = "Timer",
-                                    tint = colors.slightlyDarkerLinkBlue
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                LinkText(
-                                    "Rest Timer: ${
-                                        formatRestTime(getCurrentTimerInSeconds(exercise.reps))
-                                    }"
-                                )
-                            }
                         }
-
                         Icon(
                             imageVector = if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
-                            contentDescription = "Expandable",
+                            contentDescription = "Toggle",
                             tint = colors.white
                         )
                     }
 
-                    // Expanded Set List
                     if (expanded) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            TinyText(
+                                "${exercise.reps?.first} to ${exercise.reps?.second} reps",
+                                color = colors.textSecondary
+                            )
+                            LinkText("Rest Timer: ${formatRestTime(getCurrentTimerInSeconds(exercise.reps))}")
+                        }
+                        Spacer(Modifier.height(16.dp))
+                        TinyItalicText("Lifted weight (kg)?")
                         Spacer(modifier = Modifier.height(8.dp))
+                        CustomTextField(
+                            value = exerciseWeights,
+                            onValueChange = { weight ->
+                                if (weight.matches(Regex("^\\d*(\\.\\d*)?$")) && weight.length <= 5)
+                                    viewModel.updateWeight(index, weight)
+                            },
+                            placeholderText = "75.0",
+                        )
+
+                        Spacer(Modifier.height(16.dp))
 
                         // Headers
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            listOf("Set", "Previous", "KG", "Reps", "").forEach {
-                                TinyText(
-                                    it.uppercase(),
-                                    textAlign = TextAlign.Center,
-                                    modifier = if (it.isNotEmpty()) Modifier.weight(1f) else Modifier.weight(1f).width(28.dp),
-                                    color = colors.textSecondary
-                                )
-                            }
+                            listOf("Set", "Reps", "").zip(listOf(0.5f, 1f, 0.5f))
+                                .forEach { (label, weight) ->
+                                    TinyText(
+                                        label.uppercase(),
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.weight(weight),
+                                        color = colors.textSecondary
+                                    )
+                                }
                         }
 
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(Modifier.height(4.dp))
 
-                        // Set Rows
-                        repeat(setCount) { index ->
+                        repeat(setCount) { position ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 DescriptionText(
-                                    "${index + 1}",
+                                    "${position + 1}",
                                     textAlign = TextAlign.Center,
+                                    modifier = Modifier.weight(0.5f)
+                                )
+
+                                CustomUnderlinedTextField(
+                                    keyboardType = KeyboardType.Number,
+                                    value = exerciseReps[position],
+                                    onValueChange = {
+                                        if (!exerciseSets[position] && it.matches(Regex("^\\d*$")) && it.length <= 5)
+                                            viewModel.updateReps(index, it, position)
+                                    },
+                                    placeholderText = "-",
                                     modifier = Modifier.weight(1f)
                                 )
-                                TinyText(
-                                    "-",
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                DescriptionText(
-                                    "10",
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                DescriptionText(
-                                    "12",
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.weight(1f)
-                                )
+
                                 Icon(
-                                    imageVector = if (isCompletedList[index]) Icons.Rounded.CheckCircle else Icons.Rounded.CheckCircleOutline,
+                                    imageVector = if (exerciseSets[position]) Icons.Rounded.CheckCircle else Icons.Rounded.CheckCircleOutline,
                                     contentDescription = "Completed",
-                                    tint = if (isCompletedList[index]) colors.checkMarkGreen else colors.placeholderColor,
-                                    modifier = Modifier.size(28.dp).weight(1f).clickable {
-                                        isCompletedList[index] = !isCompletedList[index]
+                                    tint = if (exerciseSets[position]) colors.checkMarkGreen else colors.placeholderColor,
+                                    modifier = Modifier.size(28.dp).weight(0.5f).clickable {
+                                        viewModel.updateExerciseSets(index, position)
+                                        viewModel.toggleSetCompleted()
                                     }
                                 )
                             }
                         }
 
-                        TinyButton(
-                            modifier = Modifier.fillMaxWidth(0.8f).padding(top = 8.dp).align(Alignment.CenterHorizontally),
-                            text = "+ Add Set",
-                            onClick = {
-                                
-                            },
-                            buttonType = ButtonType.OUTLINE
-                        )
+                        Spacer(Modifier.height(8.dp))
                     }
                 }
             }
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
     }
+
+
 }
