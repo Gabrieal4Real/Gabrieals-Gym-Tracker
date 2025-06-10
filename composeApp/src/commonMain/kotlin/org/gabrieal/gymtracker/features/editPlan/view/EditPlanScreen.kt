@@ -102,7 +102,7 @@ object EditPlanScreen : Screen {
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxHeight(0.9f)
+                            .fillMaxHeight(0.92f)
                             .align(Alignment.CenterHorizontally)
                     ) {
                         // Header
@@ -200,16 +200,16 @@ object EditPlanScreen : Screen {
                             }
                         }
                     }
-
-                    // Save button
-                    ConfirmButton(
-                        "Save",
-                        onClick = {
-                            viewModel.navigateBack()
-                        },
-                        modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
-                    )
                 }
+
+                // Save button
+                ConfirmButton(
+                    "Save",
+                    onClick = {
+                        viewModel.navigateBack()
+                    },
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).padding(16.dp),
+                )
 
                 // Animated Image
                 if (!isEditMode) {

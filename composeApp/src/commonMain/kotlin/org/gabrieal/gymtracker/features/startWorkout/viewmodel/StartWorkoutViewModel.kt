@@ -1,9 +1,15 @@
 package org.gabrieal.gymtracker.features.startWorkout.viewmodel
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -11,6 +17,7 @@ import org.gabrieal.gymtracker.util.navigation.AppNavigator
 class StartWorkoutViewModel {
 
     private val _uiState = MutableStateFlow(StartWorkoutUiState())
+    private val viewModelScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     val uiState: StateFlow<StartWorkoutUiState> = _uiState.asStateFlow()
 
@@ -128,5 +135,50 @@ class StartWorkoutViewModel {
         }
 
         _uiState.update { it.copy(completedVolume = completedVolume) }
+    }
+
+    fun reset() {
+        _uiState.update { it.copy(completedVolume = 0.0) }
+    }
+
+    private var timerJob: Job? = null
+
+
+    private fun pauseTimer() {
+        timerJob?.cancel()
+        _uiState.value = _uiState.value.copy(isRunning = false)
+    }
+
+
+    fun startTimer() {
+        timerJob?.cancel()
+        _uiState.value = _uiState.value.copy(isRunning = true)
+
+        timerJob = viewModelScope.launch {
+            while (_uiState.value.currentTime > 0) {
+                delay(1000L)
+                _uiState.value = _uiState.value.copy(
+                    currentTime = _uiState.value.currentTime - 1
+                )
+            }
+            _uiState.value = _uiState.value.copy(isRunning = false)
+        }
+    }
+
+    fun setTotalTime(seconds: Int) {
+        _uiState.value = _uiState.value.copy(
+            totalTime = seconds,
+            currentTime = seconds,
+            isRunning = false
+        )
+        timerJob?.cancel()
+    }
+
+    fun startOrPauseTimer() {
+        if (_uiState.value.isRunning) {
+            pauseTimer()
+        } else {
+            startTimer()
+        }
     }
 }

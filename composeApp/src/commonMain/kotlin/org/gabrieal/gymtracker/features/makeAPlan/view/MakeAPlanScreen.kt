@@ -95,7 +95,7 @@ object MakeAPlanScreen : Screen {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(if (viewModel.areAllActiveDaysEdited()) 0.8f else 0.9f)
+                        .fillMaxHeight(if (viewModel.areAllActiveDaysEdited()) 0.82f else 0.92f)
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
@@ -171,6 +171,8 @@ object MakeAPlanScreen : Screen {
 
                     // Confirm Button
                     if (viewModel.areAllActiveDaysEdited()) {
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         ConfirmButton(
                             "Let's Pump It Up",
                             onClick = {

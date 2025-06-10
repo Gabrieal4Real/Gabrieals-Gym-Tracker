@@ -130,7 +130,7 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
                             }
                         },
                         enabled = isEnabled(isRegisterMode, userName, email, password),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().padding(16.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     LinkText(

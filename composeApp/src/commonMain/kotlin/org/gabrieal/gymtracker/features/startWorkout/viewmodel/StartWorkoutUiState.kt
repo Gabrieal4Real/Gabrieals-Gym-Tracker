@@ -13,4 +13,8 @@ data class StartWorkoutUiState(
     val exerciseWeights: List<String> = mutableListOf(),
     val exerciseReps: List<List<String>> = mutableListOf(),
     val exerciseSets: List<List<Boolean>> = mutableListOf(),
+
+    val totalTime: Int = 0,
+    val currentTime: Int = 0,
+    val isRunning: Boolean = false
 )

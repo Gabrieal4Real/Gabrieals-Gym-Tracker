@@ -56,9 +56,10 @@ fun CustomTextField(
                 },
                 onValueChange = onValueChange,
                 textStyle = TextStyle(
+                    fontSize = 14.sp,
                     fontFamily = MediumText(),
                     lineHeight = 20.sp,
-                    color = colors.black
+                    color = colors.black,
                 ),
                 singleLine = true,
                 modifier = Modifier
@@ -129,9 +130,10 @@ fun CustomNonClickableTextField(
                 },
                 onValueChange = { },
                 textStyle = TextStyle(
+                    fontSize = 14.sp,
                     fontFamily = MediumText(),
                     lineHeight = 20.sp,
-                    color = colors.black
+                    color = colors.black,
                 ),
                 singleLine = true,
                 modifier = Modifier
@@ -183,6 +185,7 @@ fun CustomUnderlinedTextField(
     modifier: Modifier = Modifier,
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
+
     val customSelectionColors = TextSelectionColors(
         handleColor = colors.slightlyDarkerLinkBlue,
         backgroundColor = colors.linkBlue
@@ -203,8 +206,9 @@ fun CustomUnderlinedTextField(
                 },
                 onValueChange = onValueChange,
                 textStyle = TextStyle(
+                    fontSize = 14.sp,
                     fontFamily = MediumText(),
-                    lineHeight = 12.sp,
+                    lineHeight = 20.sp,
                     color = colors.white,
                     textAlign = TextAlign.Center
                 ),

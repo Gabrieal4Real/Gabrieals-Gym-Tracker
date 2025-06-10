@@ -10,8 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -66,8 +71,7 @@ fun ConfirmButton(
         ),
         border = BorderStroke(1.dp, buttonType.borderColor),
         shape = RoundedCornerShape(12.dp),
-        modifier = modifier
-            .padding(vertical = 8.dp),
+        modifier = modifier,
         elevation = ButtonDefaults.elevatedButtonElevation(0.dp),
         enabled = enabled
     ) {
@@ -95,8 +99,7 @@ fun TinyButton(
         ),
         border = BorderStroke(1.dp, buttonType.borderColor),
         shape = RoundedCornerShape(8.dp),
-        modifier = modifier
-            .padding(0.dp),
+        modifier = modifier,
         elevation = ButtonDefaults.elevatedButtonElevation(0.dp),
         enabled = enabled
     ) {
@@ -151,4 +154,36 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): I
     }
 
     return selectedValue
+}
+
+@Composable
+fun CustomSwitch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    Switch(
+        enabled = enabled,
+        checked = checked,
+        onCheckedChange = onCheckedChange,
+        colors = SwitchDefaults.colors(
+            checkedThumbColor = colors.white,
+            checkedTrackColor = colors.bottomNavIndicator,
+            uncheckedThumbColor = colors.white.copy(alpha = 0.5f),
+            uncheckedTrackColor = colors.placeholderColor
+        ),
+        modifier = modifier,
+        thumbContent = if (checked) {
+            {
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                )
+            }
+        } else {
+            null
+        }
+    )
 }

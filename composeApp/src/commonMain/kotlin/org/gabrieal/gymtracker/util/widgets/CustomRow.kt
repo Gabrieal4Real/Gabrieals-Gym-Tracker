@@ -1,5 +1,7 @@
 package org.gabrieal.gymtracker.util.widgets
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -22,6 +24,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.FilterAlt
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -30,22 +34,31 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.util.app.RegularText
+import org.gabrieal.gymtracker.util.app.formatRestTime
+import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
+import org.gabrieal.gymtracker.util.app.repRanges
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 @Composable
@@ -270,4 +283,58 @@ fun DropdownMenuBox(
         }
     }
 }
+
+@Composable
+fun ClickToStartTimerBar(
+    isRunning: Boolean,
+    currentTime: Int,
+    totalTime: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val progress by animateFloatAsState(
+        targetValue = if (totalTime > 0) currentTime / totalTime.toFloat() else 1f,
+        animationSpec = tween(500),
+        label = "progress"
+    )
+
+    val shape = RoundedCornerShape(12.dp)
+    val backgroundColor = colors.placeholderColor
+    val progressColor = colors.slightlyDarkerLinkBlue
+
+    Box(
+        modifier = modifier
+            .clip(shape)
+            .background(backgroundColor)
+            .clickable { onClick() }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(progress)
+                .height(42.dp)
+                .background(progressColor)
+        )
+
+        Icon(
+            imageVector = if (isRunning) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+            contentDescription = "Pause",
+            tint = Color.White,
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .size(32.dp)
+                .padding(start = 4.dp)
+        )
+
+        TinyText(
+            text = if (currentTime == 0) "Timer" else formatRestTime(currentTime),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(4.dp),
+            color = Color.White
+        )
+    }
+}
+
+
+
 

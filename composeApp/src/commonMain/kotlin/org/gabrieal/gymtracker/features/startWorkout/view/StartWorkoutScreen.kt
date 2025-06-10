@@ -92,7 +92,7 @@ object StartWorkoutScreen : Screen {
                 ) {
                     Column(
                         modifier = Modifier
-                            .fillMaxHeight(0.9f)
+                            .fillMaxHeight(0.92f)
                             .align(Alignment.CenterHorizontally)
                     ) {
                         TinyText(
@@ -124,35 +124,37 @@ object StartWorkoutScreen : Screen {
                             }
                         )
                     }
-                    val title =
-                        when (currentActiveExercise) {
-                            null -> "Start Workout"
-                            selectedExerciseList -> "Complete Workout"
-                            else -> "Replace Workout"
-                        }
-                    ConfirmButton(
-                        title,
-                        onClick = {
-                            when (currentActiveExercise) {
-                                null -> {
-                                    viewModel.startWorkout(selectedExerciseList)
-                                    startTime = Clock.System.now()
-                                    AppNavigator.navigateBack()
-                                }
-
-                                selectedExerciseList -> {
-                                    viewModel.markWorkoutAsDone()
-                                    viewModel.startWorkout(null)
-                                }
-
-                                else -> {
-                                    viewModel.setShowWarningReplace(true)
-                                }
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)
-                    )
                 }
+
+                val title =
+                    when (currentActiveExercise) {
+                        null -> "Start Workout"
+                        selectedExerciseList -> "Complete Workout"
+                        else -> "Replace Workout"
+                    }
+
+                ConfirmButton(
+                    title,
+                    onClick = {
+                        when (currentActiveExercise) {
+                            null -> {
+                                viewModel.startWorkout(selectedExerciseList)
+                                startTime = Clock.System.now()
+                                AppNavigator.navigateBack()
+                            }
+
+                            selectedExerciseList -> {
+                                viewModel.markWorkoutAsDone()
+                                viewModel.startWorkout(null)
+                            }
+
+                            else -> {
+                                viewModel.setShowWarningReplace(true)
+                            }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).padding(16.dp)
+                )
             }
 
             if (showWarningReplace) {
