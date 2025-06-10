@@ -1,6 +1,7 @@
 package org.gabrieal.gymtracker.features.startWorkout.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,6 +39,8 @@ import org.gabrieal.gymtracker.util.app.ElapsedTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
+import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
+import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.ClickToStartTimerBar
 import org.gabrieal.gymtracker.util.widgets.ConfirmButton
@@ -66,10 +70,20 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
         val selectedExerciseList = uiState.selectedExerciseList
         val completedVolume = uiState.completedVolume
         val completedSets = uiState.exerciseSets.sumOf { it -> it.count { it } }
-        val totalSets = selectedExerciseList?.exercises?.sumOf { it.sets ?: 0 }
+        val showNotification = uiState.showNotification
+
+        LaunchedEffect(key1 = showNotification) {
+            requestNotificationPermission()
+
+            if (showNotification) {
+                notifyPlatform("Time is up!")
+                viewModel.setShowNotification(false)
+            }
+        }
 
         Box(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                 .background(colors.background)
         ) {
@@ -78,42 +92,70 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Column(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     BiggerText(selectedExerciseList?.routineName.orEmpty())
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    DurationVolumeSetCard(completedVolume, completedSets)
-
                     Spacer(modifier = Modifier.height(16.dp))
+                    DurationVolumeSetCard(completedVolume, completedSets)
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    val addTime = listOf(
+                        "30S" to 30,
+                        "1M" to 60,
+                        "2M" to 120,
+                        "5M" to 300
+                    )
 
                     ClickToStartTimerBar(
                         isRunning = uiState.isRunning,
                         currentTime = uiState.currentTime,
                         totalTime = uiState.totalTime,
                         onClick = { viewModel.startOrPauseTimer() },
+                        onRestart = { viewModel.restartTimer() },
+                        onReset = { viewModel.resetTimer() },
                         modifier = Modifier.fillMaxWidth()
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        addTime.forEachIndexed() { index, (label, seconds) ->
+                            Box(
+                                modifier = Modifier
+                                    .height(42.dp)
+                                    .weight(1f)
+                                    .background(
+                                        colors.placeholderColor,
+                                        RoundedCornerShape(8.dp)
+                                    )
+                                    .clickable { viewModel.addTime(seconds) },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                TinyText("+$label", color = colors.white)
+                            }
+
+                            if (index != addTime.lastIndex) {
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                        }
+                    }
                 }
 
                 CustomHorizontalDivider()
 
-                Column(modifier = Modifier.fillMaxSize().background(colors.lighterBackground)) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(bottom = 16.dp, start = 16.dp, end = 16.dp)
-                    ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(colors.lighterBackground)
+                        .padding(start = 16.dp, end = 16.dp),
+                ) {
+                    item { Spacer(modifier = Modifier.height(16.dp)) }
+                    selectedExerciseList?.exercises?.forEachIndexed { index, exercise ->
                         item {
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
-
-                        selectedExerciseList?.exercises?.let {
-                            items(it.size) { index ->
-                                ExerciseItem(index, it[index], uiState)
-                            }
+                            ExerciseItem(index, exercise, uiState)
                         }
                     }
                 }
@@ -123,52 +165,40 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
 
     @OptIn(ExperimentalTime::class)
     @Composable
-    fun DurationVolumeSetCard(
-        completedVolume: Double,
-        completedSets: Int
-    ) {
-        CustomCard(
-            enabled = false,
-            content = {
-                val titleMessage = listOf(
-                    Pair("Duration", ElapsedTime(startTime)),
-                    Pair("Volume", "$completedVolume kg"),
-                    Pair("Sets", completedSets)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    titleMessage.forEachIndexed { index, _ ->
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            TinyText(titleMessage[index].first)
-                            DescriptionText(titleMessage[index].second.toString())
-                        }
+    fun DurationVolumeSetCard(volume: Double, sets: Int) {
+        val stats = listOf(
+            "Duration" to ElapsedTime(startTime),
+            "Volume" to "$volume kg",
+            "Sets" to sets.toString()
+        )
 
-                        if (index != titleMessage.lastIndex) {
-                            Spacer(modifier = Modifier.width(8.dp))
-                            DashedDivider()
-                            Spacer(modifier = Modifier.width(8.dp))
-                        }
+        CustomCard(enabled = false, content = {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                stats.forEachIndexed { index, (label, value) ->
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        TinyText(label)
+                        DescriptionText(value)
+                    }
+                    if (index != stats.lastIndex) {
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DashedDivider()
+                        Spacer(modifier = Modifier.width(8.dp))
                     }
                 }
             }
-        )
+        })
     }
 
     @Composable
     fun ExerciseItem(index: Int, exercise: SelectedExercise, uiState: StartWorkoutUiState) {
-        val exerciseName = exercise.name.orEmpty()
-        val setCount = exercise.sets ?: 0
         val expanded = uiState.expandedExercises[index]
-        val exerciseWeights = uiState.exerciseWeights[index]
-        val exerciseReps = uiState.exerciseReps[index]
-        val exerciseSets = uiState.exerciseSets[index]
-        val completedSets = uiState.exerciseSets[index].count { it }
-        val isTimerRunning = uiState.isRunning
+        val weights = uiState.exerciseWeights[index]
+        val reps = uiState.exerciseReps[index]
+        val sets = uiState.exerciseSets[index]
 
         CustomCard(
             backgroundEnabled = true,
@@ -176,13 +206,12 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
             onClick = { viewModel.toggleExerciseExpanded(index) },
             content = {
                 Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    // Header
                     Row(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.weight(1f)) {
-                            DescriptionText(exerciseName)
+                            DescriptionText(exercise.name.orEmpty())
                             if (!expanded) {
                                 TinyText(
-                                    "$completedSets / $setCount done",
+                                    "${sets.count { it }} / ${exercise.sets ?: 0} done",
                                     color = colors.textSecondary
                                 )
                                 return@Column
@@ -190,7 +219,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                         }
                         Icon(
                             imageVector = if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
-                            contentDescription = "Toggle",
+                            contentDescription = null,
                             tint = colors.white
                         )
                     }
@@ -200,7 +229,6 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                             "${exercise.reps?.first} to ${exercise.reps?.second} reps",
                             color = colors.textSecondary
                         )
-
                         Spacer(Modifier.height(16.dp))
 
                         Row(
@@ -211,12 +239,14 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                                 TinyItalicText("Weight (kg)?")
                                 Spacer(modifier = Modifier.height(8.dp))
                                 CustomTextField(
-                                    value = exerciseWeights,
-                                    onValueChange = { weight ->
-                                        if (weight.isValidDecimal() && weight.length <= 5)
-                                            viewModel.updateWeight(index, weight)
+                                    value = weights,
+                                    onValueChange = {
+                                        if (it.isValidDecimal() && it.length <= 5) viewModel.updateWeight(
+                                            index,
+                                            it
+                                        )
                                     },
-                                    placeholderText = "75.0",
+                                    placeholderText = "75.0"
                                 )
                             }
 
@@ -226,18 +256,18 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                                 TinyItalicText("Rest Timer")
                                 Spacer(modifier = Modifier.height(8.dp))
                                 ConfirmButton(
-                                    text = if (isTimerRunning) "Replace" else "Start",
+                                    text = if (uiState.isRunning) "Replace" else "Start",
                                     onClick = {
                                         viewModel.setTotalTime(getCurrentTimerInSeconds(exercise.reps))
                                         viewModel.startTimer()
                                     },
-                                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                                    modifier = Modifier.fillMaxWidth().height(56.dp)
                                 )
                             }
                         }
+
                         Spacer(Modifier.height(16.dp))
 
-                        // Headers
                         Row(modifier = Modifier.fillMaxWidth()) {
                             listOf("Set", "", "Reps", "", "").zip(
                                 listOf(
@@ -247,51 +277,47 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                                     0.3f,
                                     0.5f
                                 )
-                            )
-                                .forEach { (label, weight) ->
-                                    TinyText(
-                                        label.uppercase(),
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.weight(weight),
-                                        color = colors.textSecondary
-                                    )
-                                }
+                            ).forEach { (label, weight) ->
+                                TinyText(
+                                    label.uppercase(),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.weight(weight),
+                                    color = colors.textSecondary
+                                )
+                            }
                         }
 
                         Spacer(Modifier.height(4.dp))
 
-                        repeat(setCount) { position ->
+                        repeat(exercise.sets ?: 0) { pos ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 DescriptionText(
-                                    "${position + 1}",
+                                    "${pos + 1}",
                                     textAlign = TextAlign.Center,
                                     modifier = Modifier.weight(0.5f)
                                 )
                                 Spacer(Modifier.weight(0.3f))
-
                                 CustomUnderlinedTextField(
                                     keyboardType = KeyboardType.Number,
-                                    value = exerciseReps[position],
-                                    onValueChange = { reps ->
-                                        if (!exerciseSets[position] && reps.isValidNumber() && reps.length <= 5)
-                                            viewModel.updateReps(index, reps, position)
+                                    value = reps[pos],
+                                    onValueChange = {
+                                        if (!sets[pos] && it.isValidNumber() && it.length <= 5)
+                                            viewModel.updateReps(index, it, pos)
                                     },
                                     placeholderText = "-",
                                     modifier = Modifier.weight(1f)
                                 )
-
                                 Spacer(Modifier.weight(0.3f))
-
                                 CustomSwitch(
-                                    checked = exerciseSets[position],
+                                    checked = sets[pos],
                                     onCheckedChange = {
-                                        viewModel.updateExerciseSets(index, position)
+                                        viewModel.updateExerciseSets(index, pos)
                                         viewModel.toggleSetCompleted()
                                     },
-                                    modifier = Modifier.weight(0.5f),
+                                    modifier = Modifier.weight(0.5f)
                                 )
                             }
                         }
@@ -301,7 +327,6 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                 }
             }
         )
-
         Spacer(Modifier.height(16.dp))
     }
 }

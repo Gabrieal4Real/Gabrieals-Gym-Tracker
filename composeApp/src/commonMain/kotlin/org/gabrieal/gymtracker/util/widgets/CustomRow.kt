@@ -23,9 +23,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -290,6 +292,8 @@ fun ClickToStartTimerBar(
     currentTime: Int,
     totalTime: Int,
     onClick: () -> Unit,
+    onRestart: () -> Unit,
+    onReset: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val progress by animateFloatAsState(
@@ -306,7 +310,6 @@ fun ClickToStartTimerBar(
         modifier = modifier
             .clip(shape)
             .background(backgroundColor)
-            .clickable { onClick() }
     ) {
         Box(
             modifier = Modifier
@@ -323,15 +326,41 @@ fun ClickToStartTimerBar(
                 .align(Alignment.CenterStart)
                 .size(32.dp)
                 .padding(start = 4.dp)
+                .clickable { onClick() }
         )
 
         TinyText(
-            text = if (currentTime == 0) "Timer" else formatRestTime(currentTime),
+            text = if (currentTime <= 0) "Timer" else formatRestTime(currentTime),
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(4.dp),
             color = Color.White
         )
+
+        Row(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.RestartAlt,
+                contentDescription = "Restart",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(32.dp)
+                    .padding(end = 4.dp)
+                    .clickable { onRestart() }
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+                imageVector = Icons.Rounded.Clear,
+                contentDescription = "Reset",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(32.dp)
+                    .padding(end = 4.dp)
+                    .clickable { onReset() }
+            )
+        }
     }
 }
 

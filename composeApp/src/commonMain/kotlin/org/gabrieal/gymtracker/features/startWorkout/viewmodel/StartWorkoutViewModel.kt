@@ -146,31 +146,53 @@ class StartWorkoutViewModel {
 
     private fun pauseTimer() {
         timerJob?.cancel()
-        _uiState.value = _uiState.value.copy(isRunning = false)
+        _uiState.update { it.copy(isRunning = false) }
     }
 
 
     fun startTimer() {
         timerJob?.cancel()
-        _uiState.value = _uiState.value.copy(isRunning = true)
+        _uiState.update { it.copy(isRunning = true) }
 
         timerJob = viewModelScope.launch {
             while (_uiState.value.currentTime > 0) {
                 delay(1000L)
-                _uiState.value = _uiState.value.copy(
-                    currentTime = _uiState.value.currentTime - 1
-                )
+                if (_uiState.value.isRunning)
+                    _uiState.update { it.copy(currentTime = _uiState.value.currentTime - 1) }
             }
             _uiState.value = _uiState.value.copy(isRunning = false)
         }
     }
 
+    fun restartTimer() {
+        _uiState.update { it.copy(currentTime = _uiState.value.totalTime) }
+
+        timerJob?.cancel()
+        _uiState.update { it.copy(isRunning = true) }
+
+        timerJob = viewModelScope.launch {
+            while (_uiState.value.currentTime > 0) {
+                delay(1000L)
+                if (_uiState.value.isRunning)
+                    _uiState.update { it.copy(currentTime = _uiState.value.currentTime - 1) }
+            }
+            _uiState.update { it.copy(isRunning = false) }
+            setShowNotification(true)
+        }
+    }
+
+    fun setShowNotification(show: Boolean) {
+        _uiState.update { it.copy(showNotification = show) }
+    }
+
     fun setTotalTime(seconds: Int) {
-        _uiState.value = _uiState.value.copy(
-            totalTime = seconds,
-            currentTime = seconds,
-            isRunning = false
-        )
+        _uiState.update {
+            it.copy(
+                totalTime = seconds,
+                currentTime = seconds,
+                isRunning = false
+            )
+        }
         timerJob?.cancel()
     }
 
@@ -179,6 +201,25 @@ class StartWorkoutViewModel {
             pauseTimer()
         } else {
             startTimer()
+        }
+    }
+
+    fun addTime(seconds: Int) {
+        _uiState.update {
+            it.copy(
+                totalTime = it.totalTime + seconds,
+                currentTime = it.currentTime + seconds
+            )
+        }
+    }
+
+    fun resetTimer() {
+        _uiState.update {
+            it.copy(
+                totalTime = 0,
+                currentTime = 0,
+                isRunning = false
+            )
         }
     }
 }
