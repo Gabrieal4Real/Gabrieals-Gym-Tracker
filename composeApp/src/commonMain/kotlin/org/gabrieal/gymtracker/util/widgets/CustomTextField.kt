@@ -82,19 +82,18 @@ fun CustomTextField(
                     focusedContainerColor = colors.white,
                     unfocusedContainerColor = colors.white
                 ),
-                trailingIcon = {
-                    if (resource != null) {
-                        Icon(
-                            imageVector = resource.first,
-                            contentDescription = resource.first.name,
-                            tint = colors.black,
-                            modifier = Modifier.size(48.dp).align(Alignment.CenterEnd)
-                                .padding(start = 8.dp, end = 8.dp).clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = resource.second
-                                )
-                        )
+                trailingIcon = resource?.let { (icon, click) -> {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = icon.name,
+                        tint = colors.black,
+                        modifier = Modifier.size(48.dp).align(Alignment.CenterEnd)
+                            .padding(start = 8.dp, end = 8.dp).clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = click
+                            )
+                    )
                     }
                 }
             )
@@ -115,65 +114,59 @@ fun CustomNonClickableTextField(
     )
 
     CompositionLocalProvider(LocalTextSelectionColors provides customSelectionColors) {
-        Box(modifier = Modifier.clickable {
-            onClick.invoke()
-        }) {
-            OutlinedTextField(
-                enabled = false,
-                value = value,
-                placeholder = {
-                    TinyItalicText(
-                        placeholderText,
-                        color = colors.placeholderColor,
-                        modifier = Modifier.align(Alignment.CenterStart)
+        OutlinedTextField(
+            enabled = false,
+            value = value,
+            onValueChange = {},
+            placeholder = {
+                TinyItalicText(
+                    placeholderText,
+                    color = colors.placeholderColor
+                )
+            },
+            textStyle = TextStyle(
+                fontSize = 14.sp,
+                fontFamily = MediumText(),
+                lineHeight = 20.sp,
+                color = colors.black,
+            ),
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colors.textPrimary, shape = RoundedCornerShape(12.dp))
+                .clickable { onClick() },
+            shape = RoundedCornerShape(12.dp),
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = colors.slightlyDarkerLinkBlue,
+                unfocusedIndicatorColor = colors.borderStroke,
+                cursorColor = colors.slightlyDarkerLinkBlue,
+                focusedTextColor = colors.black,
+                unfocusedTextColor = colors.black,
+                focusedPlaceholderColor = colors.placeholderColor,
+                unfocusedPlaceholderColor = colors.placeholderColor,
+                focusedLabelColor = colors.slightlyDarkerLinkBlue,
+                unfocusedLabelColor = colors.borderStroke,
+                focusedContainerColor = colors.white,
+                unfocusedContainerColor = colors.white,
+                disabledContainerColor = colors.textPrimary
+            ),
+            trailingIcon = resource?.let { (icon, click) -> {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = icon.name,
+                        tint = colors.black,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .padding(horizontal = 8.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = click
+                            )
                     )
-                },
-                onValueChange = { },
-                textStyle = TextStyle(
-                    fontSize = 14.sp,
-                    fontFamily = MediumText(),
-                    lineHeight = 20.sp,
-                    color = colors.black,
-                ),
-                singleLine = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        colors.textPrimary,
-                        shape = RoundedCornerShape(12.dp)
-                    ),
-                shape = RoundedCornerShape(12.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = colors.slightlyDarkerLinkBlue,
-                    unfocusedIndicatorColor = colors.borderStroke,
-                    cursorColor = colors.slightlyDarkerLinkBlue,
-                    focusedTextColor = colors.black,
-                    unfocusedTextColor = colors.black,
-                    focusedPlaceholderColor = colors.placeholderColor,
-                    unfocusedPlaceholderColor = colors.placeholderColor,
-                    focusedLabelColor = colors.slightlyDarkerLinkBlue,
-                    unfocusedLabelColor = colors.borderStroke,
-                    focusedContainerColor = colors.white,
-                    unfocusedContainerColor = colors.white,
-                    disabledContainerColor = colors.textPrimary
-                ),
-                trailingIcon = {
-                    if (resource != null) {
-                        Icon(
-                            imageVector = resource.first,
-                            contentDescription = resource.first.name,
-                            tint = colors.black,
-                            modifier = Modifier.size(48.dp).align(Alignment.CenterEnd)
-                                .padding(start = 8.dp, end = 8.dp).clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = resource.second
-                                )
-                        )
-                    }
                 }
-            )
-        }
+            }
+        )
     }
 }
 

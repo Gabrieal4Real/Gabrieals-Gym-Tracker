@@ -11,6 +11,7 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import org.gabrieal.gymtracker.R
 
 private const val CHANNEL_ID = "default_channel_id"
 private const val CHANNEL_NAME = "General Notifications"
@@ -51,7 +52,7 @@ actual fun notifyPlatform(message: String) {
     }
 
     val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-        .setSmallIcon(android.R.drawable.ic_dialog_info)
+        .setSmallIcon(R.drawable.notification)
         .setContentTitle("Gym Tracker")
         .setContentText(message)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)

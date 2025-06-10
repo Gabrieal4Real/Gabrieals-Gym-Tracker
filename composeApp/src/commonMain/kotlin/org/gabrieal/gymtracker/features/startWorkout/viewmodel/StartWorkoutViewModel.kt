@@ -147,12 +147,10 @@ class StartWorkoutViewModel {
 
     private var timerJob: Job? = null
 
-
     private fun pauseTimer() {
         timerJob?.cancel()
         _uiState.update { it.copy(isRunning = false) }
     }
-
 
     fun startTimer() {
         timerJob?.cancel()
@@ -161,28 +159,20 @@ class StartWorkoutViewModel {
         timerJob = viewModelScope.launch {
             while (_uiState.value.currentTime > 0) {
                 delay(1000L)
-                if (_uiState.value.isRunning)
+                if (_uiState.value.isRunning) {
                     _uiState.update { it.copy(currentTime = _uiState.value.currentTime - 1) }
+                    if (_uiState.value.currentTime < 1) {
+                        setShowNotification(true)
+                    }
+                }
             }
-            _uiState.value = _uiState.value.copy(isRunning = false)
+            resetTimer()
         }
     }
 
     fun restartTimer() {
         _uiState.update { it.copy(currentTime = _uiState.value.totalTime) }
-
-        timerJob?.cancel()
-        _uiState.update { it.copy(isRunning = true) }
-
-        timerJob = viewModelScope.launch {
-            while (_uiState.value.currentTime > 0) {
-                delay(1000L)
-                if (_uiState.value.isRunning)
-                    _uiState.update { it.copy(currentTime = _uiState.value.currentTime - 1) }
-            }
-            _uiState.update { it.copy(isRunning = false) }
-            setShowNotification(true)
-        }
+        startTimer()
     }
 
     fun setShowNotification(show: Boolean) {

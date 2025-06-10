@@ -29,6 +29,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import gymtracker.composeapp.generated.resources.Res
+import gymtracker.composeapp.generated.resources.icon_reps
+import gymtracker.composeapp.generated.resources.icon_sets
+import gymtracker.composeapp.generated.resources.icon_timer
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
@@ -36,6 +40,7 @@ import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutUiSta
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
 import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTime
+import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
@@ -43,9 +48,9 @@ import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
 import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.ClickToStartTimerBar
-import org.gabrieal.gymtracker.util.widgets.ConfirmButton
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
+import org.gabrieal.gymtracker.util.widgets.CustomNonClickableTextField
 import org.gabrieal.gymtracker.util.widgets.CustomSwitch
 import org.gabrieal.gymtracker.util.widgets.CustomTextField
 import org.gabrieal.gymtracker.util.widgets.CustomUnderlinedTextField
@@ -224,18 +229,14 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                     }
 
                     if (expanded) {
-                        TinyText(
-                            "${exercise.reps?.first} to ${exercise.reps?.second} reps",
-                            color = colors.textSecondary
-                        )
-                        Spacer(Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
-                                TinyItalicText("Weight (kg)?")
+                                TinyItalicText("Weight (kg)")
                                 Spacer(modifier = Modifier.height(8.dp))
                                 CustomTextField(
                                     value = weights,
@@ -249,18 +250,27 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                                 )
                             }
 
-                            Spacer(Modifier.width(16.dp))
+                            Spacer(Modifier.width(8.dp))
 
                             Column(modifier = Modifier.weight(1f)) {
-                                TinyItalicText("Rest Timer")
+                                TinyItalicText("Rest")
                                 Spacer(modifier = Modifier.height(8.dp))
-                                ConfirmButton(
-                                    text = if (uiState.isRunning) "Replace" else "Start",
-                                    onClick = {
-                                        viewModel.setTotalTime(getCurrentTimerInSeconds(exercise.reps))
-                                        viewModel.startTimer()
-                                    },
-                                    modifier = Modifier.fillMaxWidth().height(56.dp)
+                                CustomNonClickableTextField(
+                                    value = formatRestTime(getCurrentTimerInSeconds(exercise.reps)),
+                                    onClick = {},
+                                    placeholderText = ""
+                                )
+                            }
+
+                            Spacer(Modifier.width(8.dp))
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                TinyItalicText("Rep Range")
+                                Spacer(modifier = Modifier.height(8.dp))
+                                CustomNonClickableTextField(
+                                    value = "${exercise.reps?.first} to ${exercise.reps?.second}",
+                                    onClick = {},
+                                    placeholderText = ""
                                 )
                             }
                         }
@@ -313,6 +323,10 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                                 CustomSwitch(
                                     checked = sets[pos],
                                     onCheckedChange = {
+                                        if (it) {
+                                            viewModel.setTotalTime(getCurrentTimerInSeconds(exercise.reps))
+                                            viewModel.startTimer()
+                                        }
                                         viewModel.updateExerciseSets(index, pos)
                                         viewModel.toggleSetCompleted()
                                     },
