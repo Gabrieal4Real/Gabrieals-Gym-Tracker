@@ -56,6 +56,14 @@ class StartWorkoutViewModel {
     }
 
     fun initializeCompletedSets(selectedExerciseList: SelectedExerciseList) {
+        if (_uiState.value.exerciseWeights.isNotEmpty()
+            && selectedExerciseList.exercises?.size == _uiState.value.exerciseWeights.size
+            && selectedExerciseList == _uiState.value.selectedExerciseList) {
+            return
+        }
+
+        setSelectedExerciseList(selectedExerciseList)
+
         val expandedList = mutableListOf<Boolean>()
         val weightList = mutableListOf<String>()
         val repsList = mutableListOf<MutableList<String>>()
@@ -135,10 +143,6 @@ class StartWorkoutViewModel {
         }
 
         _uiState.update { it.copy(completedVolume = completedVolume) }
-    }
-
-    fun reset() {
-        _uiState.update { it.copy(completedVolume = 0.0) }
     }
 
     private var timerJob: Job? = null

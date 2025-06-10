@@ -59,9 +59,8 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
     private val viewModel = StartWorkoutViewModel()
 
     fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) {
-        viewModel.setSelectedExerciseList(selectedExerciseList)
         viewModel.initializeCompletedSets(selectedExerciseList)
-        viewModel.reset()
+        viewModel.toggleSetCompleted()
     }
 
     @Composable
@@ -100,7 +99,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                     BiggerText(selectedExerciseList?.routineName.orEmpty())
                     Spacer(modifier = Modifier.height(16.dp))
                     DurationVolumeSetCard(completedVolume, completedSets)
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     val addTime = listOf(
                         "30S" to 30,
