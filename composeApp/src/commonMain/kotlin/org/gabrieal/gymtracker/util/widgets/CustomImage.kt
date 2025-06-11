@@ -2,6 +2,7 @@ package org.gabrieal.gymtracker.util.widgets
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,6 +28,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -119,6 +125,19 @@ fun IconNext() {
     Icon(
         imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
         contentDescription = null,
-        tint = colors.textPrimary
+        tint = colors.textPrimary,
+        modifier = Modifier.clip(CircleShape).background(colors.textPrimary.copy(alpha = 0.2f))
+    )
+}
+
+@Composable
+fun RotatingExpandIcon(expanded: Boolean) {
+    val rotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f, label = "IconRotation")
+
+    Icon(
+        imageVector = Icons.Rounded.KeyboardArrowDown,
+        contentDescription = if (expanded) "Collapse" else "Expand",
+        tint = colors.textPrimary,
+        modifier = Modifier.rotate(rotation).clip(CircleShape).background(colors.textPrimary.copy(alpha = 0.2f))
     )
 }

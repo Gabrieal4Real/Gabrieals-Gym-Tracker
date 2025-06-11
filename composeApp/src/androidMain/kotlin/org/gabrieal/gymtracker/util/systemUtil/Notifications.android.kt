@@ -5,7 +5,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
@@ -51,13 +53,24 @@ actual fun notifyPlatform(message: String) {
         return
     }
 
-    val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-        .setSmallIcon(R.drawable.notification)
+    val intent = Intent(context, Class.forName("${context.packageName}.MainActivity")).apply {
+        flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+    }
+
+    val pendingIntent = PendingIntent.getActivity(
+        context, 0, intent,
+        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+    )
+
+    val notification = NotificationCompat.Builder(context, CHANNEL_ID)
         .setContentTitle("Gym Tracker")
         .setContentText(message)
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setSmallIcon(R.drawable.notification)
+        .setContentIntent(pendingIntent)
+        .setAutoCancel(true)
+        .build()
 
-    NotificationManagerCompat.from(context).notify(System.currentTimeMillis().toInt(), builder.build())
+    NotificationManagerCompat.from(context).notify(System.currentTimeMillis().toInt(), notification)
 }
 
 private fun createNotificationChannel(context: Context) {

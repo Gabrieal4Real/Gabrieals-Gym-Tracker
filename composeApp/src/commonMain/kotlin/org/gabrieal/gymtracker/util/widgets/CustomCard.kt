@@ -1,5 +1,6 @@
 package org.gabrieal.gymtracker.util.widgets
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -53,8 +54,8 @@ fun CustomCard(
                     painter = painterResource(Res.drawable.card_background),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize()
-                        .blur(if (backgroundEnabled) 0.5.dp else 2.dp)
+                    modifier = Modifier.matchParentSize().blur(0.2.dp),
+                    alpha = if (backgroundEnabled) 1f else 5f
                 )
 
                 content.invoke(this@Card)

@@ -75,7 +75,8 @@ class MakeAPlanViewModel {
                             startingDate = formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
                         )
                     )
-                }
+                }.sortedBy { it.position }
+
             updateSelectedRoutineList(updatedRoutineList)
         }
 

@@ -1,5 +1,8 @@
 package org.gabrieal.gymtracker.features.startWorkout.view
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,26 +18,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import gymtracker.composeapp.generated.resources.Res
-import gymtracker.composeapp.generated.resources.icon_reps
-import gymtracker.composeapp.generated.resources.icon_sets
-import gymtracker.composeapp.generated.resources.icon_timer
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
@@ -58,6 +52,7 @@ import org.gabrieal.gymtracker.util.widgets.CustomTextField
 import org.gabrieal.gymtracker.util.widgets.CustomUnderlinedTextField
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
+import org.gabrieal.gymtracker.util.widgets.RotatingExpandIcon
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.koin.core.component.KoinComponent
@@ -91,7 +86,8 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
 
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .fillMaxHeight(0.992f)
                 .background(colors.background)
         ) {
             Column(
@@ -209,13 +205,17 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         val sets = uiState.exerciseSets[index]
 
         CustomCard(
-            backgroundEnabled = true,
+            backgroundEnabled = !expanded,
             enabled = true,
             onClick = { viewModel.toggleExerciseExpanded(index) },
             content = {
-                Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.weight(1f)) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Row(Modifier.fillMaxWidth()) {
+                        Column(Modifier.weight(1f)) {
                             DescriptionText(exercise.name.orEmpty())
                             if (!expanded) {
                                 TinyText(
@@ -225,125 +225,138 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                 return@Column
                             }
                         }
-                        Icon(
-                            imageVector = if (expanded) Icons.Rounded.KeyboardArrowUp else Icons.Rounded.KeyboardArrowDown,
-                            contentDescription = null,
-                            tint = colors.white
-                        )
+                        RotatingExpandIcon(expanded = expanded)
                     }
 
-                    if (expanded) {
-                        Spacer(modifier = Modifier.height(4.dp))
+                    AnimatedVisibility(
+                        visible = expanded,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                TinyItalicText("Weight (kg)")
-                                Spacer(modifier = Modifier.height(8.dp))
-                                CustomTextField(
-                                    value = weights,
-                                    onValueChange = {
-                                        if (it.isValidDecimal() && it.length <= 5) viewModel.updateWeight(
-                                            index,
-                                            it
-                                        )
-                                    },
-                                    placeholderText = "75.0"
-                                )
-                            }
+                            Spacer(Modifier.height(4.dp))
 
-                            Spacer(Modifier.width(8.dp))
-
-                            Column(modifier = Modifier.weight(1f)) {
-                                TinyItalicText("Rest")
-                                Spacer(modifier = Modifier.height(8.dp))
-                                CustomNonClickableTextField(
-                                    value = formatRestTime(getCurrentTimerInSeconds(exercise.reps)),
-                                    onClick = {},
-                                    placeholderText = ""
-                                )
-                            }
-
-                            Spacer(Modifier.width(8.dp))
-
-                            Column(modifier = Modifier.weight(1f)) {
-                                TinyItalicText("Rep Range")
-                                Spacer(modifier = Modifier.height(8.dp))
-                                CustomNonClickableTextField(
-                                    value = "${exercise.reps?.first} to ${exercise.reps?.second}",
-                                    onClick = {},
-                                    placeholderText = ""
-                                )
-                            }
-                        }
-
-                        Spacer(Modifier.height(16.dp))
-
-                        Row(modifier = Modifier.fillMaxWidth()) {
-                            listOf("Set", "", "Reps", "", "").zip(
-                                listOf(
-                                    0.4f,
-                                    0.3f,
-                                    1f,
-                                    0.3f,
-                                    0.5f
-                                )
-                            ).forEach { (label, weight) ->
-                                TinyText(
-                                    label.uppercase(),
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.weight(weight),
-                                    color = colors.textSecondary
-                                )
-                            }
-                        }
-
-                        Spacer(Modifier.height(4.dp))
-
-                        repeat(exercise.sets ?: 0) { pos ->
                             Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
                             ) {
-                                DescriptionText(
-                                    "${pos + 1}",
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier.weight(0.5f)
-                                )
-                                Spacer(Modifier.weight(0.3f))
-                                CustomUnderlinedTextField(
-                                    keyboardType = KeyboardType.Number,
-                                    value = reps[pos],
-                                    onValueChange = {
-                                        if (!sets[pos] && it.isValidNumber() && it.length <= 5)
-                                            viewModel.updateReps(index, it, pos)
-                                    },
-                                    placeholderText = "-",
-                                    modifier = Modifier.weight(1f)
-                                )
-                                Spacer(Modifier.weight(0.3f))
-                                CustomSwitch(
-                                    checked = sets[pos],
-                                    onCheckedChange = {
-                                        if (it) {
-                                            viewModel.setTotalTime(getCurrentTimerInSeconds(exercise.reps))
-                                            viewModel.startTimer()
-                                        }
-                                        viewModel.updateExerciseSets(index, pos)
-                                        viewModel.toggleSetCompleted()
-                                    },
-                                    modifier = Modifier.weight(0.5f)
-                                )
-                            }
-                        }
+                                Column(Modifier.weight(1f)) {
+                                    TinyItalicText("Weight (kg)")
+                                    Spacer(Modifier.height(8.dp))
+                                    CustomTextField(
+                                        value = weights,
+                                        onValueChange = {
+                                            if (it.isValidDecimal() && it.length <= 5)
+                                                viewModel.updateWeight(index, it)
+                                        },
+                                        placeholderText = "75.0"
+                                    )
+                                }
 
-                        Spacer(Modifier.height(8.dp))
+                                Spacer(Modifier.width(8.dp))
+
+                                Column(Modifier.weight(1f)) {
+                                    TinyItalicText("Rest")
+                                    Spacer(Modifier.height(8.dp))
+                                    CustomNonClickableTextField(
+                                        value = formatRestTime(getCurrentTimerInSeconds(exercise.reps)),
+                                        onClick = {},
+                                        placeholderText = ""
+                                    )
+                                }
+
+                                Spacer(Modifier.width(8.dp))
+
+                                Column(Modifier.weight(1f)) {
+                                    TinyItalicText("Rep Range")
+                                    Spacer(Modifier.height(8.dp))
+                                    CustomNonClickableTextField(
+                                        value = "${exercise.reps?.first} to ${exercise.reps?.second}",
+                                        onClick = {},
+                                        placeholderText = ""
+                                    )
+                                }
+                            }
+
+                            Spacer(Modifier.height(20.dp))
+
+                            Row(Modifier.fillMaxWidth()) {
+                                listOf("Set", "|", "Reps", "|", "").zip(
+                                    listOf(0.5f, 0.3f, 1f, 0.3f, 0.5f)
+                                ).forEach { (label, weight) ->
+                                    TinyText(
+                                        label.uppercase(),
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.weight(weight),
+                                        color = colors.textSecondary
+                                    )
+                                }
+                            }
+
+                            Spacer(Modifier.height(8.dp))
+                            CustomHorizontalDivider(0.95f)
+                            Spacer(Modifier.height(4.dp))
+
+                            repeat(exercise.sets ?: 0) { pos ->
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    DescriptionText(
+                                        "${pos + 1}",
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.weight(0.5f)
+                                    )
+
+                                    Spacer(Modifier.weight(0.3f))
+
+                                    CustomUnderlinedTextField(
+                                        enabled = !sets[pos],
+                                        keyboardType = KeyboardType.Number,
+                                        value = reps[pos],
+                                        onValueChange = {
+                                            if (it.isValidNumber() && it.length <= 5)
+                                                viewModel.updateReps(index, it, pos)
+                                        },
+                                        placeholderText = "-",
+                                        modifier = Modifier.weight(1f)
+                                    )
+
+                                    Spacer(Modifier.weight(0.3f))
+
+                                    CustomSwitch(
+                                        checked = sets[pos],
+                                        onCheckedChange = {
+                                            if (it) {
+                                                viewModel.setTotalTime(
+                                                    getCurrentTimerInSeconds(exercise.reps)
+                                                )
+                                                viewModel.startTimer()
+                                            }
+
+                                            if (reps[pos].isBlank()) {
+                                                viewModel.updateReps(
+                                                    index,
+                                                    exercise.reps?.second.toString(),
+                                                    pos
+                                                )
+                                            }
+
+                                            viewModel.updateExerciseSets(index, pos)
+                                            viewModel.toggleSetCompleted()
+                                        },
+                                        modifier = Modifier.weight(0.5f)
+                                    )
+                                }
+                            }
+
+                            Spacer(Modifier.height(8.dp))
+                        }
                     }
                 }
-            }
-        )
+            })
+
         Spacer(Modifier.height(16.dp))
     }
 }

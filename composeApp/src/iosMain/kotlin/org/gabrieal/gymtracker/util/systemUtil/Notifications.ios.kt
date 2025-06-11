@@ -7,7 +7,7 @@ actual fun requestNotificationPermission() {
     val center = UNUserNotificationCenter.currentNotificationCenter()
     center.requestAuthorizationWithOptions(
         options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge,
-        completionHandler = { granted, error ->
+        completionHandler = { _, error ->
             if (error != null) {
                 println("iOS Notification permission error: ${'$'}{error.localizedDescription}")
             } else {
@@ -21,14 +21,13 @@ actual fun notifyPlatform(message: String) {
     val content = UNMutableNotificationContent().apply {
         setTitle("Gym Tracker")
         setBody(message)
+        setSound(UNNotificationSound.defaultSound())
     }
-
-    val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(1.0, repeats = false)
 
     val request = UNNotificationRequest.requestWithIdentifier(
         identifier = NSUUID().UUIDString,
         content = content,
-        trigger = trigger
+        trigger = null
     )
 
     UNUserNotificationCenter.currentNotificationCenter().addNotificationRequest(request, withCompletionHandler = null)

@@ -86,7 +86,7 @@ object LandingScreen : Screen, KoinComponent {
         BottomSheetNavigator(
             sheetBackgroundColor = Color.Transparent,
             sheetContentColor = Color.Transparent,
-            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
         ) { bottomSheetNavigator ->
             LaunchedEffect(bottomSheetNavigator) {
                 AppNavigator.setBottomSheetNavigator(bottomSheetNavigator)

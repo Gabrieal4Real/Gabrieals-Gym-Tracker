@@ -1,5 +1,6 @@
 package org.gabrieal.gymtracker.features.editPlan.view
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -122,7 +123,7 @@ object EditPlanScreen : Screen, KoinComponent {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         // List of exercises
-                        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
+                        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.animateContentSize()) {
                             items(exercises.size) { position ->
                                 CustomCard(
                                     enabled = true,

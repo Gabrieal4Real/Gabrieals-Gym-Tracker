@@ -172,6 +172,7 @@ fun CustomNonClickableTextField(
 
 @Composable
 fun CustomUnderlinedTextField(
+    enabled: Boolean = true,
     value: String,
     onValueChange: (String) -> Unit,
     placeholderText: String,
@@ -187,6 +188,7 @@ fun CustomUnderlinedTextField(
     CompositionLocalProvider(LocalTextSelectionColors provides customSelectionColors) {
         Box(modifier = modifier) {
             TextField(
+                enabled = enabled,
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = keyboardType),
                 value = value,
                 placeholder = {
@@ -217,6 +219,7 @@ fun CustomUnderlinedTextField(
                     unfocusedPlaceholderColor = colors.placeholderColor,
                     focusedLabelColor = colors.slightlyDarkerLinkBlue,
                     unfocusedLabelColor = colors.borderStroke,
+                    disabledContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent
                 )

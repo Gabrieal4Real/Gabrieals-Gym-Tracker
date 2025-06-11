@@ -114,6 +114,9 @@ object ProfileTab : Tab, KoinComponent {
                                 },
                             )
                         )
+                    }
+
+                    item {
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
