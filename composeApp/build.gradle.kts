@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
+            implementation("androidx.compose.material3:material3:1.4.0-alpha08")
         }
 
         iosMain.dependencies {

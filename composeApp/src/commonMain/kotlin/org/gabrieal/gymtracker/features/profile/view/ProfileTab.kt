@@ -85,14 +85,11 @@ object ProfileTab : Tab {
         ) {
             TitleRow("Profile")
             Box(
-                modifier = Modifier.fillMaxSize().background(colors.lighterBackground)
+                modifier = Modifier.fillMaxSize().background(colors.lighterBackground).padding(horizontal = 16.dp),
             ) {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                ) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
                     item {
+                        Spacer(modifier = Modifier.height(16.dp))
                         ProfileCard(profile, firebaseInfo)
                     }
 
@@ -112,9 +109,16 @@ object ProfileTab : Tab {
                                 },
                                 Triple(Icons.Rounded.PieChart, "Maintenance Calorie Calculator") {
                                     viewModel.navigateToMaintenanceCalculator()
+                                },
+                                Triple(Icons.Rounded.WaterDrop, "Protein Intake Calculator") {
+                                    viewModel.navigateToProteinCalculator()
+                                },
+                                Triple(Icons.Rounded.PieChart, "Maintenance Calorie Calculator") {
+                                    viewModel.navigateToMaintenanceCalculator()
                                 }
                             )
                         )
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }

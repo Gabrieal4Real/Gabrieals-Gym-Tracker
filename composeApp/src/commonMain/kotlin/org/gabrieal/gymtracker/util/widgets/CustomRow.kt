@@ -36,7 +36,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,17 +49,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import kotlinx.coroutines.delay
 import org.gabrieal.gymtracker.colors
-import org.gabrieal.gymtracker.util.app.RegularText
 import org.gabrieal.gymtracker.util.app.formatRestTime
-import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
-import org.gabrieal.gymtracker.util.app.repRanges
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 @Composable
@@ -362,6 +355,18 @@ fun ClickToStartTimerBar(
             )
         }
     }
+}
+
+@Composable
+fun CustomGrabber(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .padding(top = 16.dp)
+            .width(48.dp)
+            .height(4.dp)
+            .clip(RoundedCornerShape(2.dp))
+            .background(colors.placeholderColor)
+    )
 }
 
 

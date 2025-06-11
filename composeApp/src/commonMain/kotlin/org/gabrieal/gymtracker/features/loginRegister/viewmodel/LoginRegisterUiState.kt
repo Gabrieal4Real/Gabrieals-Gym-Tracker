@@ -9,5 +9,5 @@ data class LoginRegisterUiState(
     val isRegisterMode: Boolean = false,
     val userName: String? = null,
     val email: String? = null,
-    val password: String? = null
+    val password: String? = null,
 )

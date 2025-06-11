@@ -25,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,7 @@ import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.ClickToStartTimerBar
 import org.gabrieal.gymtracker.util.widgets.CustomCard
+import org.gabrieal.gymtracker.util.widgets.CustomGrabber
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
 import org.gabrieal.gymtracker.util.widgets.CustomNonClickableTextField
 import org.gabrieal.gymtracker.util.widgets.CustomSwitch
@@ -95,10 +97,11 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                CustomGrabber(modifier = Modifier.align(Alignment.CenterHorizontally))
+
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     BiggerText(selectedExerciseList?.routineName.orEmpty())
@@ -154,7 +157,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
                     modifier = Modifier
                         .fillMaxSize()
                         .background(colors.lighterBackground)
-                        .padding(start = 16.dp, end = 16.dp),
+                        .padding(horizontal = 16.dp),
                 ) {
                     item { Spacer(modifier = Modifier.height(16.dp)) }
                     selectedExerciseList?.exercises?.forEachIndexed { index, exercise ->

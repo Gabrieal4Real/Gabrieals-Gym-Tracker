@@ -30,19 +30,15 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
         this.callback = callback
     }
 
-    fun changeRegisterMode() {
-        _uiState.update { it.copy(isRegisterMode = !it.isRegisterMode) }
-    }
+    fun changeRegisterMode() = _uiState.update { it.copy(isRegisterMode = !it.isRegisterMode) }
 
-    fun loginExistingUser(email: String, password: String) =
-        performAuth(email, password, isRegister = false)
+    fun loginExistingUser(email: String, password: String) = performAuth(email, password, isRegister = false)
 
-    fun registerNewUser(email: String, password: String) =
-        performAuth(email, password, isRegister = true)
+    fun registerNewUser(email: String, password: String) = performAuth(email, password, isRegister = true)
 
     private fun performAuth(email: String, password: String, isRegister: Boolean) {
         viewModelScope.launch {
-            Loader.show()
+            AppNavigator.showLoading()
             try {
                 val authResponse = if (isRegister) {
                     loginRegisterRepo.registerUser(email, password)
@@ -61,7 +57,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {
-                Loader.hide()
+                AppNavigator.hideLoading()
             }
         }
     }
@@ -74,7 +70,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
         }
 
         viewModelScope.launch {
-            Loader.show()
+            AppNavigator.showLoading()
             try {
                 val profile = loginRegisterRepo.fetchUser(firebaseInfo.uid!!, firebaseInfo.token!!)
                 _uiState.update { it.copy(profile = profile) }
@@ -82,7 +78,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {
-                Loader.hide()
+                AppNavigator.hideLoading()
             }
         }
     }
@@ -95,7 +91,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
         }
 
         viewModelScope.launch {
-            Loader.show()
+            AppNavigator.showLoading()
             try {
                 updateProfile(uiState.value.email, uiState.value.userName)
 
@@ -109,21 +105,20 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
             } finally {
-                Loader.hide()
+                AppNavigator.hideLoading()
             }
         }
     }
 
     private fun returnUser() {
-        Loader.hide()
+        AppNavigator.hideLoading()
         clearUserInput()
         callback?.invoke(uiState.value.profile)
         AppNavigator.dismissBottomSheet()
     }
 
-    private fun clearUserInput() {
-        _uiState.update { it.copy(userName = "", email = "", password = "") }
-    }
+    private fun clearUserInput() = _uiState.update { it.copy(userName = "", email = "", password = "") }
+    
 
     private fun updateProfile(email: String? = null, userName: String? = null) {
         val currentProfile = _uiState.value.profile
@@ -134,6 +129,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
         _uiState.update { it.copy(profile = updatedProfile) }
     }
 
+    
     fun updateError() = _uiState.update { it.copy(error = null) }
 
     fun updateName(userName: String) = _uiState.update { it.copy(userName = userName) }

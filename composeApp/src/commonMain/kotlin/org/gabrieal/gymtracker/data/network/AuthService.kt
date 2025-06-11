@@ -44,7 +44,13 @@ class AuthService(private val client: HttpClient) {
                 throw Exception(extractErrorMessage(response))
             }
         } catch (e: Exception) {
-            throw Exception(e.message ?: "Unknown error during authentication")
+            val errorMessage = when (e.message) {
+                "EMAIL_EXISTS" -> "This email is already registered. Please try logging in instead."
+                "EMAIL_NOT_FOUND" -> "There is no user record corresponding to this email. Please register first."
+                else -> "The email address or password is not valid."
+            }
+
+            throw Exception(errorMessage)
         }
     }
 

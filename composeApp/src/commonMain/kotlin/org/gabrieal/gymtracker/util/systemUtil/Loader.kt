@@ -1,6 +1,11 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
+import androidx.compose.runtime.Composable
+
 expect object Loader {
-    fun show()
-    fun hide()
+    @Composable
+    fun ShowDialog()
+
+    @Composable
+    fun HideDialog()
 }

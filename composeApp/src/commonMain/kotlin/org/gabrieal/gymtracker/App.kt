@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.gabrieal.gymtracker.data.model.ConvertedTemplate
 import org.gabrieal.gymtracker.data.model.Exercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
@@ -25,6 +27,7 @@ import org.gabrieal.gymtracker.features.landing.view.LandingScreen
 import org.gabrieal.gymtracker.util.app.AppColors
 import org.gabrieal.gymtracker.util.app.DarkColors
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.systemUtil.Loader
 import org.gabrieal.gymtracker.util.systemUtil.LocalStringResources
 import org.gabrieal.gymtracker.util.systemUtil.StringFactory
 import org.gabrieal.gymtracker.util.systemUtil.StringResources
@@ -42,12 +45,16 @@ var currentlyActiveRoutine: SelectedExerciseList? = null
 @OptIn(ExperimentalTime::class)
 var startTime: Instant? = null
 
+val appStateViewModel = AppStateViewModel()
+
 @Composable
 @Preview
 fun App(stringResources: StringResources = remember { StringFactory.createStrings(language) }) {
     CompositionLocalProvider(
         LocalStringResources provides stringResources
     ) {
+        val isLoading by appStateViewModel.isLoading.collectAsState()
+
         allExistingExerciseList = decodeExercises(readFile("exercises.json"))
         templates = decodeTemplate(readFile("templates.json"))
 
@@ -60,6 +67,7 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
                 Navigator(LandingScreen) { navigator ->
                     LaunchedEffect(navigator) {
                         AppNavigator.setNavigator(navigator)
+                        AppNavigator.setAppStateViewModel(appStateViewModel)
                     }
 
                     val navigationEvent by AppNavigator.navigationEvents.collectAsState()
@@ -72,7 +80,26 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
 
                     SlideTransition(navigator)
                 }
+
+                if (isLoading) {
+                    Loader.ShowDialog()
+                } else {
+                    Loader.HideDialog()
+                }
             }
         }
+    }
+}
+
+class AppStateViewModel {
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
+    fun showLoading() {
+        _isLoading.value = true
+    }
+
+    fun hideLoading() {
+        _isLoading.value = false
     }
 }

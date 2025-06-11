@@ -6,6 +6,7 @@ import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.gabrieal.gymtracker.AppStateViewModel
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
@@ -20,6 +21,7 @@ import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabSc
 
 
 object AppNavigator {
+    private var appStateViewModel: AppStateViewModel? = null
     private var navigatorInstance: Navigator? = null
     private var bottomSheetNavigatorInstance: BottomSheetNavigator? = null
 
@@ -122,6 +124,18 @@ object AppNavigator {
 
     fun dismissBottomSheet() {
         bottomSheetNavigatorInstance?.hide()
+    }
+
+    fun setAppStateViewModel(appStateViewModel: AppStateViewModel) {
+        this.appStateViewModel = appStateViewModel
+    }
+
+    fun showLoading() {
+        appStateViewModel?.showLoading()
+    }
+
+    fun hideLoading() {
+        appStateViewModel?.hideLoading()
     }
 }
 

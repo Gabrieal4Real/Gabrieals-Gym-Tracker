@@ -1,5 +1,6 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
+import androidx.compose.runtime.Composable
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGPointMake
@@ -23,7 +24,8 @@ actual object Loader {
     }
 
     @OptIn(ExperimentalForeignApi::class)
-    actual fun show() {
+    @Composable
+    actual fun ShowDialog() {
         dispatch_async(dispatch_get_main_queue()) {
             val window = UIApplication.sharedApplication.keyWindow
             window?.let {
@@ -41,7 +43,8 @@ actual object Loader {
         }
     }
 
-    actual fun hide() {
+    @Composable
+    actual fun HideDialog() {
         dispatch_async(dispatch_get_main_queue()) {
             val window = UIApplication.sharedApplication.keyWindow
             window?.let {

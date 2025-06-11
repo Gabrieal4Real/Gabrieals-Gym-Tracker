@@ -1,34 +1,45 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
-import android.app.AlertDialog
-import android.os.Handler
-import android.os.Looper
-import android.widget.ProgressBar
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.LoadingIndicator
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import org.gabrieal.gymtracker.colors
 
 actual object Loader {
-    private var dialog: AlertDialog? = null
-
-    actual fun show() {
-        Handler(Looper.getMainLooper()).post {
-            if (dialog?.isShowing == true) return@post
-
-            val context = activityReference ?: return@post
-
-            AlertDialog.Builder(context).apply {
-                setView(ProgressBar(context))
-                setCancelable(false)
-                dialog = create()
-            }
-
-            dialog?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-            dialog?.show()
-        }
+    @Composable
+    actual fun ShowDialog() {
+        LoadingDialog(true)
     }
 
-    actual fun hide() {
-        Handler(Looper.getMainLooper()).post {
-            dialog?.dismiss()
-            dialog = null
+    @Composable
+    actual fun HideDialog() {
+        LoadingDialog(false)
+    }
+
+    @OptIn(ExperimentalMaterial3ExpressiveApi::class)
+    @Composable
+    fun LoadingDialog(boolean: Boolean) {
+        if (boolean) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(colors.black.copy(alpha = 0.5f))
+                    .clickable(enabled = false) {}) {
+                LoadingIndicator(
+                    modifier = Modifier
+                        .size(180.dp)
+                        .align(Alignment.Center),
+                    color = colors.bottomNavIndicator,
+                )
+            }
         }
     }
 }

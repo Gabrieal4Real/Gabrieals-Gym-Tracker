@@ -25,6 +25,7 @@ import org.gabrieal.gymtracker.util.app.isValidEmail
 import org.gabrieal.gymtracker.util.app.isValidPassword
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.util.widgets.ConfirmButton
+import org.gabrieal.gymtracker.util.widgets.CustomGrabber
 import org.gabrieal.gymtracker.util.widgets.CustomTextField
 import org.gabrieal.gymtracker.util.widgets.LinkText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
@@ -67,6 +68,8 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                CustomGrabber(modifier = Modifier.align(Alignment.CenterHorizontally))
+
                 TitleRow(if (isRegisterMode) "Register" else "Login")
 
                 Column(
