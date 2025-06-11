@@ -45,9 +45,11 @@ import org.gabrieal.gymtracker.util.widgets.RepRangePicker
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.popOut
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object EditPlanScreen : Screen {
-    private val viewModel = EditPlanViewModel()
+object EditPlanScreen : Screen, KoinComponent {
+    private val viewModel: EditPlanViewModel by inject()
 
     fun setCallback(onMessageSent: (List<SelectedExercise>) -> Unit) {
         viewModel.setCallback(onMessageSent)

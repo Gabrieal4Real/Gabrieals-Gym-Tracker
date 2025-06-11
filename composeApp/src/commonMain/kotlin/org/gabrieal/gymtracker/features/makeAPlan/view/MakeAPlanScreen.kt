@@ -44,11 +44,13 @@ import org.gabrieal.gymtracker.util.widgets.IconNext
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-object MakeAPlanScreen : Screen {
-    private val viewModel = MakeAPlanViewModel()
+object MakeAPlanScreen : Screen, KoinComponent {
+    val viewModel: MakeAPlanViewModel by inject()
 
     fun setSelectedDay(selectedDays: List<Boolean>) {
         viewModel.setSelectedDays(selectedDays)

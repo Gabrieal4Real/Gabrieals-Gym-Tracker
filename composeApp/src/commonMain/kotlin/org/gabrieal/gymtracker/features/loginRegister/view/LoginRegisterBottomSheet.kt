@@ -55,9 +55,7 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
         val error = uiState.error
 
         Box(
-            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f)
-                .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
-                .background(colors.background)
+            modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f).background(colors.background)
         ) {
             if (!error.isNullOrBlank()) {
                 ShowToast(error)

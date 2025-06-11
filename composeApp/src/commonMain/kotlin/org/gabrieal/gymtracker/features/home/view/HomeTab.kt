@@ -74,9 +74,11 @@ import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.TitleRow
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object HomeTab : Tab {
-    private val viewModel = HomeViewModel()
+object HomeTab : Tab, KoinComponent {
+    private val viewModel: HomeViewModel by inject()
 
     private val randomSelectedWorkoutImage = listOf(
         Res.drawable.workout_1,

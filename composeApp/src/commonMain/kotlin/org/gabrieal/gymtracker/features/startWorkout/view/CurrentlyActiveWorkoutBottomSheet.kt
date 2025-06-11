@@ -60,10 +60,12 @@ import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.time.ExperimentalTime
 
-object CurrentlyActiveWorkoutBottomSheet : Screen {
-    private val viewModel = StartWorkoutViewModel()
+object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
+    private val viewModel: StartWorkoutViewModel by inject()
 
     fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) {
         viewModel.initializeCompletedSets(selectedExerciseList)
@@ -90,7 +92,6 @@ object CurrentlyActiveWorkoutBottomSheet : Screen {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                 .background(colors.background)
         ) {
             Column(

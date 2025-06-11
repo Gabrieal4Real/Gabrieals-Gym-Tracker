@@ -48,11 +48,13 @@ import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.popOut
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-object StartWorkoutScreen : Screen {
-    private val viewModel = StartWorkoutViewModel()
+object StartWorkoutScreen : Screen, KoinComponent {
+    private val viewModel: StartWorkoutViewModel by inject()
 
     fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) {
         viewModel.setSelectedExerciseList(selectedExerciseList)

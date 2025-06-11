@@ -42,9 +42,11 @@ import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.popOut
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object CalculatorScreen : Screen {
-    private val viewModel = CalculatorViewModel()
+object CalculatorScreen : Screen, KoinComponent {
+    private val viewModel: CalculatorViewModel by inject()
 
     lateinit var title: String
 

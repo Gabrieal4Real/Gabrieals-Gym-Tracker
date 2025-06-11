@@ -49,9 +49,11 @@ import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TitleRow
 import org.jetbrains.compose.resources.painterResource
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object ViewAllWorkoutTabScreen : Tab, Screen {
-    private val viewModel = ViewAllWorkoutViewModel()
+object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
+    private val viewModel: ViewAllWorkoutViewModel by inject()
 
     fun setCallback(onMessageSent: (String) -> Unit) {
         viewModel.setCallback(onMessageSent)

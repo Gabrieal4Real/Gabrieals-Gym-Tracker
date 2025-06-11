@@ -44,9 +44,11 @@ import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TitleRow
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object CreateSplitScreen : Screen {
-    private val viewModel = CreateSplitViewModel()
+object CreateSplitScreen : Screen, KoinComponent {
+    private val viewModel: CreateSplitViewModel by inject()
 
     fun setRoutines(routines: List<SelectedExerciseList>) {
         viewModel.isEditMode(routines)

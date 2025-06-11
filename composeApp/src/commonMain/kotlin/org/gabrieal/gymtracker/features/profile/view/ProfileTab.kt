@@ -58,9 +58,11 @@ import org.gabrieal.gymtracker.util.widgets.LinkText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.TitleRow
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
-object ProfileTab : Tab {
-    private val viewModel = ProfileViewModel()
+object ProfileTab : Tab, KoinComponent {
+    private val viewModel: ProfileViewModel by inject()
 
     @OptIn(InternalVoyagerApi::class)
     @Composable
@@ -110,12 +112,6 @@ object ProfileTab : Tab {
                                 Triple(Icons.Rounded.PieChart, "Maintenance Calorie Calculator") {
                                     viewModel.navigateToMaintenanceCalculator()
                                 },
-                                Triple(Icons.Rounded.WaterDrop, "Protein Intake Calculator") {
-                                    viewModel.navigateToProteinCalculator()
-                                },
-                                Triple(Icons.Rounded.PieChart, "Maintenance Calorie Calculator") {
-                                    viewModel.navigateToMaintenanceCalculator()
-                                }
                             )
                         )
                         Spacer(modifier = Modifier.height(16.dp))
