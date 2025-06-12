@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.setSelectedRoutineListToSharedPreferences
+import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
+import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 
 class HomeViewModel {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -18,7 +18,7 @@ class HomeViewModel {
     }
 
     private fun loadRoutines() {
-        val routines = getSelectedRoutineListFromSharedPreferences()
+        val routines = getSelectedRoutineListFromDB()
         _uiState.update {
             if (routines.isEmpty()) {
                 navigateToCreateSplit()
@@ -44,7 +44,7 @@ class HomeViewModel {
 
     private fun saveRoutineList() {
         val sortedRoutineList = _uiState.value.selectedRoutineList
-        setSelectedRoutineListToSharedPreferences(sortedRoutineList)
+        setSelectedRoutineListToDB(sortedRoutineList)
         AppNavigator.navigateToRoot()
     }
 

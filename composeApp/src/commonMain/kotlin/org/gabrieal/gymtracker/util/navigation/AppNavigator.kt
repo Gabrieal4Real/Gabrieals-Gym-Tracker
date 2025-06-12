@@ -6,10 +6,10 @@ import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import org.gabrieal.gymtracker.AppStateViewModel
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.features.app.viewmodel.AppStateViewModel
 import org.gabrieal.gymtracker.features.calculator.view.CalculatorScreen
 import org.gabrieal.gymtracker.features.createSplit.view.CreateSplitScreen
 import org.gabrieal.gymtracker.features.editPlan.view.EditPlanScreen

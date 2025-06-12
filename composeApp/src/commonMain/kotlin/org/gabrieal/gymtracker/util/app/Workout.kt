@@ -4,7 +4,7 @@ import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
 import org.gabrieal.gymtracker.util.systemUtil.getMondayOrSameInstant
 import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
-import org.gabrieal.gymtracker.util.systemUtil.setSelectedRoutineListToSharedPreferences
+import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -169,7 +169,7 @@ fun resetAllCompletedStatus(selectedRoutineList: List<SelectedExerciseList>): Bo
             formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
     }
 
-    setSelectedRoutineListToSharedPreferences(selectedRoutineList)
+    setSelectedRoutineListToDB(selectedRoutineList)
 
     return true
 }

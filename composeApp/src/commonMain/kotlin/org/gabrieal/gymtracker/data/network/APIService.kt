@@ -24,8 +24,8 @@ import kotlinx.serialization.json.longOrNull
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.RefreshTokenResponse
 import org.gabrieal.gymtracker.data.network.APIService.refreshTokenUrl
-import org.gabrieal.gymtracker.util.systemUtil.getFirebaseInfoFromSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
+import org.gabrieal.gymtracker.data.sqldelight.getFirebaseInfoFromDB
+import org.gabrieal.gymtracker.data.sqldelight.setFirebaseInfoToDB
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -129,7 +129,7 @@ suspend inline fun <reified T : Any> HttpClient.makeAuthenticatedRequest(
 
     if (result.first || !refreshTokenIfNeeded || !isUnauthorizedError(result.second)) return result
 
-    val refreshToken = getFirebaseInfoFromSharedPreferences().refreshToken.orEmpty()
+    val refreshToken = getFirebaseInfoFromDB().refreshToken.orEmpty()
     if (refreshToken.isEmpty()) return result
 
     val refreshResult = makeRequest<RefreshTokenResponse>(
@@ -150,7 +150,7 @@ suspend inline fun <reified T : Any> HttpClient.makeAuthenticatedRequest(
         expiresAt = Clock.System.now()
             .toEpochMilliseconds() + (tokenResponse.expires_in.toLongOrNull() ?: 3600L) * 1000
     )
-    setFirebaseInfoToSharedPreferences(newFirebaseInfo)
+    setFirebaseInfoToDB(newFirebaseInfo)
 
     val updatedHeaders = headers.toMutableMap().apply {
         if (containsKey("Authorization")) {

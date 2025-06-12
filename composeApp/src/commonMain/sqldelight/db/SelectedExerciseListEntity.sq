@@ -1,0 +1,20 @@
+import kotlin.collections.List;
+import org.gabrieal.gymtracker.data.model.SelectedExercise;
+
+CREATE TABLE selectedExerciseListEntity (
+    id INTEGER NOT NULL PRIMARY KEY,
+    position INTEGER,
+    day TEXT,
+    routineName TEXT,
+    isCompleted INTEGER,
+    startingDate TEXT,
+    exercises TEXT AS List<SelectedExercise>
+);
+
+selectAllSelectedExerciseLists:
+SELECT * FROM selectedExerciseListEntity;
+
+insertOrReplaceSelectedExerciseList:
+INSERT OR REPLACE INTO selectedExerciseListEntity (
+    id, position, day, routineName, isCompleted, startingDate, exercises
+) VALUES (?, ?, ?, ?, ?, ?, ?);

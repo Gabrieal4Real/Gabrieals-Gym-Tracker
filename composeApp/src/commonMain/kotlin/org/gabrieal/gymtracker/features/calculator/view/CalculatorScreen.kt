@@ -1,5 +1,8 @@
 package org.gabrieal.gymtracker.features.calculator.view
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -51,18 +54,18 @@ object CalculatorScreen : Screen, KoinComponent {
     lateinit var title: String
 
     fun setProfile(profile: Profile) {
-        viewModel.setProfile(profile)
-        viewModel.setWeight(profile.weight?.toInt())
-        viewModel.setGoal(profile.goal)
-        viewModel.setActivityLevel(profile.activityLevel)
+        with(viewModel) {
+            setProfile(profile)
+            setWeight(profile.weight?.toInt())
+            setGoal(profile.goal)
+            setActivityLevel(profile.activityLevel)
+        }
     }
 
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
-        val weight = uiState.weight
-        val goal = uiState.goal
-        val activityLevel = uiState.activityLevel
+        val (weight, goal, activityLevel) = Triple(uiState.weight, uiState.goal, uiState.activityLevel)
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -75,86 +78,20 @@ object CalculatorScreen : Screen, KoinComponent {
                     .fillMaxSize()
                     .background(colors.lighterBackground)
             ) {
-                Column(modifier = Modifier.padding(16.dp).fillMaxSize()) {
-                    // Header
-                    TinyText(
-                        "Let's start calculating your",
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                    BiggerText(
-                        title,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                            .scale(popOut().value)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    AnimatedDividerWithScale()
-                    Spacer(modifier = Modifier.height(24.dp))
+                Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    HeaderSection()
 
                     LazyColumn {
                         item {
-                            TinyItalicText("What is your weight (kg)?")
-                            Spacer(modifier = Modifier.height(8.dp))
+                            InputSection(weight, goal, activityLevel)
 
-                            CustomTextField(
-                                value = weight?.let { "$it" } ?: "",
-                                onValueChange = { weight ->
-                                    if (weight.isEmpty() || weight.isValidNumber()) {
-                                        viewModel.setWeight(weight.toIntOrNull())
-                                    }
-                                },
-                                placeholderText = "75 KG",
-                            )
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            TinyItalicText("What is your fitness goal?")
-                            Spacer(modifier = Modifier.height(8.dp))
-                            DropdownMenuBox(
-                                value = goal?.displayName ?: "",
-                                placeholderText = FitnessGoal.MAINTENANCE.displayName,
-                                options = FitnessGoal.entries.map { it.displayName },
-                                onSelected = { fitnessGoal ->
-                                    viewModel.setGoal(
-                                        FitnessGoal.entries.find { it.displayName == fitnessGoal }
-                                    )
-                                }
-                            )
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            TinyItalicText("What is your activity level?")
-                            Spacer(modifier = Modifier.height(8.dp))
-                            DropdownMenuBox(
-                                value = activityLevel?.displayName ?: "",
-                                placeholderText = ActivityLevel.MODERATELY_ACTIVE.displayName,
-                                options = ActivityLevel.entries.map { it.description },
-                                onSelected = { activityLevel ->
-                                    viewModel.setActivityLevel(
-                                        ActivityLevel.entries.find { it.description == activityLevel }
-                                    )
-                                }
-                            )
-
-                            Spacer(modifier = Modifier.height(24.dp))
-
-                            if (weight != null && goal != null && activityLevel != null) {
-                                Row(
-                                    modifier = Modifier.padding(horizontal = 24.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Image(
-                                        painter = painterResource(Res.drawable.icon_protein),
-                                        contentDescription = "Protein",
-                                        contentScale = ContentScale.Fit,
-                                        modifier = Modifier.height(120.dp),
-                                        colorFilter = ColorFilter.tint(colors.textPrimary)
-                                    )
-                                    Column {
-                                        DescriptionText("Your recommended protein intake is:")
-                                        Spacer(modifier = Modifier.height(4.dp))
-                                        val proteinInput = ProteinInput(weight, goal, activityLevel)
-                                        SubtitleText("${calculateProteinGrams(proteinInput)} grams/day")
-                                    }
+                            AnimatedVisibility(
+                                visible = weight != null && goal != null && activityLevel != null,
+                                enter = expandVertically(),
+                                exit = shrinkVertically()
+                            ) {
+                                if (weight != null && goal != null && activityLevel != null) {
+                                    ResultSection(weight, goal, activityLevel)
                                 }
                             }
                         }
@@ -162,5 +99,105 @@ object CalculatorScreen : Screen, KoinComponent {
                 }
             }
         }
+    }
+
+    @Composable
+    private fun HeaderSection() {
+        TinyText("Let's start calculating your")
+        BiggerText(
+            title,
+            modifier = Modifier
+                .scale(popOut().value)
+        )
+        Spacer(Modifier.height(8.dp))
+        AnimatedDividerWithScale()
+        Spacer(Modifier.height(24.dp))
+    }
+
+    @Composable
+    private fun InputSection(weight: Int?, goal: FitnessGoal?, activityLevel: ActivityLevel?) {
+        InputField(
+            label = "What is your weight (kg)?",
+            value = weight?.toString() ?: "",
+            placeholder = "75 KG",
+            onChange = { input ->
+                if (input.isEmpty() || input.isValidNumber())
+                    viewModel.setWeight(input.toIntOrNull())
+            }
+        )
+
+        DropdownField(
+            label = "What is your fitness goal?",
+            value = goal?.displayName,
+            placeholder = FitnessGoal.MAINTENANCE.displayName,
+            options = FitnessGoal.entries.map { it.displayName },
+            onSelect = { selected ->
+                viewModel.setGoal(FitnessGoal.entries.find { it.displayName == selected })
+            }
+        )
+
+        DropdownField(
+            label = "What is your activity level?",
+            value = activityLevel?.displayName,
+            placeholder = ActivityLevel.MODERATELY_ACTIVE.displayName,
+            options = ActivityLevel.entries.map { it.description },
+            onSelect = { selected ->
+                viewModel.setActivityLevel(ActivityLevel.entries.find { it.description == selected })
+            }
+        )
+    }
+
+    @Composable
+    private fun ResultSection(weight: Int, goal: FitnessGoal, activityLevel: ActivityLevel) {
+        Row(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.icon_protein),
+                contentDescription = "Protein",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.height(120.dp),
+                colorFilter = ColorFilter.tint(colors.textPrimary)
+            )
+
+            Column {
+                DescriptionText("Your recommended protein intake is:")
+                Spacer(modifier = Modifier.height(4.dp))
+                SubtitleText("${calculateProteinGrams(ProteinInput(weight, goal, activityLevel))} grams/day")
+            }
+        }
+    }
+
+    @Composable
+    private fun InputField(label: String, value: String, placeholder: String, onChange: (String) -> Unit) {
+        TinyItalicText(label)
+        Spacer(modifier = Modifier.height(8.dp))
+        CustomTextField(
+            value = value,
+            onValueChange = onChange,
+            placeholderText = placeholder
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    @Composable
+    private fun DropdownField(
+        label: String,
+        value: String?,
+        placeholder: String,
+        options: List<String>,
+        onSelect: (String) -> Unit
+    ) {
+        TinyItalicText(label)
+        Spacer(modifier = Modifier.height(8.dp))
+        DropdownMenuBox(
+            value = value ?: "",
+            placeholderText = placeholder,
+            options = options,
+            onSelected = onSelect
+        )
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }

@@ -12,7 +12,7 @@ import org.gabrieal.gymtracker.util.app.planTitles
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
 import org.gabrieal.gymtracker.util.systemUtil.getMondayOrSameInstant
-import org.gabrieal.gymtracker.util.systemUtil.setSelectedRoutineListToSharedPreferences
+import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -90,7 +90,7 @@ class MakeAPlanViewModel {
 
     fun saveRoutineList() {
         val sortedRoutineList = _uiState.value.selectedRoutineList
-        setSelectedRoutineListToSharedPreferences(sortedRoutineList)
+        setSelectedRoutineListToDB(sortedRoutineList)
         AppNavigator.navigateToRoot()
     }
 

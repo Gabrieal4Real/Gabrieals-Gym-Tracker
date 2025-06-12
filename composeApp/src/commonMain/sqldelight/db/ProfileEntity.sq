@@ -1,0 +1,26 @@
+import org.gabrieal.gymtracker.util.enums.ActivityLevel;
+import org.gabrieal.gymtracker.util.enums.FitnessGoal;
+import org.gabrieal.gymtracker.util.enums.Gender;
+
+CREATE TABLE profileEntity (
+    id INTEGER NOT NULL PRIMARY KEY,
+    weight REAL,
+    height REAL,
+    age INTEGER,
+    goal TEXT AS FitnessGoal,
+    activityLevel TEXT AS ActivityLevel,
+    gender TEXT AS Gender,
+    email TEXT,
+    userName TEXT
+);
+
+selectProfile:
+SELECT * FROM profileEntity
+WHERE id = 1;
+
+insertOrReplaceProfile:
+INSERT OR REPLACE INTO profileEntity (
+    id, weight, height, age, goal, activityLevel, gender, email, userName
+) VALUES (
+    1, ?, ?, ?, ?, ?, ?, ?, ?
+);

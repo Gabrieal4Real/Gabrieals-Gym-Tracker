@@ -12,9 +12,8 @@ import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.features.loginRegister.repository.LoginRegisterRepo
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import org.gabrieal.gymtracker.util.systemUtil.Loader
-import org.gabrieal.gymtracker.util.systemUtil.getFirebaseInfoFromSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
+import org.gabrieal.gymtracker.data.sqldelight.getFirebaseInfoFromDB
+import org.gabrieal.gymtracker.data.sqldelight.setFirebaseInfoToDB
 
 class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
     private val viewModelScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -37,16 +36,18 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
     fun registerNewUser(email: String, password: String) = performAuth(email, password, isRegister = true)
 
     private fun performAuth(email: String, password: String, isRegister: Boolean) {
+
         viewModelScope.launch {
             AppNavigator.showLoading()
             try {
+
                 val authResponse = if (isRegister) {
                     loginRegisterRepo.registerUser(email, password)
                 } else {
                     loginRegisterRepo.loginUser(email, password)
                 }
 
-                setFirebaseInfoToSharedPreferences(
+                setFirebaseInfoToDB(
                     FirebaseInfo(
                         uid = authResponse.localId,
                         token = authResponse.idToken
@@ -63,7 +64,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
     }
 
     private fun fetchUser() {
-        val firebaseInfo = getFirebaseInfoFromSharedPreferences()
+        val firebaseInfo = getFirebaseInfoFromDB()
         if (firebaseInfo.uid.isNullOrBlank() || firebaseInfo.token.isNullOrBlank()) {
             _uiState.update { it.copy(error = "Something went wrong") }
             return
@@ -84,7 +85,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
     }
 
     private fun registerUser() {
-        val firebaseInfo = getFirebaseInfoFromSharedPreferences()
+        val firebaseInfo = getFirebaseInfoFromDB()
         if (firebaseInfo.uid.isNullOrBlank() || firebaseInfo.token.isNullOrBlank()) {
             _uiState.update { it.copy(error = "Something went wrong") }
             return

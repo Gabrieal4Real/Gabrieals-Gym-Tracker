@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.sqlDelight)
     kotlin("plugin.serialization") version "1.9.10"
 }
 
@@ -14,6 +15,14 @@ kotlin {
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+        }
+    }
+
+    sqldelight {
+        databases {
+            create("GymTrackerDatabase") {
+                packageName.set("db")
+            }
         }
     }
 
@@ -35,11 +44,13 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
             implementation("androidx.compose.material3:material3:1.4.0-alpha08")
+            implementation(libs.sqldelight.android)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             implementation(libs.insert.koin.koin.core)
+            implementation(libs.sqldelight.native)
         }
 
         commonMain.dependencies {

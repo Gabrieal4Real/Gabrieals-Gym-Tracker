@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.util.app.resetAllCompletedStatus
-import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
+import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 
 class LandingViewModel {
     private val _uiState = MutableStateFlow(LandingUiState())
@@ -19,7 +19,7 @@ class LandingViewModel {
     }
 
     fun resetCompletedList() {
-        setCompletedRoutineList(resetAllCompletedStatus(getSelectedRoutineListFromSharedPreferences()))
+        setCompletedRoutineList(resetAllCompletedStatus(getSelectedRoutineListFromDB()))
     }
 
     fun setCompletedRoutineList(resetCompletedList: Boolean) {

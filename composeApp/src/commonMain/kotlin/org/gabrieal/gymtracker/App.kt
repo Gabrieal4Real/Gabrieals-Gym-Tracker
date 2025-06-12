@@ -16,14 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import org.gabrieal.gymtracker.data.model.ConvertedTemplate
 import org.gabrieal.gymtracker.data.model.Exercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.decodeExercises
 import org.gabrieal.gymtracker.data.model.decodeTemplate
 import org.gabrieal.gymtracker.features.landing.view.LandingScreen
+import org.gabrieal.gymtracker.features.app.viewmodel.AppStateViewModel
 import org.gabrieal.gymtracker.util.app.AppColors
 import org.gabrieal.gymtracker.util.app.DarkColors
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -88,18 +87,5 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
                 }
             }
         }
-    }
-}
-
-class AppStateViewModel {
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading
-
-    fun showLoading() {
-        _isLoading.value = true
-    }
-
-    fun hideLoading() {
-        _isLoading.value = false
     }
 }

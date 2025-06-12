@@ -12,11 +12,11 @@ import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.Gender
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import org.gabrieal.gymtracker.util.systemUtil.getFirebaseInfoFromSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.getProfileFromSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.getSelectedRoutineListFromSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.setFirebaseInfoToSharedPreferences
-import org.gabrieal.gymtracker.util.systemUtil.setProfileToSharedPreferences
+import org.gabrieal.gymtracker.data.sqldelight.getFirebaseInfoFromDB
+import org.gabrieal.gymtracker.data.sqldelight.getProfileFromDB
+import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
+import org.gabrieal.gymtracker.data.sqldelight.setFirebaseInfoToDB
+import org.gabrieal.gymtracker.data.sqldelight.setProfileToDB
 
 class ProfileViewModel {
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -30,7 +30,7 @@ class ProfileViewModel {
     }
 
     private fun loadRoutines() {
-        val routines = getSelectedRoutineListFromSharedPreferences()
+        val routines = getSelectedRoutineListFromDB()
         _uiState.update {
             if (routines.isEmpty()) {
                 return
@@ -40,14 +40,14 @@ class ProfileViewModel {
     }
 
     private fun loadProfile() {
-        val profile = getProfileFromSharedPreferences()
+        val profile = getProfileFromDB()
         _uiState.update {
             it.copy(profile = profile)
         }
     }
 
     private fun loadFirebaseInfo() {
-        val firebaseInfo = getFirebaseInfoFromSharedPreferences()
+        val firebaseInfo = getFirebaseInfoFromDB()
         _uiState.update {
             it.copy(firebaseInfo = firebaseInfo)
         }
@@ -72,7 +72,7 @@ class ProfileViewModel {
 
     private fun saveProfile() {
         val profile = _uiState.value.profile
-        profile?.let { setProfileToSharedPreferences(it) }
+        profile?.let { setProfileToDB(it) }
     }
 
     fun navigateToEditSplit(routines: List<SelectedExerciseList>) {
@@ -117,7 +117,7 @@ class ProfileViewModel {
     }
 
     fun logout() {
-        setFirebaseInfoToSharedPreferences(
+        setFirebaseInfoToDB(
             FirebaseInfo(
                 uid = null,
                 token = null

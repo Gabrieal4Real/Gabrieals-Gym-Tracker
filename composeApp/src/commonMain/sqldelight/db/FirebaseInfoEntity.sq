@@ -1,0 +1,18 @@
+CREATE TABLE firebaseEntity (
+    id INTEGER NOT NULL PRIMARY KEY,
+    uid TEXT,
+    token TEXT,
+    refreshToken TEXT,
+    expiresAt INTEGER
+);
+
+selectFirebaseInfo:
+SELECT * FROM firebaseEntity
+WHERE id = 1;
+
+insertOrReplaceFirebaseInfo:
+INSERT OR REPLACE INTO firebaseEntity (
+    id, uid, token, refreshToken, expiresAt
+) VALUES (
+    1, ?, ?, ?, ?
+);

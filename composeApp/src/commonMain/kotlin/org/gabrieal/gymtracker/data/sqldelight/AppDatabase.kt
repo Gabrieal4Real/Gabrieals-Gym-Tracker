@@ -1,0 +1,95 @@
+package org.gabrieal.gymtracker.data.sqldelight
+
+import org.gabrieal.gymtracker.data.model.FirebaseInfo
+import org.gabrieal.gymtracker.data.model.Profile
+import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+
+private val profileQuery = createDatabase().profileEntityQueries
+private val selectedExerciseListQuery = createDatabase().selectedExerciseListEntityQueries
+private val firebaseInfoQuery = createDatabase().firebaseInfoEntityQueries
+
+fun setSelectedRoutineListToDB(list: List<SelectedExerciseList>) {
+    list.forEachIndexed { index, item ->
+        selectedExerciseListQuery.insertOrReplaceSelectedExerciseList(
+            id = index.toLong(),
+            position = item.position?.toLong(),
+            day = item.day,
+            routineName = item.routineName,
+            isCompleted = if (item.isCompleted) 0 else 1,
+            startingDate = item.startingDate,
+            exercises = item.exercises
+        )
+    }
+}
+
+fun getSelectedRoutineListFromDB(): MutableList<SelectedExerciseList> {
+    val selectedExerciseList =
+        selectedExerciseListQuery.selectAllSelectedExerciseLists().executeAsList()
+
+    return selectedExerciseList.map {
+        SelectedExerciseList(
+            position = it.position?.toInt(),
+            day = it.day,
+            routineName = it.routineName,
+            isCompleted = it.isCompleted == 0.toLong(),
+            startingDate = it.startingDate,
+            exercises = it.exercises
+        )
+    }.toMutableList()
+}
+
+fun setProfileToDB(profile: Profile) {
+    profileQuery.insertOrReplaceProfile(
+        email = profile.email,
+        userName = profile.userName,
+        weight = profile.weight,
+        height = profile.height,
+        age = profile.age?.toLong(),
+        goal = profile.goal,
+        activityLevel = profile.activityLevel,
+        gender = profile.gender
+    )
+}
+
+fun getProfileFromDB(): Profile {
+    val profile = profileQuery.selectProfile().executeAsOneOrNull()
+
+    profile?.let {
+        return Profile(
+            email = it.email,
+            userName = it.userName,
+            weight = it.weight,
+            height = it.height,
+            age = it.age?.toInt(),
+            goal = it.goal,
+            activityLevel = it.activityLevel,
+            gender = it.gender
+        )
+    }
+
+    return Profile()
+}
+
+fun setFirebaseInfoToDB(firebaseInfo: FirebaseInfo) {
+    firebaseInfoQuery.insertOrReplaceFirebaseInfo(
+        uid = firebaseInfo.uid,
+        token = firebaseInfo.token,
+        refreshToken = firebaseInfo.refreshToken,
+        expiresAt = firebaseInfo.expiresAt
+    )
+}
+
+fun getFirebaseInfoFromDB(): FirebaseInfo {
+    val firebaseInfo = firebaseInfoQuery.selectFirebaseInfo().executeAsOneOrNull()
+
+    firebaseInfo?.let {
+        return FirebaseInfo(
+            uid = it.uid,
+            token = it.token,
+            refreshToken = it.refreshToken,
+            expiresAt = it.expiresAt
+        )
+    }
+
+    return FirebaseInfo()
+}
