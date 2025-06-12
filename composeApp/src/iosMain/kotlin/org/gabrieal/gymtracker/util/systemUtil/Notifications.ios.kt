@@ -32,4 +32,3 @@ actual fun notifyPlatform(message: String) {
 
     UNUserNotificationCenter.currentNotificationCenter().addNotificationRequest(request, withCompletionHandler = null)
 }
-

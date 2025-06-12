@@ -1,0 +1,1 @@
+ALTER TABLE currentlyActiveRoutineEntity ADD COLUMN startedOn TEXT;

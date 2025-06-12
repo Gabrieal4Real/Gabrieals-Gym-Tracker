@@ -21,8 +21,9 @@ import org.gabrieal.gymtracker.data.model.Exercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.decodeExercises
 import org.gabrieal.gymtracker.data.model.decodeTemplate
-import org.gabrieal.gymtracker.features.landing.view.LandingScreen
+import org.gabrieal.gymtracker.data.sqldelight.getCurrentlyActiveRoutineFromDB
 import org.gabrieal.gymtracker.features.app.viewmodel.AppStateViewModel
+import org.gabrieal.gymtracker.features.landing.view.LandingScreen
 import org.gabrieal.gymtracker.util.app.AppColors
 import org.gabrieal.gymtracker.util.app.DarkColors
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -39,10 +40,9 @@ import kotlin.time.Instant
 var allExistingExerciseList = mutableListOf<Exercise>()
 var templates = ConvertedTemplate()
 var colors: AppColors = DarkColors
-var currentlyActiveRoutine: SelectedExerciseList? = null
 
 @OptIn(ExperimentalTime::class)
-var startTime: Instant? = null
+var currentlyActiveRoutine: Pair<SelectedExerciseList, Instant>? = null
 
 val appStateViewModel = AppStateViewModel()
 
@@ -52,7 +52,8 @@ fun App(stringResources: StringResources = remember { StringFactory.createString
     CompositionLocalProvider(
         LocalStringResources provides stringResources
     ) {
-        val isLoading by appStateViewModel.isLoading.collectAsState()
+        val uiState by appStateViewModel.uiState.collectAsState()
+        val isLoading = uiState.isLoading
 
         allExistingExerciseList = decodeExercises(readFile("exercises.json"))
         templates = decodeTemplate(readFile("templates.json"))

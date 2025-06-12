@@ -1,14 +1,62 @@
 package org.gabrieal.gymtracker.data.sqldelight
 
+import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
+import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 private val profileQuery = createDatabase().profileEntityQueries
 private val selectedExerciseListQuery = createDatabase().selectedExerciseListEntityQueries
 private val firebaseInfoQuery = createDatabase().firebaseInfoEntityQueries
+private val currentlyActiveRoutineEntity = createDatabase().currentlyActiveRoutineEntityQueries
+
+
+@OptIn(ExperimentalTime::class)
+fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedOn: Instant) {
+    if (activeRoutine == null) {
+        currentlyActiveRoutineEntity.deleteCurrentlyActiveRoutine()
+        return
+    }
+
+    currentlyActiveRoutineEntity.insertOrReplaceCurrentlyActiveRoutine(
+        position = activeRoutine.position?.toLong(),
+        day = activeRoutine.day,
+        routineName = activeRoutine.routineName,
+        isCompleted = if (activeRoutine.isCompleted) 0 else 1,
+        startingDate = activeRoutine.startingDate,
+        exercises = activeRoutine.exercises,
+        startedOn = formatInstantToDate(startedOn, "dd-MM-yyyy HH:mm:ss")
+    )
+}
+
+@OptIn(ExperimentalTime::class)
+fun getCurrentlyActiveRoutineFromDB(): Pair<SelectedExerciseList, Instant>? {
+    val currentlyActiveRoutine = currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
+
+    currentlyActiveRoutine?.let {
+        return Pair(
+            SelectedExerciseList(
+                position = it.position?.toInt(),
+                day = it.day,
+                routineName = it.routineName,
+                isCompleted = it.isCompleted == 0.toLong(),
+                startingDate = it.startingDate,
+                exercises = it.exercises
+            ),
+            parseDateToInstant(it.startedOn ?: "", "dd-MM-yyyy HH:mm:ss")
+        )
+    }
+
+    return null
+}
 
 fun setSelectedRoutineListToDB(list: List<SelectedExerciseList>) {
+    selectedExerciseListQuery.deleteSelectedExerciseList()
+
     list.forEachIndexed { index, item ->
         selectedExerciseListQuery.insertOrReplaceSelectedExerciseList(
             id = index.toLong(),

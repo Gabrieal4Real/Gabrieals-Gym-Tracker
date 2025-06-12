@@ -15,6 +15,9 @@ selectAllSelectedExerciseLists:
 SELECT * FROM selectedExerciseListEntity;
 
 insertOrReplaceSelectedExerciseList:
-INSERT OR REPLACE INTO selectedExerciseListEntity (
+REPLACE INTO selectedExerciseListEntity (
     id, position, day, routineName, isCompleted, startingDate, exercises
 ) VALUES (?, ?, ?, ?, ?, ?, ?);
+
+deleteSelectedExerciseList:
+DELETE FROM selectedExerciseListEntity;

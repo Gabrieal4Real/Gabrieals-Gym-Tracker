@@ -14,22 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,7 +26,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -51,11 +39,11 @@ import gymtracker.composeapp.generated.resources.workout_3
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.sqldelight.getCurrentlyActiveRoutineFromDB
 import org.gabrieal.gymtracker.features.home.view.HomeTab
 import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
 import org.gabrieal.gymtracker.features.profile.view.ProfileTab
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
-import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTime
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
@@ -67,11 +55,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 object LandingScreen : Screen, KoinComponent {
     private val viewModel: LandingViewModel by inject()
 
-    @OptIn(ExperimentalMaterialApi::class)
+    @OptIn(ExperimentalMaterialApi::class, ExperimentalTime::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
@@ -79,7 +68,8 @@ object LandingScreen : Screen, KoinComponent {
         val resetCompletedList = uiState.resetCompletedList
 
         LaunchedEffect(Unit) {
-            viewModel.setCurrentlyActiveRoutine(currentlyActiveRoutine)
+            currentlyActiveRoutine = getCurrentlyActiveRoutineFromDB()
+            viewModel.setCurrentlyActiveRoutine(currentlyActiveRoutine?.first)
             viewModel.resetCompletedList()
         }
 
@@ -96,7 +86,7 @@ object LandingScreen : Screen, KoinComponent {
                     bottomBar = {
                         Column {
                             landingCurrentlyActiveRoutine?.let {
-                                CurrentlyActiveWorkout(it)
+                                CurrentlyActiveWorkout(it, currentlyActiveRoutine?.second)
                             }
 
                             NavigationBar(
@@ -128,7 +118,8 @@ object LandingScreen : Screen, KoinComponent {
     @OptIn(ExperimentalTime::class)
     @Composable
     fun CurrentlyActiveWorkout(
-        landingCurrentlyActiveRoutine: SelectedExerciseList
+        landingCurrentlyActiveRoutine: SelectedExerciseList,
+        elapsedTime: Instant?
     ) {
         Box(modifier = Modifier.clickable {
             AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine)
@@ -147,7 +138,7 @@ object LandingScreen : Screen, KoinComponent {
                             "Currently Active: ${landingCurrentlyActiveRoutine.routineName.orEmpty()}",
                             modifier = Modifier.weight(1f)
                         )
-                        TinyText(ElapsedTime(startTime))
+                        TinyText(ElapsedTime(elapsedTime))
                     }
                     Spacer(modifier = Modifier.height(2.dp))
                     MarqueeTinyItalicText(

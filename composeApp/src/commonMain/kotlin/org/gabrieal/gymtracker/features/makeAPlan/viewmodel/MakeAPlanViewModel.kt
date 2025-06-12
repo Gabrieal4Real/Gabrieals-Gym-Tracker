@@ -90,6 +90,7 @@ class MakeAPlanViewModel {
 
     fun saveRoutineList() {
         val sortedRoutineList = _uiState.value.selectedRoutineList
+        println(sortedRoutineList)
         setSelectedRoutineListToDB(sortedRoutineList)
         AppNavigator.navigateToRoot()
     }

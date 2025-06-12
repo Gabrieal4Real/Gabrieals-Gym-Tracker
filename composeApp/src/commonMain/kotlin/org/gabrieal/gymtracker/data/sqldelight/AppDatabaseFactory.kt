@@ -1,6 +1,7 @@
 package org.gabrieal.gymtracker.data.sqldelight
 
 import app.cash.sqldelight.ColumnAdapter
+import db.CurrentlyActiveRoutineEntity
 import db.GymTrackerDatabase
 import db.ProfileEntity
 import db.SelectedExerciseListEntity
@@ -44,6 +45,9 @@ fun createDatabase(): GymTrackerDatabase =
             genderAdapter = enumColumnAdapter<Gender>(),
         ),
         selectedExerciseListEntityAdapter = SelectedExerciseListEntity.Adapter(
+            exercisesAdapter = listColumnAdapter(SelectedExercise.serializer())
+        ),
+        currentlyActiveRoutineEntityAdapter = CurrentlyActiveRoutineEntity.Adapter(
             exercisesAdapter = listColumnAdapter(SelectedExercise.serializer())
         ),
     )

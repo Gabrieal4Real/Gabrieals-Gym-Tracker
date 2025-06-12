@@ -1,0 +1,12 @@
+import kotlin.collections.List;
+import org.gabrieal.gymtracker.data.model.SelectedExercise;
+
+CREATE TABLE currentlyActiveRoutineEntity (
+    id INTEGER NOT NULL PRIMARY KEY,
+    position INTEGER,
+    day TEXT,
+    routineName TEXT,
+    isCompleted INTEGER,
+    startingDate TEXT,
+    exercises TEXT AS List<SelectedExercise>
+);

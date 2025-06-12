@@ -10,9 +10,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.sqldelight.setCurrentlyActiveRoutineToDB
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class StartWorkoutViewModel {
 
@@ -46,8 +48,13 @@ class StartWorkoutViewModel {
         this.callback = callback
     }
 
+    @OptIn(ExperimentalTime::class)
     fun startWorkout(currentActiveExercise: SelectedExerciseList?) {
-        currentlyActiveRoutine = currentActiveExercise
+        setCurrentlyActiveRoutineToDB(currentActiveExercise, Clock.System.now())
+        updateCurrentActiveExercise(currentActiveExercise)
+    }
+
+    fun updateCurrentActiveExercise(currentActiveExercise: SelectedExerciseList?) {
         _uiState.update { it.copy(currentActiveExercise = currentActiveExercise) }
     }
 
@@ -58,7 +65,8 @@ class StartWorkoutViewModel {
     fun initializeCompletedSets(selectedExerciseList: SelectedExerciseList) {
         if (_uiState.value.exerciseWeights.isNotEmpty()
             && selectedExerciseList.exercises?.size == _uiState.value.exerciseWeights.size
-            && selectedExerciseList == _uiState.value.selectedExerciseList) {
+            && selectedExerciseList == _uiState.value.selectedExerciseList
+        ) {
             return
         }
 

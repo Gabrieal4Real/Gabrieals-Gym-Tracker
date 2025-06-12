@@ -32,7 +32,6 @@ import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
-import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.getPlanTitle
@@ -50,7 +49,6 @@ import org.gabrieal.gymtracker.util.widgets.popOut
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 object StartWorkoutScreen : Screen, KoinComponent {
@@ -64,6 +62,7 @@ object StartWorkoutScreen : Screen, KoinComponent {
         viewModel.setCallback(selectedExerciseList)
     }
 
+
     @OptIn(ExperimentalTime::class)
     @Composable
     override fun Content() {
@@ -72,8 +71,8 @@ object StartWorkoutScreen : Screen, KoinComponent {
         val currentActiveExercise = uiState.currentActiveExercise
         val showWarningReplace = uiState.showWarningReplace
 
-        LaunchedEffect(currentlyActiveRoutine) {
-            viewModel.startWorkout(currentlyActiveRoutine)
+        LaunchedEffect(Unit) {
+            viewModel.updateCurrentActiveExercise(currentlyActiveRoutine?.first)
         }
 
         Column(
@@ -141,7 +140,6 @@ object StartWorkoutScreen : Screen, KoinComponent {
                         when (currentActiveExercise) {
                             null -> {
                                 viewModel.startWorkout(selectedExerciseList)
-                                startTime = Clock.System.now()
                                 AppNavigator.navigateBack()
                             }
 
@@ -168,7 +166,6 @@ object StartWorkoutScreen : Screen, KoinComponent {
                     positiveButton = Pair("Proceed") {
                         viewModel.setShowWarningReplace(false)
                         viewModel.startWorkout(selectedExerciseList)
-                        startTime = Clock.System.now()
                         AppNavigator.navigateBack()
                     },
                     negativeButton = Pair("Cancel") {

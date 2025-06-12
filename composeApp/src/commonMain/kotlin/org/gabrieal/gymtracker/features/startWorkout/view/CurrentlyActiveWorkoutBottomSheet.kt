@@ -29,11 +29,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import org.gabrieal.gymtracker.colors
+import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutUiState
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
-import org.gabrieal.gymtracker.startTime
 import org.gabrieal.gymtracker.util.app.ElapsedTime
 import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
@@ -58,6 +58,7 @@ import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
     private val viewModel: StartWorkoutViewModel by inject()
@@ -67,6 +68,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         viewModel.toggleSetCompleted()
     }
 
+    @OptIn(ExperimentalTime::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
@@ -103,7 +105,11 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                 ) {
                     BiggerText(selectedExerciseList?.routineName.orEmpty())
                     Spacer(modifier = Modifier.height(16.dp))
-                    DurationVolumeSetCard(completedVolume, completedSets)
+                    DurationVolumeSetCard(
+                        completedVolume,
+                        completedSets,
+                        currentlyActiveRoutine?.second
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
 
                     val addTime = listOf(
@@ -169,9 +175,9 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
 
     @OptIn(ExperimentalTime::class)
     @Composable
-    fun DurationVolumeSetCard(volume: Double, sets: Int) {
+    fun DurationVolumeSetCard(volume: Double, sets: Int, elapsedTime: Instant?) {
         val stats = listOf(
-            "Duration" to ElapsedTime(startTime),
+            "Duration" to ElapsedTime(elapsedTime),
             "Volume" to "$volume kg",
             "Sets" to sets.toString()
         )
