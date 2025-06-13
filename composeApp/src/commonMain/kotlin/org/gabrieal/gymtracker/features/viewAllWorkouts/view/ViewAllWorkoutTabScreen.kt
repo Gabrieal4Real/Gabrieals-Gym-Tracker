@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -124,7 +125,10 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // List of filtered workouts
-                    LazyColumn {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(bottom = 16.dp)
+                    ) {
                         items(filteredWorkouts.size) { idx ->
                             val workout = filteredWorkouts[idx]
                             CustomCard(
@@ -164,11 +168,6 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
                                         TierImage(workout.tier)
                                     }
                                 })
-                            Spacer(modifier = Modifier.height(8.dp))
-                        }
-
-                        item {
-                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 }

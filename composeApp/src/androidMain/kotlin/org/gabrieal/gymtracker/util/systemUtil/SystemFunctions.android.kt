@@ -89,6 +89,7 @@ actual fun ShowInputDialog(
     type: KeyboardType
 ) {
     var text by remember { mutableStateOf("") }
+
     AlertDialog(
         onDismissRequest = negativeButton.second,
         title = { Text(titleMessage.first) },
@@ -122,6 +123,10 @@ actual fun ShowInputDialog(
         },
         confirmButton = {
             TextButton(onClick = {
+                if (text.isEmpty()) {
+                    negativeButton.second()
+                    return@TextButton
+                }
                 positiveButton.second(text)
             }) {
                 Text(positiveButton.first)

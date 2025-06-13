@@ -2,6 +2,7 @@ package org.gabrieal.gymtracker.features.startWorkout.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -115,12 +116,12 @@ object StartWorkoutScreen : Screen, KoinComponent {
                         Spacer(modifier = Modifier.height(8.dp))
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                             content = {
                                 items(
                                     selectedExerciseList?.exercises?.size ?: 0
                                 ) { selectedExercise ->
                                     ExerciseCard(selectedExerciseList, selectedExercise)
-                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
                             }
                         )

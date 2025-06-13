@@ -1,8 +1,12 @@
 package org.gabrieal.gymtracker.features.makeAPlan.view
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -97,7 +101,7 @@ object MakeAPlanScreen : Screen, KoinComponent {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(if (viewModel.areAllActiveDaysEdited()) 0.82f else 0.92f)
+                        .fillMaxHeight(0.92f)
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp)
                 ) {
@@ -154,34 +158,43 @@ object MakeAPlanScreen : Screen, KoinComponent {
                     }
                 }
 
-                Column(
+                Box(
                     modifier = Modifier.fillMaxWidth().align(Alignment.BottomEnd).padding(16.dp)
+                        .height(IntrinsicSize.Min)
                 ) {
-                    //Template Button
-                    ConfirmButton(
-                        text = "Use a Template instead",
-                        onClick = {
-                            if (!viewModel.areAllActiveDaysEdited())
-                                getTemplate(selectedDays)
-                            else {
-                                viewModel.setOverrideWarning(true)
-                            }
-                        },
-                        buttonType = ButtonType.RED,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    // Confirm Button
-                    if (viewModel.areAllActiveDaysEdited()) {
-                        Spacer(modifier = Modifier.height(16.dp))
-
+                    this@Column.AnimatedVisibility(
+                        visible = !viewModel.areAllActiveDaysEdited(),
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
                         ConfirmButton(
-                            "Let's Pump It Up",
+                            text = "Use a Template instead",
                             onClick = {
-                                viewModel.saveRoutineList()
+                                if (!viewModel.areAllActiveDaysEdited())
+                                    getTemplate(selectedDays)
+                                else {
+                                    viewModel.setOverrideWarning(true)
+                                }
                             },
+                            buttonType = ButtonType.RED,
                             modifier = Modifier.fillMaxWidth()
                         )
+                    }
+
+                    this@Column.AnimatedVisibility(
+                        visible = viewModel.areAllActiveDaysEdited(),
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Column {
+                            ConfirmButton(
+                                "Let's Pump It Up",
+                                onClick = {
+                                    viewModel.saveRoutineList()
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
                     }
                 }
 

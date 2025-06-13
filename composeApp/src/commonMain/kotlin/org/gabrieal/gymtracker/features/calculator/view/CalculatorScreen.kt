@@ -81,19 +81,15 @@ object CalculatorScreen : Screen, KoinComponent {
                 Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     HeaderSection()
 
-                    LazyColumn {
-                        item {
-                            InputSection(weight, goal, activityLevel)
+                    InputSection(weight, goal, activityLevel)
 
-                            AnimatedVisibility(
-                                visible = weight != null && goal != null && activityLevel != null,
-                                enter = expandVertically(),
-                                exit = shrinkVertically()
-                            ) {
-                                if (weight != null && goal != null && activityLevel != null) {
-                                    ResultSection(weight, goal, activityLevel)
-                                }
-                            }
+                    AnimatedVisibility(
+                        visible = weight != null && goal != null && activityLevel != null,
+                        enter = expandVertically(),
+                        exit = shrinkVertically()
+                    ) {
+                        if (weight != null && goal != null && activityLevel != null) {
+                            ResultSection(weight, goal, activityLevel)
                         }
                     }
                 }

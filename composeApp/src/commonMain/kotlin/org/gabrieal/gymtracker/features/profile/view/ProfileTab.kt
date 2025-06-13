@@ -1,10 +1,12 @@
 package org.gabrieal.gymtracker.features.profile.view
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -87,11 +89,14 @@ object ProfileTab : Tab, KoinComponent {
         ) {
             TitleRow("Profile")
             Box(
-                modifier = Modifier.fillMaxSize().background(colors.lighterBackground).padding(horizontal = 16.dp),
+                modifier = Modifier.fillMaxSize().background(colors.lighterBackground)
+                    .padding(horizontal = 16.dp),
             ) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    contentPadding = PaddingValues(vertical = 16.dp),
+                    modifier = Modifier.fillMaxSize().animateContentSize()
+                ) {
                     item {
-                        Spacer(modifier = Modifier.height(16.dp))
                         ProfileCard(profile, firebaseInfo)
                     }
 
@@ -99,9 +104,12 @@ object ProfileTab : Tab, KoinComponent {
                         EditRoutinesCard(routines)
                     }
 
-                    item {
-                        getBMISummary(profile?.weight, profile?.height)
-                    }
+                    if (profile?.weight != null && profile.height != null)
+                        item {
+                            Column(modifier = Modifier.fillMaxWidth().animateItem()) {
+                                getBMISummary(profile.weight, profile.height)
+                            }
+                        }
 
                     item {
                         CalculatorRow(
@@ -114,10 +122,6 @@ object ProfileTab : Tab, KoinComponent {
                                 },
                             )
                         )
-                    }
-
-                    item {
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
             }
@@ -250,7 +254,7 @@ object ProfileTab : Tab, KoinComponent {
                         viewModel.setWeightHeightBMIClicked(1)
                     },
                     Pair(Triple(age, Icons.Rounded.PersonOutline, "")) {
-                        viewModel.setWeightHeightBMIClicked(2)
+                        viewModel.updateWeight(null)
                     },
                 )
                 Column(

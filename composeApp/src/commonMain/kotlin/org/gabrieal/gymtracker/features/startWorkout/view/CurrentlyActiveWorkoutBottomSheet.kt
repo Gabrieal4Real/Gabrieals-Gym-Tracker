@@ -1,13 +1,12 @@
 package org.gabrieal.gymtracker.features.startWorkout.view
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -157,12 +156,12 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                 CustomHorizontalDivider()
 
                 LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(colors.lighterBackground)
-                        .padding(horizontal = 16.dp),
+                        .background(colors.lighterBackground),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    item { Spacer(modifier = Modifier.height(16.dp)) }
                     selectedExerciseList?.exercises?.forEachIndexed { index, exercise ->
                         item {
                             ExerciseItem(index, exercise, uiState)
@@ -185,18 +184,20 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         CustomCard(enabled = false, content = {
             Row(
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 stats.forEachIndexed { index, (label, value) ->
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.weight(1f)
+                    ) {
                         TinyText(label)
                         DescriptionText(value)
                     }
                     if (index != stats.lastIndex) {
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         DashedDivider()
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                     }
                 }
             }
@@ -218,6 +219,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                 Column(
                     Modifier
                         .fillMaxWidth()
+                        .animateContentSize()
                         .padding(16.dp)
                 ) {
                     Row(Modifier.fillMaxWidth()) {
@@ -228,17 +230,12 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                     "${sets.count { it }} / ${exercise.sets ?: 0} done",
                                     color = colors.textSecondary
                                 )
-                                return@Column
                             }
                         }
                         RotatingExpandIcon(expanded = expanded)
                     }
 
-                    AnimatedVisibility(
-                        visible = expanded,
-                        enter = expandVertically(),
-                        exit = shrinkVertically()
-                    ) {
+                    if (expanded) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                             Spacer(Modifier.height(4.dp))
@@ -361,8 +358,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                         }
                     }
                 }
-            })
-
-        Spacer(Modifier.height(16.dp))
+            }
+        )
     }
 }
