@@ -1,7 +1,13 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
-import platform.UserNotifications.*
-import platform.Foundation.*
+import platform.Foundation.NSUUID
+import platform.UserNotifications.UNAuthorizationOptionAlert
+import platform.UserNotifications.UNAuthorizationOptionBadge
+import platform.UserNotifications.UNAuthorizationOptionSound
+import platform.UserNotifications.UNMutableNotificationContent
+import platform.UserNotifications.UNNotificationRequest
+import platform.UserNotifications.UNNotificationSound
+import platform.UserNotifications.UNUserNotificationCenter
 
 actual fun requestNotificationPermission() {
     val center = UNUserNotificationCenter.currentNotificationCenter()

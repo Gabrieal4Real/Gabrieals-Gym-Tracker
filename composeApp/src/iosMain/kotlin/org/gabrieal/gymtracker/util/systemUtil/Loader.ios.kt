@@ -4,8 +4,11 @@ import androidx.compose.runtime.Composable
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGPointMake
-import platform.UIKit.*
-
+import platform.UIKit.UIActivityIndicatorView
+import platform.UIKit.UIActivityIndicatorViewStyleLarge
+import platform.UIKit.UIApplication
+import platform.UIKit.UIColor
+import platform.UIKit.UIView
 import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 

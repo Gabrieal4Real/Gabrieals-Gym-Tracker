@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
-import org.gabrieal.gymtracker.features.loginRegister.repository.LoginRegisterRepo
-import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.data.sqldelight.getFirebaseInfoFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setFirebaseInfoToDB
+import org.gabrieal.gymtracker.features.loginRegister.repository.LoginRegisterRepo
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
     private val viewModelScope = CoroutineScope(Dispatchers.Default + SupervisorJob())

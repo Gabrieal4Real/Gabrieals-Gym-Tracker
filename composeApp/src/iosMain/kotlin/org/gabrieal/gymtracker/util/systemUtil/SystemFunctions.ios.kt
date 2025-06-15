@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.input.KeyboardType
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
-import kotlinx.cinterop.useContents
 import org.gabrieal.gymtracker.util.app.isValidNumber
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
@@ -15,12 +14,10 @@ import platform.Foundation.NSDate
 import platform.Foundation.NSDateFormatter
 import platform.Foundation.NSLocale
 import platform.Foundation.NSRange
-import platform.Foundation.NSString
 import platform.Foundation.NSTimeZone
 import platform.Foundation.NSURL
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.localeWithLocaleIdentifier
-import platform.Foundation.stringByReplacingCharactersInRange
 import platform.Foundation.systemTimeZone
 import platform.Foundation.timeIntervalSince1970
 import platform.UIKit.UIAlertAction
@@ -30,12 +27,10 @@ import platform.UIKit.UIAlertController
 import platform.UIKit.UIAlertControllerStyleActionSheet
 import platform.UIKit.UIAlertControllerStyleAlert
 import platform.UIKit.UIApplication
-import platform.UIKit.UIKeyboardTypeDecimalPad
 import platform.UIKit.UIKeyboardTypeDefault
 import platform.UIKit.UIKeyboardTypeNumberPad
 import platform.UIKit.UITextField
 import platform.UIKit.UITextFieldDelegateProtocol
-import platform.UIKit.*
 import platform.darwin.NSObject
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

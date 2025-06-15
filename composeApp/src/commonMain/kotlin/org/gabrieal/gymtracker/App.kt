@@ -21,7 +21,6 @@ import org.gabrieal.gymtracker.data.model.Exercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.decodeExercises
 import org.gabrieal.gymtracker.data.model.decodeTemplate
-import org.gabrieal.gymtracker.data.sqldelight.getCurrentlyActiveRoutineFromDB
 import org.gabrieal.gymtracker.features.app.viewmodel.AppStateViewModel
 import org.gabrieal.gymtracker.features.landing.view.LandingScreen
 import org.gabrieal.gymtracker.util.app.AppColors

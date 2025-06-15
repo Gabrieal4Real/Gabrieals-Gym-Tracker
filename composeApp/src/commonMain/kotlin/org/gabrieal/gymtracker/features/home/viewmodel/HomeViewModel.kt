@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
-import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 class HomeViewModel {
     private val _uiState = MutableStateFlow(HomeUiState())
