@@ -11,26 +11,16 @@ import gymtracker.composeapp.generated.resources.Res
 import org.jetbrains.compose.resources.Font
 
 @Composable
-fun ExtraBoldText(): FontFamily {
-    return FontFamily(Font(Res.font.Poppins_ExtraBold))
-}
+fun ExtraBoldText() = FontFamily(Font(Res.font.Poppins_ExtraBold))
 
 @Composable
-fun BoldText(): FontFamily {
-    return FontFamily(Font(Res.font.Poppins_Bold))
-}
+fun BoldText() = FontFamily(Font(Res.font.Poppins_Bold))
 
 @Composable
-fun MediumText(): FontFamily {
-    return FontFamily(Font(Res.font.Poppins_Medium))
-}
+fun MediumText() = FontFamily(Font(Res.font.Poppins_Medium))
 
 @Composable
-fun RegularText(): FontFamily {
-    return FontFamily(Font(Res.font.Poppins_Regular))
-}
+fun RegularText() = FontFamily(Font(Res.font.Poppins_Regular))
 
 @Composable
-fun SemiBoldText(): FontFamily {
-    return FontFamily(Font(Res.font.Poppins_SemiBold))
-}
+fun SemiBoldText() = FontFamily(Font(Res.font.Poppins_SemiBold))

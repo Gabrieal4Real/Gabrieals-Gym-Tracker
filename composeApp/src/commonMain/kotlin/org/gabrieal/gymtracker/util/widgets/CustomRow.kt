@@ -14,17 +14,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.RestartAlt
@@ -51,7 +48,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -145,62 +141,6 @@ fun RepRangePicker(
                     "${range.first} - ${range.second} reps",
                     color = if (isSelected) colors.white else colors.textPrimary
                 )
-            }
-        }
-    }
-}
-
-@Composable
-fun DropDownFilter(
-    filterOptions: List<String>,
-    selectedFilters: Set<String>,
-    onFilterSelected: (String) -> Unit,
-    modifier: Modifier
-) {
-    var isExpanded by remember { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
-
-    Column(modifier.fillMaxHeight()) {
-        Icon(
-            imageVector = Icons.Rounded.FilterAlt,
-            contentDescription = "Filter",
-            modifier = Modifier
-                .size(32.dp)
-                .clickable { isExpanded = !isExpanded },
-            tint = colors.textPrimary
-        )
-
-        if (isExpanded) {
-            Popup(
-                alignment = Alignment.TopEnd,
-                onDismissRequest = { isExpanded = false },
-            ) {
-                Box(
-                    modifier = Modifier
-                        .heightIn(max = 300.dp)
-                        .verticalColumnScrollbar(scrollState)
-                        .verticalScroll(scrollState)
-                        .background(colors.background, RoundedCornerShape(12.dp))
-                        .padding(start = 8.dp, top = 8.dp, end = 24.dp, bottom = 8.dp),
-                ) {
-                    Column {
-                        filterOptions.forEach { option ->
-                            val isSelected = option in selectedFilters
-                            val backgroundColor =
-                                if (isSelected) colors.slightlyDarkerLinkBlue else colors.background
-                            Box(
-                                modifier = Modifier
-                                    .padding(2.dp)
-                                    .background(backgroundColor, RoundedCornerShape(16.dp))
-                                    .clickable { onFilterSelected(option) }
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                TinyText(option)
-                            }
-                        }
-                    }
-                }
             }
         }
     }

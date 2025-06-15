@@ -21,13 +21,9 @@ class MakeAPlanViewModel {
 
     val uiState: StateFlow<MakeAPlanUiState> = _uiState.asStateFlow()
 
-    fun setSelectedDays(selectedDays: List<Boolean>) {
-        _uiState.update { it.copy(selectedDays = selectedDays) }
-    }
+    fun setSelectedDays(selectedDays: List<Boolean>) = _uiState.update { it.copy(selectedDays = selectedDays) }
 
-    fun setShowImage(show: Boolean) {
-        _uiState.update { it.copy(showImage = show) }
-    }
+    fun setShowImage(show: Boolean) = _uiState.update { it.copy(showImage = show) }
 
     fun setShowWarningBack(show: Boolean) {
         if (_uiState.value.selectedRoutineList.isEmpty()) {
@@ -38,13 +34,9 @@ class MakeAPlanViewModel {
         _uiState.update { it.copy(showWarningBack = show) }
     }
 
-    fun setOverrideWarning(show: Boolean) {
-        _uiState.update { it.copy(showOverrideWarning = show) }
-    }
+    fun setOverrideWarning(show: Boolean) = _uiState.update { it.copy(showOverrideWarning = show) }
 
-    fun updateSelectedRoutineList(routineList: List<SelectedExerciseList>) {
-        _uiState.update { it.copy(selectedRoutineList = routineList) }
-    }
+    fun updateSelectedRoutineList(routineList: List<SelectedExerciseList>) = _uiState.update { it.copy(selectedRoutineList = routineList) }
 
     fun navigateBack() {
         updateSelectedRoutineList(listOf())
@@ -90,7 +82,6 @@ class MakeAPlanViewModel {
 
     fun saveRoutineList() {
         val sortedRoutineList = _uiState.value.selectedRoutineList
-        println(sortedRoutineList)
         setSelectedRoutineListToDB(sortedRoutineList)
         AppNavigator.navigateToRoot()
     }
@@ -101,7 +92,5 @@ class MakeAPlanViewModel {
         return activeDaysCount == routineListSize
     }
 
-    fun setEditMode(isEditMode: Boolean) {
-        _uiState.update { it.copy(isEditMode = isEditMode) }
-    }
+    fun setEditMode(isEditMode: Boolean) = _uiState.update { it.copy(isEditMode = isEditMode) }
 }

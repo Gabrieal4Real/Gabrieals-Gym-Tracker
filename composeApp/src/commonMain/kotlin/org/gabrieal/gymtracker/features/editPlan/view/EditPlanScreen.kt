@@ -52,13 +52,10 @@ import org.koin.core.component.inject
 object EditPlanScreen : Screen, KoinComponent {
     private val viewModel: EditPlanViewModel by inject()
 
-    fun setCallback(onMessageSent: (List<SelectedExercise>) -> Unit) {
+    fun setCallback(onMessageSent: (List<SelectedExercise>) -> Unit) =
         viewModel.setCallback(onMessageSent)
-    }
 
-    fun setSelectedDay(day: String) {
-        viewModel.setDay(day)
-    }
+    fun setSelectedDay(day: String) = viewModel.setDay(day)
 
     fun setExercises(exercises: List<SelectedExercise>?) {
         val exerciseList = exercises ?: List(3) {
@@ -73,9 +70,7 @@ object EditPlanScreen : Screen, KoinComponent {
     }
 
 
-    fun setEditMode(isEditMode: Boolean) {
-        viewModel.setEditMode(isEditMode)
-    }
+    fun setEditMode(isEditMode: Boolean) = viewModel.setEditMode(isEditMode)
 
     @Composable
     override fun Content() {
@@ -123,7 +118,10 @@ object EditPlanScreen : Screen, KoinComponent {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         // List of exercises
-                        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.animateContentSize()) {
+                        LazyColumn(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.animateContentSize()
+                        ) {
                             items(exercises.size) { position ->
                                 CustomCard(
                                     enabled = true,

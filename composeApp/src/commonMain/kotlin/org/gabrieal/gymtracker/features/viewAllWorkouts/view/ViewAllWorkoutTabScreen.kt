@@ -1,5 +1,8 @@
 package org.gabrieal.gymtracker.features.viewAllWorkouts.view
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,12 +17,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -45,9 +57,8 @@ import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomTextField
 import org.gabrieal.gymtracker.util.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
-import org.gabrieal.gymtracker.util.widgets.DropDownFilter
-import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
+import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.TitleRow
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -56,9 +67,7 @@ import org.koin.core.component.inject
 object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
     private val viewModel: ViewAllWorkoutViewModel by inject()
 
-    fun setCallback(onMessageSent: (String) -> Unit) {
-        viewModel.setCallback(onMessageSent)
-    }
+    fun setCallback(onMessageSent: (String) -> Unit) = viewModel.setCallback(onMessageSent)
 
     @OptIn(InternalVoyagerApi::class)
     @Composable
@@ -75,6 +84,7 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
         val showConfirmAddToRoutineDialog = uiState.showConfirmAddToRoutineDialog
         val filteredWorkouts = uiState.filteredWorkouts
         val callback = uiState.callback
+        var isExpanded by remember { mutableStateOf(false) }
 
         val allMuscleGroups = viewModel.getAllMuscleGroups()
 
@@ -100,19 +110,7 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
                     .background(colors.lighterBackground)
                     .padding(start = 16.dp, end = 16.dp, top = 16.dp)
             ) {
-                DropDownFilter(
-                    filterOptions = allMuscleGroups,
-                    selectedFilters = selectedFilters,
-                    onFilterSelected = { filter ->
-                        viewModel.toggleFilter(filter)
-                    },
-                    modifier = Modifier.align(Alignment.TopEnd)
-                )
-
                 Column {
-                    // Section title and filter instructions
-                    SubtitleText("All Workouts")
-                    Spacer(modifier = Modifier.height(8.dp))
                     DescriptionItalicText("Select muscle groups to filter by")
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -120,9 +118,17 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
                     CustomTextField(
                         value = searchFilter,
                         onValueChange = { viewModel.setSearchFilter(it) },
-                        placeholderText = "Search exercises..."
+                        placeholderText = "Search exercises...",
+                        resource = Icons.Rounded.FilterAlt to { isExpanded = !isExpanded },
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+
+                    FilterList(
+                        filterOptions = allMuscleGroups,
+                        selectedFilters = selectedFilters,
+                        expanded = isExpanded
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // List of filtered workouts
                     LazyColumn(
@@ -184,6 +190,42 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
                         },
                         negativeButton = Pair("Cancel") {
                             viewModel.dismissConfirmDialog()
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
+    fun FilterList(filterOptions: List<String>, selectedFilters: List<String>, expanded: Boolean) {
+        val sortedFilters = remember(filterOptions, selectedFilters) {
+            filterOptions.sortedWith(compareByDescending { it in selectedFilters })
+        }
+
+        AnimatedVisibility(expanded, enter = expandVertically(), exit = shrinkVertically()) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(sortedFilters.size) {
+                    val filter = sortedFilters[it]
+                    FilterChip(
+                        colors = FilterChipDefaults.filterChipColors(
+                            containerColor = colors.background,
+                            selectedContainerColor = colors.bottomNavIndicator,
+                            selectedTrailingIconColor = colors.white
+                        ),
+                        selected = filter in selectedFilters,
+                        onClick = { viewModel.toggleFilter(filter) },
+                        label = { TinyText(filter, modifier = Modifier.padding(vertical = 8.dp)) },
+                        trailingIcon = if (filter in selectedFilters) {
+                            {
+                                Icon(
+                                    imageVector = Icons.Rounded.Close,
+                                    contentDescription = "Close",
+                                    modifier = Modifier.size(FilterChipDefaults.IconSize)
+                                )
+                            }
+                        } else {
+                            null
                         }
                     )
                 }

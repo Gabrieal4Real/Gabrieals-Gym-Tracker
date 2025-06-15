@@ -14,9 +14,7 @@ class ViewAllWorkoutViewModel {
 
     val uiState: StateFlow<ViewAllWorkoutUiState> = _uiState.asStateFlow()
 
-    fun setCallback(callback: (String) -> Unit) {
-        _uiState.update { it.copy(callback = callback) }
-    }
+    fun setCallback(callback: (String) -> Unit) = _uiState.update { it.copy(callback = callback) }
 
     fun setSearchFilter(filter: String) {
         _uiState.update { it.copy(searchFilter = filter) }
@@ -60,9 +58,7 @@ class ViewAllWorkoutViewModel {
         }
     }
 
-    fun dismissConfirmDialog() {
-        _uiState.update { it.copy(showConfirmAddToRoutineDialog = false) }
-    }
+    fun dismissConfirmDialog() = _uiState.update { it.copy(showConfirmAddToRoutineDialog = false) }
 
     fun confirmWorkoutSelection() {
         _uiState.value.callback?.invoke(_uiState.value.selectedWorkout)
@@ -75,15 +71,9 @@ class ViewAllWorkoutViewModel {
         _uiState.update { it.copy(youtubeUrlToOpen = searchUrl) }
     }
 
-    fun onUrlOpened() {
-        _uiState.update { it.copy(youtubeUrlToOpen = null) }
-    }
+    fun onUrlOpened() = _uiState.update { it.copy(youtubeUrlToOpen = null) }
 
-    fun navigateBack() {
-        AppNavigator.navigateBack()
-    }
+    private fun navigateBack() = AppNavigator.navigateBack()
 
-    fun getAllMuscleGroups(): List<String> {
-        return MuscleGroup.entries.map { it.displayName }
-    }
+    fun getAllMuscleGroups() = MuscleGroup.entries.map { it.displayName }
 }

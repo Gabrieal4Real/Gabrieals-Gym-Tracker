@@ -36,7 +36,6 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
     fun registerNewUser(email: String, password: String) = performAuth(email, password, isRegister = true)
 
     private fun performAuth(email: String, password: String, isRegister: Boolean) {
-
         viewModelScope.launch {
             AppNavigator.showLoading()
             try {

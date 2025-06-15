@@ -13,9 +13,7 @@ class HomeViewModel {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    fun updateContext() {
-        loadRoutines()
-    }
+    fun updateContext() = loadRoutines()
 
     private fun loadRoutines() {
         val routines = getSelectedRoutineListFromDB()
@@ -31,9 +29,7 @@ class HomeViewModel {
         }
     }
 
-    private fun navigateToCreateSplit() {
-        AppNavigator.navigateToCreateSplit()
-    }
+    private fun navigateToCreateSplit() = AppNavigator.navigateToCreateSplit()
 
     fun navigateToStartWorkout(
         selectedExerciseList: SelectedExerciseList,

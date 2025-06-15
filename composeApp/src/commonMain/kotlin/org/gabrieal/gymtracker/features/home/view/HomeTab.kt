@@ -110,7 +110,7 @@ object HomeTab : Tab, KoinComponent {
         "Your body grows when you rest.\nEmbrace the pause and feel good today.\n🌙💪🧠"
     ).random()
 
-    @OptIn(InternalVoyagerApi::class, ExperimentalFoundationApi::class)
+    @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()

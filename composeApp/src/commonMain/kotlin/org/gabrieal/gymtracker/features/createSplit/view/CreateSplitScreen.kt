@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,9 +51,7 @@ import org.koin.core.component.inject
 object CreateSplitScreen : Screen, KoinComponent {
     private val viewModel: CreateSplitViewModel by inject()
 
-    fun setRoutines(routines: List<SelectedExerciseList>) {
-        viewModel.isEditMode(routines)
-    }
+    fun setRoutines(routines: List<SelectedExerciseList>) = viewModel.isEditMode(routines)
 
     @OptIn(InternalVoyagerApi::class)
     @Composable
@@ -80,7 +79,7 @@ object CreateSplitScreen : Screen, KoinComponent {
             ) {
                 Column(
                     modifier = Modifier
-                        .fillMaxHeight(0.9f)
+                        .fillMaxHeight(0.92f)
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp),
                 ) {

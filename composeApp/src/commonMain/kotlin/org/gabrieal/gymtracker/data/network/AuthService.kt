@@ -18,13 +18,9 @@ import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.RegisterRequest
 
 class AuthService(private val client: HttpClient) {
-    suspend fun loginWithEmail(email: String, password: String): Pair<Boolean, AuthResponse> {
-        return authRequest(APIService.loginUrl(), email, password)
-    }
+    suspend fun loginWithEmail(email: String, password: String) = authRequest(APIService.loginUrl(), email, password)
 
-    suspend fun registerWithEmail(email: String, password: String): Pair<Boolean, AuthResponse> {
-        return authRequest(APIService.registerUrl(), email, password)
-    }
+    suspend fun registerWithEmail(email: String, password: String) = authRequest(APIService.registerUrl(), email, password)
 
     private suspend fun authRequest(
         url: String,

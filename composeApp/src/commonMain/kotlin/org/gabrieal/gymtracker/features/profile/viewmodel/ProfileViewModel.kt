@@ -8,15 +8,15 @@ import org.gabrieal.gymtracker.data.model.CalorieInput
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
-import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
-import org.gabrieal.gymtracker.util.enums.ActivityLevel
-import org.gabrieal.gymtracker.util.enums.Gender
-import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.data.sqldelight.getFirebaseInfoFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getProfileFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setFirebaseInfoToDB
 import org.gabrieal.gymtracker.data.sqldelight.setProfileToDB
+import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
+import org.gabrieal.gymtracker.util.enums.ActivityLevel
+import org.gabrieal.gymtracker.util.enums.Gender
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 class ProfileViewModel {
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -41,16 +41,12 @@ class ProfileViewModel {
 
     private fun loadProfile() {
         val profile = getProfileFromDB()
-        _uiState.update {
-            it.copy(profile = profile)
-        }
+        _uiState.update { it.copy(profile = profile) }
     }
 
     private fun loadFirebaseInfo() {
         val firebaseInfo = getFirebaseInfoFromDB()
-        _uiState.update {
-            it.copy(firebaseInfo = firebaseInfo)
-        }
+        _uiState.update { it.copy(firebaseInfo = firebaseInfo) }
     }
 
     fun setWeightHeightBMIClicked(weightHeightBMIClicked: Int) {
@@ -75,13 +71,11 @@ class ProfileViewModel {
         profile?.let { setProfileToDB(it) }
     }
 
-    fun navigateToEditSplit(routines: List<SelectedExerciseList>) {
+    fun navigateToEditSplit(routines: List<SelectedExerciseList>) =
         AppNavigator.navigateToEditSplit(routines)
-    }
 
-    fun navigateToProteinCalculator() {
+    fun navigateToProteinCalculator() =
         AppNavigator.navigateToCalculatorScreen("Protein Intake", uiState.value.profile)
-    }
 
     fun navigateToMaintenanceCalculator() {
         val input = CalorieInput(
@@ -112,9 +106,7 @@ class ProfileViewModel {
         )
     }
 
-    fun setLoggingOut(loggingOut: Boolean) {
-        _uiState.update { it.copy(loggingOut = loggingOut) }
-    }
+    fun setLoggingOut(loggingOut: Boolean) = _uiState.update { it.copy(loggingOut = loggingOut) }
 
     fun logout() {
         setFirebaseInfoToDB(

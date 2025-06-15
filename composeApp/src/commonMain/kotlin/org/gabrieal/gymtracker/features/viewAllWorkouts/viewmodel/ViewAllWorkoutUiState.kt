@@ -4,7 +4,7 @@ import org.gabrieal.gymtracker.data.model.Exercise
 
 data class ViewAllWorkoutUiState(
     val searchFilter: String = "",
-    val selectedFilters: Set<String> = emptySet(),
+    val selectedFilters: List<String> = emptyList(),
     val selectedWorkout: String = "",
     val showConfirmAddToRoutineDialog: Boolean = false,
     val youtubeUrlToOpen: String? = null,

@@ -28,14 +28,12 @@ import androidx.core.net.toUri
 import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
 import java.text.SimpleDateFormat
-import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
-import kotlin.time.toJavaInstant
 
 @Composable
 actual fun OpenURL(url: String) {
@@ -72,7 +70,7 @@ actual fun ShowAlertDialog(
 
 @Composable
 actual fun ShowToast(message: String) {
-    Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+    Toast.makeText(activityReference, message, Toast.LENGTH_SHORT).show()
 }
 
 actual fun getTodayDayName(): String {

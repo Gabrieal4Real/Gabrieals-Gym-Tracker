@@ -28,13 +28,9 @@ class CreateSplitViewModel {
         _uiState.update { it.copy(selectedDays = currentSelectedDays) }
     }
 
-    fun setShowImage(show: Boolean) {
-        _uiState.update { it.copy(showImage = show) }
-    }
+    fun setShowImage(show: Boolean) =_uiState.update { it.copy(showImage = show) }
 
-    fun isAnyDaySelected(): Boolean {
-        return _uiState.value.selectedDays.any { it }
-    }
+    fun isAnyDaySelected() = _uiState.value.selectedDays.any { it }
 
     fun navigateToMakeAPlan() {
         if (!isAnyDaySelected()) return

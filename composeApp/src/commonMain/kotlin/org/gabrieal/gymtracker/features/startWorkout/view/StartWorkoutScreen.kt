@@ -55,14 +55,11 @@ import kotlin.time.ExperimentalTime
 object StartWorkoutScreen : Screen, KoinComponent {
     private val viewModel: StartWorkoutViewModel by inject()
 
-    fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) {
+    fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) =
         viewModel.setSelectedExerciseList(selectedExerciseList)
-    }
 
-    fun setCallback(selectedExerciseList: (SelectedExerciseList) -> Unit) {
+    fun setCallback(selectedExerciseList: (SelectedExerciseList) -> Unit) =
         viewModel.setCallback(selectedExerciseList)
-    }
-
 
     @OptIn(ExperimentalTime::class)
     @Composable
@@ -73,6 +70,7 @@ object StartWorkoutScreen : Screen, KoinComponent {
         val showWarningReplace = uiState.showWarningReplace
 
         LaunchedEffect(Unit) {
+
             viewModel.updateCurrentActiveExercise(currentlyActiveRoutine?.first)
         }
 

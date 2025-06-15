@@ -56,18 +56,14 @@ import kotlin.time.ExperimentalTime
 object MakeAPlanScreen : Screen, KoinComponent {
     val viewModel: MakeAPlanViewModel by inject()
 
-    fun setSelectedDay(selectedDays: List<Boolean>) {
-        viewModel.setSelectedDays(selectedDays)
-    }
+    fun setSelectedDay(selectedDays: List<Boolean>) = viewModel.setSelectedDays(selectedDays)
 
     fun setSelectedRoutineList(routineList: List<SelectedExerciseList>) {
         if (routineList.isEmpty()) return
         viewModel.updateSelectedRoutineList(routineList)
     }
 
-    fun setEditMode(isEditMode: Boolean) {
-        viewModel.setEditMode(isEditMode)
-    }
+    fun setEditMode(isEditMode: Boolean) = viewModel.setEditMode(isEditMode)
 
     @OptIn(InternalVoyagerApi::class)
     @Composable

@@ -22,49 +22,40 @@ class EditPlanViewModel {
         _uiState.update { it.copy(placeHolderList = placeHolderList) }
     }
 
-    fun setDay(day: String) {
-        _uiState.update { it.copy(day = day) }
-    }
+    fun setDay(day: String) = _uiState.update { it.copy(day = day) }
 
-    fun setExercises(exercises: List<SelectedExercise>) {
-        _uiState.update { it.copy(exercises = exercises) }
-    }
+    fun setExercises(exercises: List<SelectedExercise>)=  _uiState.update { it.copy(exercises = exercises) }
 
     fun setCallback(callback: (List<SelectedExercise>) -> Unit) {
         this.callback = callback
     }
 
-    fun setShowImage(show: Boolean) {
-        _uiState.update { it.copy(showImage = show) }
-    }
+    fun setShowImage(show: Boolean) = _uiState.update { it.copy(showImage = show) }
 
-    fun setShowRemoveDialog(show: Boolean) {
-        _uiState.update { it.copy(showRemoveDialog = show) }
-    }
+    fun setShowRemoveDialog(show: Boolean) = _uiState.update { it.copy(showRemoveDialog = show) }
 
-    fun setCurrentClickedPosition(position: Int) {
-        _uiState.update { it.copy(currentClickedPosition = position) }
-    }
+    fun setCurrentClickedPosition(position: Int) =  _uiState.update { it.copy(currentClickedPosition = position) }
 
     fun updateExerciseName(position: Int, name: String) {
         val updatedExercises = _uiState.value.exercises.toMutableList().apply {
             this[position] = this[position].copy(name = name)
         }
-        _uiState.update { it.copy(exercises = updatedExercises) }
+
+        setExercises(updatedExercises)
     }
 
     fun updateExerciseSets(position: Int, sets: Int) {
         val updatedExercises = _uiState.value.exercises.toMutableList().apply {
             this[position] = this[position].copy(sets = sets)
         }
-        _uiState.update { it.copy(exercises = updatedExercises) }
+        setExercises(updatedExercises)
     }
 
     fun updateExerciseReps(position: Int, reps: Pair<Int, Int>) {
         val updatedExercises = _uiState.value.exercises.toMutableList().apply {
             this[position] = this[position].copy(reps = reps)
         }
-        _uiState.update { it.copy(exercises = updatedExercises) }
+        setExercises(updatedExercises)
     }
 
     fun addExercise() {

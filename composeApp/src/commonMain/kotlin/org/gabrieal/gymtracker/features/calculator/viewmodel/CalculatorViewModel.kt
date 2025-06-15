@@ -14,20 +14,12 @@ class CalculatorViewModel {
 
     val uiState: StateFlow<CalculatorUiState> = _uiState.asStateFlow()
 
+    fun setProfile(profile: Profile) = _uiState.update { it.copy(profile = profile) }
 
-    fun setProfile(profile: Profile) {
-        _uiState.update { it.copy(profile = profile) }
-    }
+    fun setWeight(weight: Int?) = _uiState.update { it.copy(weight = weight) }
 
-    fun setWeight(weight: Int?) {
-        _uiState.update { it.copy(weight = weight) }
-    }
+    fun setGoal(goal: FitnessGoal?) = _uiState.update { it.copy(goal = goal) }
 
-    fun setGoal(goal: FitnessGoal?) {
-        _uiState.update { it.copy(goal = goal) }
-    }
-
-    fun setActivityLevel(activityLevel: ActivityLevel?) {
+    fun setActivityLevel(activityLevel: ActivityLevel?) =
         _uiState.update { it.copy(activityLevel = activityLevel) }
-    }
 }

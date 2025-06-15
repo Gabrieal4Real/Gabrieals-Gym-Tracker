@@ -25,18 +25,11 @@ class StartWorkoutViewModel {
 
     private var callback: ((SelectedExerciseList) -> Unit)? = null
 
-    fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) {
+    fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) =
         _uiState.update { it.copy(selectedExerciseList = selectedExerciseList) }
-    }
 
     fun markWorkoutAsDone() {
-        _uiState.update {
-            it.copy(
-                selectedExerciseList = it.selectedExerciseList?.copy(
-                    isCompleted = true
-                )
-            )
-        }
+        _uiState.update { it.copy(selectedExerciseList = it.selectedExerciseList?.copy(isCompleted = true)) }
 
         _uiState.value.selectedExerciseList?.let {
             callback?.invoke(it)
@@ -54,13 +47,11 @@ class StartWorkoutViewModel {
         updateCurrentActiveExercise(currentActiveExercise)
     }
 
-    fun updateCurrentActiveExercise(currentActiveExercise: SelectedExerciseList?) {
+    fun updateCurrentActiveExercise(currentActiveExercise: SelectedExerciseList?) =
         _uiState.update { it.copy(currentActiveExercise = currentActiveExercise) }
-    }
 
-    fun setShowWarningReplace(show: Boolean) {
+    fun setShowWarningReplace(show: Boolean) =
         _uiState.update { it.copy(showWarningReplace = show) }
-    }
 
     fun initializeCompletedSets(selectedExerciseList: SelectedExerciseList) {
         if (_uiState.value.exerciseWeights.isNotEmpty()
@@ -97,32 +88,27 @@ class StartWorkoutViewModel {
         }
     }
 
-    fun toggleExerciseExpanded(index: Int) {
+    fun toggleExerciseExpanded(index: Int) =
         _uiState.update { state ->
             val toggled = !state.expandedExercises[index]
-            state.copy(
-                expandedExercises = List(state.expandedExercises.size) { it == index && toggled }
-            )
+            state.copy(expandedExercises = List(state.expandedExercises.size) { it == index && toggled })
         }
-    }
 
-    fun updateWeight(index: Int, weight: String) {
+    fun updateWeight(index: Int, weight: String) =
         _uiState.update {
             it.copy(
                 exerciseWeights = it.exerciseWeights.toMutableList().apply { this[index] = weight })
         }
-    }
 
-    fun updateReps(index: Int, reps: String, repIndex: Int) {
+    fun updateReps(index: Int, reps: String, repIndex: Int) =
         _uiState.update {
             it.copy(
                 exerciseReps = it.exerciseReps.toMutableList().apply {
                     this[index] = this[index].toMutableList().apply { this[repIndex] = reps }
                 })
         }
-    }
 
-    fun updateExerciseSets(index: Int, position: Int) {
+    fun updateExerciseSets(index: Int, position: Int) =
         _uiState.update {
             it.copy(
                 exerciseSets = it.exerciseSets.toMutableList().apply {
@@ -130,7 +116,6 @@ class StartWorkoutViewModel {
                         this[index].toMutableList().apply { this[position] = !this[position] }
                 })
         }
-    }
 
     fun toggleSetCompleted() {
         val weights = _uiState.value.exerciseWeights
@@ -183,9 +168,7 @@ class StartWorkoutViewModel {
         startTimer()
     }
 
-    fun setShowNotification(show: Boolean) {
-        _uiState.update { it.copy(showNotification = show) }
-    }
+    fun setShowNotification(show: Boolean) = _uiState.update { it.copy(showNotification = show) }
 
     fun setTotalTime(seconds: Int) {
         _uiState.update {
@@ -198,12 +181,10 @@ class StartWorkoutViewModel {
         timerJob?.cancel()
     }
 
-    fun startOrPauseTimer() {
-        if (_uiState.value.isRunning) {
-            pauseTimer()
-        } else {
-            startTimer()
-        }
+    fun startOrPauseTimer() = if (_uiState.value.isRunning) {
+        pauseTimer()
+    } else {
+        startTimer()
     }
 
     fun addTime(seconds: Int) {

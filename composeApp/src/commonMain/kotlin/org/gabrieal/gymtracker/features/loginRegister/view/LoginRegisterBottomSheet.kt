@@ -36,13 +36,9 @@ import org.koin.core.component.inject
 object LoginRegisterBottomSheet : Screen, KoinComponent {
     val viewModel: LoginRegisterViewModel by inject()
 
-    fun setProfile(profile: Profile) {
-        viewModel.setProfile(profile)
-    }
+    fun setProfile(profile: Profile) = viewModel.setProfile(profile)
 
-    fun setCallback(callback: (Profile?) -> Unit) {
-        viewModel.setCallback(callback)
-    }
+    fun setCallback(callback: (Profile?) -> Unit) = viewModel.setCallback(callback)
 
     @Composable
     override fun Content() {

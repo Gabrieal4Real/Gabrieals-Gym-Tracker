@@ -11,7 +11,6 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
-
 @OptIn(ExperimentalTime::class)
 @Composable
 fun ElapsedTime(startTime: Instant?): String {

@@ -254,7 +254,7 @@ object ProfileTab : Tab, KoinComponent {
                         viewModel.setWeightHeightBMIClicked(1)
                     },
                     Pair(Triple(age, Icons.Rounded.PersonOutline, "")) {
-                        viewModel.updateWeight(null)
+                        viewModel.setWeightHeightBMIClicked(2)
                     },
                 )
                 Column(
