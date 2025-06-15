@@ -76,4 +76,6 @@ class ViewAllWorkoutViewModel {
     private fun navigateBack() = AppNavigator.navigateBack()
 
     fun getAllMuscleGroups() = MuscleGroup.entries.map { it.displayName }
+
+    fun setFilterExpanded(isFilterExpanded: Boolean) = _uiState.update { it.copy(isFilterExpanded = isFilterExpanded) }
 }

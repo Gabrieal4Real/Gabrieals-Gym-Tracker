@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.FilterAlt
 import androidx.compose.material.icons.rounded.Search
@@ -84,7 +85,7 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
         val showConfirmAddToRoutineDialog = uiState.showConfirmAddToRoutineDialog
         val filteredWorkouts = uiState.filteredWorkouts
         val callback = uiState.callback
-        var isExpanded by remember { mutableStateOf(false) }
+        val isFilterExpanded = uiState.isFilterExpanded
 
         val allMuscleGroups = viewModel.getAllMuscleGroups()
 
@@ -119,13 +120,13 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
                         value = searchFilter,
                         onValueChange = { viewModel.setSearchFilter(it) },
                         placeholderText = "Search exercises...",
-                        resource = Icons.Rounded.FilterAlt to { isExpanded = !isExpanded },
+                        resource = Icons.Rounded.FilterAlt to { viewModel.setFilterExpanded(!isFilterExpanded) },
                     )
 
                     FilterList(
                         filterOptions = allMuscleGroups,
                         selectedFilters = selectedFilters,
-                        expanded = isExpanded
+                        expanded = isFilterExpanded
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -210,7 +211,7 @@ object ViewAllWorkoutTabScreen : Tab, Screen, KoinComponent {
                     FilterChip(
                         colors = FilterChipDefaults.filterChipColors(
                             containerColor = colors.background,
-                            selectedContainerColor = colors.bottomNavIndicator,
+                            selectedContainerColor = colors.slightlyDarkerLinkBlue,
                             selectedTrailingIconColor = colors.white
                         ),
                         selected = filter in selectedFilters,
