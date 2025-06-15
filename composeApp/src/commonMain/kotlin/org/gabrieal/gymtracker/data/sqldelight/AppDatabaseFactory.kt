@@ -9,6 +9,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 import org.gabrieal.gymtracker.data.model.SelectedExercise
+import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal
 import org.gabrieal.gymtracker.util.enums.Gender
@@ -36,6 +37,20 @@ inline fun <reified T : Enum<T>> enumColumnAdapter(): ColumnAdapter<T, String> {
     }
 }
 
+inline fun <reified T : Any> objectColumnAdapter(serializer: KSerializer<T>): ColumnAdapter<T, String> {
+    return object : ColumnAdapter<T, String> {
+        override fun decode(databaseValue: String): T {
+            return if (databaseValue.isNotEmpty()) {
+                Json.decodeFromString(serializer, databaseValue)
+            } else {
+                throw IllegalStateException("Cannot decode empty string to object")
+            }
+        }
+
+        override fun encode(value: T): String = Json.encodeToString(serializer, value)
+    }
+}
+
 fun createDatabase(): GymTrackerDatabase =
     GymTrackerDatabase(
         driver = createDriver(),
@@ -48,6 +63,7 @@ fun createDatabase(): GymTrackerDatabase =
             exercisesAdapter = listColumnAdapter(SelectedExercise.serializer())
         ),
         currentlyActiveRoutineEntityAdapter = CurrentlyActiveRoutineEntity.Adapter(
-            exercisesAdapter = listColumnAdapter(SelectedExercise.serializer())
+            exercisesAdapter = listColumnAdapter(SelectedExercise.serializer()),
+            workoutProgressAdapter = objectColumnAdapter(WorkoutProgress.serializer())
         ),
     )

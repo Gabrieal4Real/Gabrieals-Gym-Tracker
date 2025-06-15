@@ -1,5 +1,6 @@
 import kotlin.collections.List;
 import org.gabrieal.gymtracker.data.model.SelectedExercise;
+import org.gabrieal.gymtracker.data.model.WorkoutProgress;
 
 CREATE TABLE currentlyActiveRoutineEntity (
     id INTEGER NOT NULL PRIMARY KEY,
@@ -9,7 +10,8 @@ CREATE TABLE currentlyActiveRoutineEntity (
     isCompleted INTEGER,
     startingDate TEXT,
     exercises TEXT AS List<SelectedExercise>,
-    startedOn TEXT
+    startedOn TEXT,
+    workoutProgress TEXT AS WorkoutProgress
 );
 
 selectCurrentlyActiveRoutine:
@@ -17,8 +19,8 @@ SELECT * FROM currentlyActiveRoutineEntity;
 
 insertOrReplaceCurrentlyActiveRoutine:
 INSERT OR REPLACE INTO currentlyActiveRoutineEntity (
-    id, position, day, routineName, isCompleted, startingDate, exercises, startedOn
-) VALUES (1, ?, ?, ?, ?, ?, ?, ?);
+    id, position, day, routineName, isCompleted, startingDate, exercises, startedOn, workoutProgress
+) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteCurrentlyActiveRoutine:
 DELETE FROM currentlyActiveRoutineEntity;

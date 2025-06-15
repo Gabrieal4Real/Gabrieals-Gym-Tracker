@@ -19,6 +19,7 @@ import cafe.adriel.voyager.transitions.SlideTransition
 import org.gabrieal.gymtracker.data.model.ConvertedTemplate
 import org.gabrieal.gymtracker.data.model.Exercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.data.model.decodeExercises
 import org.gabrieal.gymtracker.data.model.decodeTemplate
 import org.gabrieal.gymtracker.features.app.viewmodel.AppStateViewModel
@@ -41,7 +42,7 @@ var templates = ConvertedTemplate()
 var colors: AppColors = DarkColors
 
 @OptIn(ExperimentalTime::class)
-var currentlyActiveRoutine: Pair<SelectedExerciseList, Instant>? = null
+var currentlyActiveRoutine: Triple<SelectedExerciseList, Instant, WorkoutProgress>? = null
 
 val appStateViewModel = AppStateViewModel()
 

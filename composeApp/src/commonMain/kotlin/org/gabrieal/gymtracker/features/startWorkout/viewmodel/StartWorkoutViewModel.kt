@@ -10,8 +10,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.gabrieal.gymtracker.currentlyActiveRoutine
+import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.data.sqldelight.setCurrentlyActiveRoutineToDB
+import org.gabrieal.gymtracker.data.sqldelight.updateCurrentlyActiveRoutineToDB
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -54,8 +58,8 @@ class StartWorkoutViewModel {
         _uiState.update { it.copy(showWarningReplace = show) }
 
     fun initializeCompletedSets(selectedExerciseList: SelectedExerciseList) {
-        if (_uiState.value.exerciseWeights.isNotEmpty()
-            && selectedExerciseList.exercises?.size == _uiState.value.exerciseWeights.size
+        if (_uiState.value.workoutProgress.exerciseWeights.isNotEmpty()
+            && selectedExerciseList.exercises?.size == _uiState.value.workoutProgress.exerciseWeights.size
             && selectedExerciseList == _uiState.value.selectedExerciseList
         ) {
             return
@@ -81,9 +85,10 @@ class StartWorkoutViewModel {
         _uiState.update {
             it.copy(
                 expandedExercises = expandedList,
+                workoutProgress = it.workoutProgress.copy(
                 exerciseWeights = weightList,
                 exerciseReps = repsList,
-                exerciseSets = completedSetsList
+                exerciseSets = completedSetsList)
             )
         }
     }
@@ -94,33 +99,28 @@ class StartWorkoutViewModel {
             state.copy(expandedExercises = List(state.expandedExercises.size) { it == index && toggled })
         }
 
+    private fun updateWorkoutProgress(update: (WorkoutProgress) -> WorkoutProgress) {
+        val workoutProgress = _uiState.value.workoutProgress
+        val updatedWorkoutProgress = update(workoutProgress)
+        _uiState.update { it.copy(workoutProgress = updatedWorkoutProgress) }
+        updateCurrentlyActiveRoutineToDB(updatedWorkoutProgress)
+
+        println(updatedWorkoutProgress)
+    }
+
     fun updateWeight(index: Int, weight: String) =
-        _uiState.update {
-            it.copy(
-                exerciseWeights = it.exerciseWeights.toMutableList().apply { this[index] = weight })
-        }
+        updateWorkoutProgress { it.copy(exerciseWeights = it.exerciseWeights.toMutableList().apply { this[index] = weight }) }
 
     fun updateReps(index: Int, reps: String, repIndex: Int) =
-        _uiState.update {
-            it.copy(
-                exerciseReps = it.exerciseReps.toMutableList().apply {
-                    this[index] = this[index].toMutableList().apply { this[repIndex] = reps }
-                })
-        }
+        updateWorkoutProgress { it.copy(exerciseReps = it.exerciseReps.toMutableList().apply { this[index] = this[index].toMutableList().apply { this[repIndex] = reps } }) }
 
     fun updateExerciseSets(index: Int, position: Int) =
-        _uiState.update {
-            it.copy(
-                exerciseSets = it.exerciseSets.toMutableList().apply {
-                    this[index] =
-                        this[index].toMutableList().apply { this[position] = !this[position] }
-                })
-        }
+        updateWorkoutProgress { it.copy(exerciseSets = it.exerciseSets.toMutableList().apply { this[index] = this[index].toMutableList().apply { this[position] = !this[position] } }) }
 
     fun toggleSetCompleted() {
-        val weights = _uiState.value.exerciseWeights
-        val reps = _uiState.value.exerciseReps
-        val sets = _uiState.value.exerciseSets
+        val weights = _uiState.value.workoutProgress.exerciseWeights
+        val reps = _uiState.value.workoutProgress.exerciseReps
+        val sets = _uiState.value.workoutProgress.exerciseSets
 
         var completedVolume = 0.0
 
@@ -205,4 +205,6 @@ class StartWorkoutViewModel {
             )
         }
     }
+
+    fun setWorkoutProgress(workoutProgress: WorkoutProgress) = _uiState.update { it.copy(workoutProgress = workoutProgress) }
 }

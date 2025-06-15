@@ -1,0 +1,3 @@
+import org.gabrieal.gymtracker.data.model.WorkoutProgress;
+
+ALTER TABLE currentlyActiveRoutineEntity ADD COLUMN workoutProgress TEXT AS WorkoutProgress;

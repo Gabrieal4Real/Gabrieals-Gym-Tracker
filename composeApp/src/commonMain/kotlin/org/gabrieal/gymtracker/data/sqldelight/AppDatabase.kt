@@ -3,6 +3,7 @@ package org.gabrieal.gymtracker.data.sqldelight
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
 import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
 import kotlin.time.ExperimentalTime
@@ -28,25 +29,44 @@ fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedO
         isCompleted = if (activeRoutine.isCompleted) 0 else 1,
         startingDate = activeRoutine.startingDate,
         exercises = activeRoutine.exercises,
-        startedOn = formatInstantToDate(startedOn, "dd-MM-yyyy HH:mm:ss")
+        startedOn = formatInstantToDate(startedOn, "dd-MM-yyyy HH:mm:ss"),
+        workoutProgress = WorkoutProgress()
     )
 }
 
+fun updateCurrentlyActiveRoutineToDB(workoutProgress: WorkoutProgress) {
+    val currentlyActiveRoutine = currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
+
+    if (currentlyActiveRoutine != null) {
+        currentlyActiveRoutineEntity.insertOrReplaceCurrentlyActiveRoutine(
+            position = currentlyActiveRoutine.position,
+            day = currentlyActiveRoutine.day,
+            routineName = currentlyActiveRoutine.routineName,
+            isCompleted = currentlyActiveRoutine.isCompleted,
+            startingDate = currentlyActiveRoutine.startingDate,
+            exercises = currentlyActiveRoutine.exercises,
+            startedOn = currentlyActiveRoutine.startedOn,
+            workoutProgress = workoutProgress
+        )
+    }
+}
+
 @OptIn(ExperimentalTime::class)
-fun getCurrentlyActiveRoutineFromDB(): Pair<SelectedExerciseList, Instant>? {
+fun getCurrentlyActiveRoutineFromDB(): Triple<SelectedExerciseList, Instant, WorkoutProgress>? {
     val currentlyActiveRoutine = currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
 
     currentlyActiveRoutine?.let {
-        return Pair(
+        return Triple(
             SelectedExerciseList(
                 position = it.position?.toInt(),
                 day = it.day,
                 routineName = it.routineName,
                 isCompleted = it.isCompleted == 0.toLong(),
                 startingDate = it.startingDate,
-                exercises = it.exercises
+                exercises = it.exercises,
             ),
-            parseDateToInstant(it.startedOn ?: "", "dd-MM-yyyy HH:mm:ss")
+            parseDateToInstant(it.startedOn ?: "", "dd-MM-yyyy HH:mm:ss"),
+            it.workoutProgress ?: WorkoutProgress()
         )
     }
 

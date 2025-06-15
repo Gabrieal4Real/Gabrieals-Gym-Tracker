@@ -62,8 +62,10 @@ import kotlin.time.Instant
 object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
     private val viewModel: StartWorkoutViewModel by inject()
 
+    @OptIn(ExperimentalTime::class)
     fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) {
         viewModel.initializeCompletedSets(selectedExerciseList)
+        currentlyActiveRoutine?.third?.let { viewModel.setWorkoutProgress(it) }
         viewModel.toggleSetCompleted()
     }
 
@@ -73,7 +75,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         val uiState by viewModel.uiState.collectAsState()
         val selectedExerciseList = uiState.selectedExerciseList
         val completedVolume = uiState.completedVolume
-        val completedSets = uiState.exerciseSets.sumOf { it -> it.count { it } }
+        val completedSets = uiState.workoutProgress.exerciseSets.sumOf { it -> it.count { it } }
         val showNotification = uiState.showNotification
 
         LaunchedEffect(key1 = showNotification) {
@@ -207,9 +209,9 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
     @Composable
     fun ExerciseItem(index: Int, exercise: SelectedExercise, uiState: StartWorkoutUiState) {
         val expanded = uiState.expandedExercises[index]
-        val weights = uiState.exerciseWeights[index]
-        val reps = uiState.exerciseReps[index]
-        val sets = uiState.exerciseSets[index]
+        val weights = uiState.workoutProgress.exerciseWeights[index]
+        val reps = uiState.workoutProgress.exerciseReps[index]
+        val sets = uiState.workoutProgress.exerciseSets[index]
 
         CustomCard(
             backgroundEnabled = !expanded,
