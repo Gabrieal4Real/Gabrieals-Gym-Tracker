@@ -10,8 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.gabrieal.gymtracker.currentlyActiveRoutine
-import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.data.sqldelight.setCurrentlyActiveRoutineToDB
@@ -47,7 +45,26 @@ class StartWorkoutViewModel {
 
     @OptIn(ExperimentalTime::class)
     fun startWorkout(currentActiveExercise: SelectedExerciseList?) {
-        setCurrentlyActiveRoutineToDB(currentActiveExercise, Clock.System.now())
+        val weightList = mutableListOf<String>()
+        val repsList = mutableListOf<MutableList<String>>()
+        val completedSetsList = mutableListOf<MutableList<Boolean>>()
+
+        currentActiveExercise?.exercises?.forEach { exercise ->
+            val setCount = exercise.sets ?: 0
+
+            weightList.add("")
+            repsList.add(MutableList(setCount) { "" })
+            completedSetsList.add(MutableList(setCount) { false })
+        }
+
+        setCurrentlyActiveRoutineToDB(
+            currentActiveExercise, Clock.System.now(), WorkoutProgress(
+                exerciseWeights = weightList,
+                exerciseReps = repsList,
+                exerciseSets = completedSetsList
+            )
+        )
+
         updateCurrentActiveExercise(currentActiveExercise)
     }
 
@@ -68,29 +85,12 @@ class StartWorkoutViewModel {
         setSelectedExerciseList(selectedExerciseList)
 
         val expandedList = mutableListOf<Boolean>()
-        val weightList = mutableListOf<String>()
-        val repsList = mutableListOf<MutableList<String>>()
-        val completedSetsList = mutableListOf<MutableList<Boolean>>()
 
-        selectedExerciseList.exercises?.forEach { exercise ->
-            val setCount = exercise.sets ?: 0
-
+        selectedExerciseList.exercises?.forEach { _ ->
             expandedList.add(false)
-
-            weightList.add("")
-            repsList.add(MutableList(setCount) { "" })
-            completedSetsList.add(MutableList(setCount) { false })
         }
 
-        _uiState.update {
-            it.copy(
-                expandedExercises = expandedList,
-                workoutProgress = it.workoutProgress.copy(
-                exerciseWeights = weightList,
-                exerciseReps = repsList,
-                exerciseSets = completedSetsList)
-            )
-        }
+        _uiState.update { it.copy(expandedExercises = expandedList) }
     }
 
     fun toggleExerciseExpanded(index: Int) =
@@ -99,23 +99,36 @@ class StartWorkoutViewModel {
             state.copy(expandedExercises = List(state.expandedExercises.size) { it == index && toggled })
         }
 
+    @OptIn(ExperimentalTime::class)
     private fun updateWorkoutProgress(update: (WorkoutProgress) -> WorkoutProgress) {
         val workoutProgress = _uiState.value.workoutProgress
         val updatedWorkoutProgress = update(workoutProgress)
         _uiState.update { it.copy(workoutProgress = updatedWorkoutProgress) }
         updateCurrentlyActiveRoutineToDB(updatedWorkoutProgress)
-
-        println(updatedWorkoutProgress)
     }
 
     fun updateWeight(index: Int, weight: String) =
-        updateWorkoutProgress { it.copy(exerciseWeights = it.exerciseWeights.toMutableList().apply { this[index] = weight }) }
+        updateWorkoutProgress {
+            it.copy(
+                exerciseWeights = it.exerciseWeights.toMutableList().apply { this[index] = weight })
+        }
 
     fun updateReps(index: Int, reps: String, repIndex: Int) =
-        updateWorkoutProgress { it.copy(exerciseReps = it.exerciseReps.toMutableList().apply { this[index] = this[index].toMutableList().apply { this[repIndex] = reps } }) }
+        updateWorkoutProgress {
+            it.copy(
+                exerciseReps = it.exerciseReps.toMutableList().apply {
+                    this[index] = this[index].toMutableList().apply { this[repIndex] = reps }
+                })
+        }
 
     fun updateExerciseSets(index: Int, position: Int) =
-        updateWorkoutProgress { it.copy(exerciseSets = it.exerciseSets.toMutableList().apply { this[index] = this[index].toMutableList().apply { this[position] = !this[position] } }) }
+        updateWorkoutProgress {
+            it.copy(
+                exerciseSets = it.exerciseSets.toMutableList().apply {
+                    this[index] =
+                        this[index].toMutableList().apply { this[position] = !this[position] }
+                })
+        }
 
     fun toggleSetCompleted() {
         val weights = _uiState.value.workoutProgress.exerciseWeights
@@ -206,5 +219,6 @@ class StartWorkoutViewModel {
         }
     }
 
-    fun setWorkoutProgress(workoutProgress: WorkoutProgress) = _uiState.update { it.copy(workoutProgress = workoutProgress) }
+    fun setWorkoutProgress(workoutProgress: WorkoutProgress) =
+        _uiState.update { it.copy(workoutProgress = workoutProgress) }
 }

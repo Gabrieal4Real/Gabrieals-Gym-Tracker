@@ -10,6 +10,7 @@ import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 import org.gabrieal.gymtracker.util.app.getCurrentPlan
 import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.app.planTitles
+import org.gabrieal.gymtracker.util.app.plans
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
 import org.gabrieal.gymtracker.util.systemUtil.getMondayOrSameInstant
@@ -81,6 +82,15 @@ class MakeAPlanViewModel {
     }
 
     fun saveRoutineList() {
+        val currentRoutineList = _uiState.value.selectedRoutineList.toMutableList()
+
+        val selectedPlan = plans[currentRoutineList.size - 1]
+        currentRoutineList.forEachIndexed { index, routineList ->
+            routineList.routineName = planTitles.find { selectedPlan[index].contains(it) }
+        }
+
+        updateSelectedRoutineList(currentRoutineList)
+
         val sortedRoutineList = _uiState.value.selectedRoutineList
         setSelectedRoutineListToDB(sortedRoutineList)
         AppNavigator.navigateToRoot()

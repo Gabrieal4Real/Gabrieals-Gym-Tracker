@@ -126,15 +126,15 @@ object StartWorkoutScreen : Screen, KoinComponent {
                     }
                 }
 
-                val title =
-                    when (currentActiveExercise) {
+                val title = when (currentActiveExercise) {
                         null -> "Start Workout"
-                        selectedExerciseList -> "Complete Workout"
+                        selectedExerciseList -> "Start Workout"
                         else -> "Replace Workout"
                     }
 
                 ConfirmButton(
                     title,
+                    enabled = selectedExerciseList != currentActiveExercise,
                     onClick = {
                         when (currentActiveExercise) {
                             null -> {

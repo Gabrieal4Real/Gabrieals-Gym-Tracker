@@ -295,52 +295,58 @@
         "position": 0,
         "day": "Monday",
         "exercises": [
-          { "name": "Incline Dumbbell Press", "sets": 4, "reps": [6, 10]},
-          { "name": "Meadows Row", "sets": 3, "reps": [8, 12]},
-          { "name": "Neutral-Grip Lat Pulldown", "sets": 3, "reps": [10, 12]},
-          { "name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]},
-          { "name": "Triceps Pressdown (Bar)", "sets": 3, "reps": [12, 15]}
+          { "name": "Incline Bench Press", "sets": 3, "reps": [6, 10] },
+          { "name": "OMNI-Grip Lat Pulldown", "sets": 3, "reps": [6, 10] },
+          { "name": "1-Arm Dumbbell Row", "sets": 3, "reps": [8, 12] },
+          { "name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15] },
+          { "name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15] },
+          { "name": "Overhead Tricep Extension", "sets": 3, "reps": [12, 15] }
         ]
       },
       {
         "position": 1,
-        "day": "Wednesday",
+        "day": "Tuesday",
         "exercises": [
-          { "name": "Pendulum Squat", "sets": 4, "reps": [6, 10]},
-          { "name": "Walking Lunges", "sets": 3, "reps": [12, 15]},
-          { "name": "Leg Curl Machine", "sets": 3, "reps": [12, 15]},
-          { "name": "Leg Extension", "sets": 3, "reps": [12, 15]},
-          { "name": "Seated Calf Raise", "sets": 3, "reps": [12, 15]}
+          { "name": "Barbell Back Squat", "sets": 3, "reps": [6, 10] },
+          { "name": "Leg Extension", "sets": 3, "reps": [8, 12] },
+          { "name": "Seated Leg Curl", "sets": 3, "reps": [8, 12] },
+          { "name": "Single-Leg Calf Raise", "sets": 3, "reps": [15, 20] },
+          { "name": "Bulgarian Split Squat", "sets": 2, "reps": [15, 20] }
         ]
       },
       {
         "position": 2,
         "day": "Thursday",
         "exercises": [
-          {"name": "Bench Press", "sets": 4, "reps": [1, 5]},
-          {"name": "Cable Crossovers", "sets": 3, "reps": [8, 12]},
-          {"name": "Barbell Skullcrusher", "sets": 3, "reps": [12, 15]},
-          {"name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15]}
+          { "name": "Incline Bench Press", "sets": 3, "reps": [6, 10] },
+          { "name": "Cable Fly", "sets": 3, "reps": [8, 12] },
+          { "name": "Cable Lateral Raise", "sets": 3, "reps": [12, 15] },
+          { "name": "Overhead Tricep Extension", "sets": 3, "reps": [12, 15] },
+          { "name": "Triceps Pressdown (Bar)", "sets": 3, "reps": [12, 15] }
         ]
       },
       {
         "position": 3,
         "day": "Friday",
         "exercises": [
-          {"name": "Neutral-Grip Lat Pulldown", "sets": 4, "reps": [8, 12]},
-          {"name": "Chest-Supported Row", "sets": 3, "reps": [8, 12]},
-          {"name": "Standing Dumbbell Curl", "sets": 3, "reps": [12, 15]},
-          {"name": "Reverse Pec Deck", "sets": 3, "reps": [12, 15]}
+          { "name": "OMNI-Grip Lat Pulldown", "sets": 3, "reps": [6, 10] },
+          { "name": "1-Arm Dumbbell Row", "sets": 3, "reps": [8, 12] },
+          { "name": "Rope Face Pull Variations", "sets": 3, "reps": [12, 15] },
+          { "name": "Cable Rear Delt Fly", "sets": 3, "reps": [12, 15] },
+          { "name": "Hammer Curl", "sets": 3, "reps": [12, 15] },
+          { "name": "Sam Sulek Wrist Curl", "sets": 3, "reps": [12, 15] },
+          { "name": "Sam Sulek Wrist Plate Extension", "sets": 3, "reps": [12, 15] }
         ]
       },
       {
         "position": 4,
         "day": "Saturday",
         "exercises": [
-          {"name": "Pendulum Squat", "sets": 4, "reps": [8, 12]},
-          {"name": "Leg Extension", "sets": 3, "reps": [12, 15]},
-          {"name": "Seated Leg Curl", "sets": 3, "reps": [12, 15]},
-          {"name": "Standing Calf Raise", "sets": 3, "reps": [12, 15]}
+          { "name": "Barbell Back Squat", "sets": 3, "reps": [6, 10] },
+          { "name": "Leg Extension", "sets": 3, "reps": [8, 12] },
+          { "name": "Seated Leg Curl", "sets": 3, "reps": [8, 12] },
+          { "name": "Single-Leg Calf Raise", "sets": 3, "reps": [15, 20] },
+          { "name": "Bulgarian Split Squat", "sets": 2, "reps": [15, 20] }
         ]
       }
     ]

@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,6 +33,7 @@ import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.sqldelight.getCurrentlyActiveRoutineFromDB
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutUiState
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
 import org.gabrieal.gymtracker.util.app.ElapsedTime
@@ -40,7 +43,7 @@ import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
 import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
 import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
-import org.gabrieal.gymtracker.util.widgets.BiggerText
+import org.gabrieal.gymtracker.util.widgets.BigText
 import org.gabrieal.gymtracker.util.widgets.ClickToStartTimerBar
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomGrabber
@@ -65,6 +68,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
     @OptIn(ExperimentalTime::class)
     fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) {
         viewModel.initializeCompletedSets(selectedExerciseList)
+        currentlyActiveRoutine = getCurrentlyActiveRoutineFromDB()
         currentlyActiveRoutine?.third?.let { viewModel.setWorkoutProgress(it) }
         viewModel.toggleSetCompleted()
     }
@@ -75,6 +79,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         val uiState by viewModel.uiState.collectAsState()
         val selectedExerciseList = uiState.selectedExerciseList
         val completedVolume = uiState.completedVolume
+        val totalSets = selectedExerciseList?.exercises?.sumOf { it.sets ?: 0 } ?: 0
         val completedSets = uiState.workoutProgress.exerciseSets.sumOf { it -> it.count { it } }
         val showNotification = uiState.showNotification
 
@@ -104,7 +109,32 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    BiggerText(selectedExerciseList?.routineName.orEmpty())
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        BigText(
+                            selectedExerciseList?.routineName.orEmpty().uppercase(),
+                            color = colors.white,
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                        AssistChip(
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            enabled = completedSets > 0,
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = if (completedSets == totalSets) colors.slightlyDarkerLinkBlue else colors.checkMarkGreen,
+                                disabledContainerColor = colors.white.copy(alpha = 0.2f),
+                            ),
+                            border = null,
+                            onClick = {
+
+                            },
+                            label = {
+                                TinyText(
+                                    text = "Finish",
+                                    color = colors.white,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            },
+                        )
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
                     DurationVolumeSetCard(
                         completedVolume,
@@ -335,7 +365,9 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                         onCheckedChange = {
                                             if (it) {
                                                 viewModel.setTotalTime(
-                                                    getCurrentTimerInSeconds(exercise.reps)
+                                                    getCurrentTimerInSeconds(
+                                                        exercise.reps
+                                                    )
                                                 )
                                                 viewModel.startTimer()
                                             }

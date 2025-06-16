@@ -7,6 +7,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,6 +29,8 @@ import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -121,27 +125,31 @@ fun RepRangePicker(
     selectedRange: Pair<Int, Int>,
     onRangeSelected: (Pair<Int, Int>) -> Unit
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+    LazyRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ranges.forEach { range ->
-            val isSelected = range == selectedRange
-            val backgroundColor =
-                if (isSelected) colors.slightlyDarkerLinkBlue else colors.background
-            Box(
-                modifier = Modifier
-                    .padding(end = 8.dp)
-                    .background(backgroundColor, RoundedCornerShape(16.dp))
-                    .clickable { onRangeSelected(range) }
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                TinyText(
-                    "${range.first} - ${range.second} reps",
-                    color = if (isSelected) colors.white else colors.textPrimary
-                )
-            }
+        items(ranges.size) {
+            val range = ranges[it]
+            FilterChip(
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = colors.background,
+                    selectedContainerColor = colors.slightlyDarkerLinkBlue,
+                    selectedTrailingIconColor = colors.white
+                ),
+                shape = RoundedCornerShape(16.dp),
+                selected = range == selectedRange,
+                onClick = { onRangeSelected(range) },
+                elevation = null,
+                label = {
+                    TinyText(
+                        "${range.first} - ${range.second} reps",
+                        modifier = Modifier.padding(horizontal = 0.dp, vertical = 12.dp),
+                        color = colors.white
+                    )
+                },
+            )
         }
     }
 }

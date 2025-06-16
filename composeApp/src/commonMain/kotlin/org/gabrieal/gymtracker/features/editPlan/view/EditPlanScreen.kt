@@ -166,6 +166,7 @@ object EditPlanScreen : Screen, KoinComponent {
                                                     viewModel.updateExerciseReps(position, newReps)
                                                 }
                                             )
+
                                             Spacer(modifier = Modifier.height(16.dp))
 
                                             // Remove exercise button

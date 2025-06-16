@@ -37,7 +37,7 @@ object DarkColors : AppColors() {
     override val maroon = Color(0xFF670D2F)
     override val lightMaroon = Color(0xFFAB4567)
     override val deleteRed = Color(0xFFB22222)
-    override val checkMarkGreen = Color(0xFFA0C878)
+    override val checkMarkGreen = Color(0xFF708A58)
     override val bottomNavIndicator = Color(0xFF096B68)
 }
 

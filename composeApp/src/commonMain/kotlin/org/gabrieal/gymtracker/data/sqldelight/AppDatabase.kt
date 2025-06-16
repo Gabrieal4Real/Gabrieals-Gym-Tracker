@@ -16,7 +16,7 @@ private val currentlyActiveRoutineEntity = createDatabase().currentlyActiveRouti
 
 
 @OptIn(ExperimentalTime::class)
-fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedOn: Instant) {
+fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedOn: Instant, workoutProgress: WorkoutProgress) {
     if (activeRoutine == null) {
         currentlyActiveRoutineEntity.deleteCurrentlyActiveRoutine()
         return
@@ -30,7 +30,7 @@ fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedO
         startingDate = activeRoutine.startingDate,
         exercises = activeRoutine.exercises,
         startedOn = formatInstantToDate(startedOn, "dd-MM-yyyy HH:mm:ss"),
-        workoutProgress = WorkoutProgress()
+        workoutProgress = workoutProgress
     )
 }
 
