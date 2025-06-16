@@ -81,6 +81,8 @@ kotlin {
             implementation(libs.ktor.client.logging)
 
             implementation(libs.insert.koin.koin.core)
+
+            implementation(libs.cmpcharts)
         }
     }
 }

@@ -42,7 +42,6 @@ import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
-import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
 import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
@@ -107,7 +106,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                     "Some sets are not completed, are you sure you want to proceed?"
                 ),
                 positiveButton = Pair("Proceed") {
-                    updateWorkoutHistoryDB()
+                    updateWorkoutHistoryDB(completedVolume)
                     viewModel.setShowWarningReplace(false)
                     viewModel.markWorkoutAsDone()
                     viewModel.resetTimer()
@@ -153,7 +152,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                     viewModel.setShowWarningReplace(true)
                                     return@AssistChip
                                 }
-                                updateWorkoutHistoryDB()
+                                updateWorkoutHistoryDB(completedVolume)
                                 viewModel.markWorkoutAsDone()
                                 viewModel.resetTimer()
                                 viewModel.startWorkout(null)

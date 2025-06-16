@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -37,17 +36,35 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import network.chaintech.chartsLib.ui.linechart.model.IntersectionPoint
+import network.chaintech.cmpcharts.axis.AxisProperties
+import network.chaintech.cmpcharts.common.extensions.formatToSinglePrecision
+import network.chaintech.cmpcharts.common.model.Point
+import network.chaintech.cmpcharts.common.ui.GridLinesUtil
+import network.chaintech.cmpcharts.common.ui.SelectionHighlightPoint
+import network.chaintech.cmpcharts.common.ui.SelectionHighlightPopUp
+import network.chaintech.cmpcharts.common.ui.ShadowUnderLine
+import network.chaintech.cmpcharts.ui.linechart.LineChart
+import network.chaintech.cmpcharts.ui.linechart.model.Line
+import network.chaintech.cmpcharts.ui.linechart.model.LineChartProperties
+import network.chaintech.cmpcharts.ui.linechart.model.LinePlotData
+import network.chaintech.cmpcharts.ui.linechart.model.LineStyle
+import network.chaintech.cmpcharts.ui.pointchart.model.PointData
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.WorkoutHistory
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.data.sqldelight.getAllWorkoutHistoryFromDB
 import org.gabrieal.gymtracker.features.workoutHistory.viewmodel.WorkoutHistoryViewModel
+import org.gabrieal.gymtracker.util.app.RegularText
 import org.gabrieal.gymtracker.util.app.differenceTime
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
@@ -55,10 +72,12 @@ import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
+import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.TitleText
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 
 object WorkoutHistoryScreen : Screen, KoinComponent {
@@ -81,7 +100,19 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Header()
+            if (groupedHistory.isEmpty()) {
+                CustomHorizontalDivider()
+                Box(
+                    modifier = Modifier.fillMaxSize().background(colors.lighterBackground),
+                    contentAlignment = Alignment.Center
+                ) {
+                    SubtitleText("No history found".uppercase())
+                }
+                return
+            }
+
             WorkoutTabs(groupedHistory.keys.toList(), selectedTabIndex, pagerState, scope)
+            CustomHorizontalDivider()
             WorkoutPages(groupedHistory.values.toList(), pagerState)
         }
     }
@@ -125,7 +156,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                     )
                 }
             },
-            divider = { CustomHorizontalDivider() }
+            divider = { }
         ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
@@ -152,13 +183,19 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
             HorizontalPager(state = pagerState) { page ->
                 val selectedWorkoutHistory = historyGroups[page]
 
-                LazyColumn(
+                Column(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(selectedWorkoutHistory.size) { index ->
-                        WorkoutCard(selectedWorkoutHistory[index])
+                    VolumeGraph(selectedWorkoutHistory.map { it.completedVolume })
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(selectedWorkoutHistory.size) { index ->
+                            WorkoutCard(selectedWorkoutHistory[index])
+                        }
                     }
                 }
             }
@@ -193,7 +230,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
-                TinyText("Completed in $elapsedTime")
+                TinyItalicText("Completed in $elapsedTime")
             }
         }
     }
@@ -221,7 +258,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                         .fillMaxWidth(0.49f)
                         .height(100.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(colors.lighterBackground.copy(alpha = 0.5f))
+                        .background(colors.black.copy(alpha = 0.15f))
                         .padding(8.dp)
                 ) {
                     Column(modifier = Modifier.fillMaxSize()) {
@@ -256,5 +293,82 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                 }
             }
         }
+    }
+
+    @Composable
+    fun VolumeGraph(completedVolumes: List<Double?>) {
+        if (completedVolumes.isEmpty() || completedVolumes.size < 5) {
+            return
+        }
+
+        val pointsData = completedVolumes.asReversed().mapIndexed { index, volume ->
+            Point(
+                x = index.toFloat(),
+                y = volume?.toFloat() ?: 0f
+            )
+        }
+
+        val textMeasurer = rememberTextMeasurer()
+
+        val steps = 4
+        val xAxisProperties = AxisProperties(
+            font = RegularText(),
+            shouldExtendLineToEnd = true,
+            initialDrawPadding = 8.dp,
+            labelFontSize = 12.sp,
+            labelPadding = 4.dp,
+            labelColor = colors.white,
+            lineColor = colors.white,
+            stepCount = pointsData.size - 1,
+            labelFormatter = { i -> pointsData[i].x.toInt().toString() },
+        )
+
+        val yAxisProperties = AxisProperties(
+            font = RegularText(),
+            initialDrawPadding = 8.dp,
+            labelFontSize = 12.sp,
+            labelPadding = 4.dp,
+            stepCount = steps,
+            labelColor = colors.white,
+            lineColor = colors.white,
+            labelFormatter = { i ->
+                val yMin = pointsData.minOf { it.y.roundToInt() }
+                val yMax = pointsData.maxOf { it.y }
+                val yScale = (yMax - yMin) / steps
+                ((i * yScale) + yMin).formatToSinglePrecision()
+            }
+        )
+
+        val lineChartProperties = LineChartProperties(
+            backgroundColor = colors.lighterBackground,
+            linePlotData = LinePlotData(
+                lines = listOf(
+                    Line(
+                        dataPoints = pointsData,
+                        LineStyle(color = colors.slightlyDarkerLinkBlue),
+                        IntersectionPoint(color = colors.slightlyDarkerLinkBlue),
+                        SelectionHighlightPoint(color = colors.lightMaroon),
+                        ShadowUnderLine(),
+                        SelectionHighlightPopUp(
+                            textMeasurer = textMeasurer,
+                            backgroundColor = colors.maroon,
+                            labelColor = colors.white,
+                            labelTypeface = FontWeight.Bold
+                        )
+                    )
+                )
+            ),
+            xAxisProperties = xAxisProperties,
+            yAxisProperties = yAxisProperties,
+            gridLines = GridLinesUtil(color = colors.placeholderColor)
+        )
+        LineChart(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colors.lighterBackground)
+                .padding(bottom = 8.dp)
+                .height(280.dp),
+            lineChartProperties = lineChartProperties
+        )
     }
 }

@@ -18,8 +18,8 @@ private val currentlyActiveRoutineEntity = createDatabase().currentlyActiveRouti
 private val workoutHistoryEntity = createDatabase().workoutHistoryEntityQueries
 
 @OptIn(ExperimentalTime::class)
-fun updateWorkoutHistoryDB() {
-    workoutHistoryEntity.insertIntoWorkoutHistory(formatInstantToDate(Clock.System.now(),"dd-MM-yyyy HH:mm:ss"))
+fun updateWorkoutHistoryDB(completedVolume: Double) {
+    workoutHistoryEntity.insertIntoWorkoutHistory(formatInstantToDate(Clock.System.now(),"dd-MM-yyyy HH:mm:ss"), completedVolume.toLong())
 }
 
 fun getAllWorkoutHistoryFromDB(): List<WorkoutHistory> {
@@ -32,7 +32,8 @@ fun getAllWorkoutHistoryFromDB(): List<WorkoutHistory> {
             startingDate = it.startingDate,
             exercises = it.exercises,
             startedOn = it.startedOn,
-            workoutProgress = it.workoutProgress
+            workoutProgress = it.workoutProgress,
+            completedVolume = it.completedVolume?.toDouble()
         )
     }
 }

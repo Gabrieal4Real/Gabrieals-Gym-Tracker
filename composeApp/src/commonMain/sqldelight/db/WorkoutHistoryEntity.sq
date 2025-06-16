@@ -13,7 +13,8 @@ CREATE TABLE workoutHistoryEntity (
     startingDate TEXT,
     exercises TEXT AS List<SelectedExercise>,
     startedOn TEXT,
-    workoutProgress TEXT AS WorkoutProgress
+    workoutProgress TEXT AS WorkoutProgress,
+    completedVolume INTEGER
 );
 
 insertIntoWorkoutHistory:
@@ -27,7 +28,8 @@ INSERT INTO workoutHistoryEntity (
     startingDate,
     exercises,
     startedOn,
-    workoutProgress
+    workoutProgress,
+    completedVolume
 )
 SELECT
     :finishedDate,
@@ -39,7 +41,8 @@ SELECT
     startingDate,
     exercises,
     startedOn,
-    workoutProgress
+    workoutProgress,
+    :completedVolume
 FROM currentlyActiveRoutineEntity;
 
 selectAllHistory:

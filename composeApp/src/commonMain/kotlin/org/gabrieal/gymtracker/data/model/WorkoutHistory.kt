@@ -10,5 +10,6 @@ data class WorkoutHistory(
     val routineName: String?,
     val startingDate: String?,
     val exercises: List<SelectedExercise>?,
-    val workoutProgress: WorkoutProgress?
+    val workoutProgress: WorkoutProgress?,
+    val completedVolume: Double?
 )

@@ -87,7 +87,7 @@ fun TitleRow(text: String) {
 fun CustomHorizontalDivider(ratio: Float = 1f) {
     HorizontalDivider(
         color = colors.white.copy(alpha = 0.4f),
-        thickness = 1.dp,
+        thickness = 1.5.dp,
         modifier = Modifier.fillMaxWidth(ratio)
     )
 }
