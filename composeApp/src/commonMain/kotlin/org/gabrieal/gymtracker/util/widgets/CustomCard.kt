@@ -25,8 +25,8 @@ import org.jetbrains.compose.resources.painterResource
 fun CustomCard(
     enabled: Boolean,
     onClick: (() -> Unit)? = null,
+    backgroundEnabled: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
-    backgroundEnabled: Boolean = true
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),

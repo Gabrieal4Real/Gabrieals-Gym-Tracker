@@ -21,10 +21,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Height
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.MonitorWeight
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonOutline
 import androidx.compose.material.icons.rounded.PieChart
+import androidx.compose.material.icons.rounded.Sports
+import androidx.compose.material.icons.rounded.SportsBar
+import androidx.compose.material.icons.rounded.SportsGymnastics
 import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -101,7 +105,16 @@ object ProfileTab : Tab, KoinComponent {
                     }
 
                     item {
-                        EditRoutinesCard(routines)
+                        CalculatorRow(
+                            listOf(
+                                Triple(Icons.Rounded.SportsGymnastics, "Edit Workout") {
+                                    viewModel.navigateToEditSplit(routines)
+                                },
+                                Triple(Icons.Rounded.History, "Workout History") {
+                                    viewModel.navigateToWorkoutHistory()
+                                },
+                            )
+                        )
                     }
 
                     if (profile?.weight != null && profile.height != null)
@@ -203,7 +216,7 @@ object ProfileTab : Tab, KoinComponent {
                             imageVector = calculatorCard.first,
                             contentDescription = calculatorCard.second,
                             tint = colors.textPrimary,
-                            modifier = Modifier.size(60.dp)
+                            modifier = Modifier.size(50.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         TinyText(calculatorCard.second, textAlign = TextAlign.Center)
@@ -211,29 +224,6 @@ object ProfileTab : Tab, KoinComponent {
                 }
             )
         }
-    }
-
-
-    @Composable
-    fun EditRoutinesCard(routines: List<SelectedExerciseList>) {
-        CustomCard(
-            enabled = true,
-            content = {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    SubtitleText("View My Workouts")
-                    IconNext()
-                }
-            },
-            onClick = {
-                viewModel.navigateToEditSplit(routines)
-            }
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
     }
 
     @Composable

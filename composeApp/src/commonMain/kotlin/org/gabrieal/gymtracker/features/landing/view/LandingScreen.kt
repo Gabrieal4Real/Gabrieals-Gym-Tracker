@@ -121,6 +121,8 @@ object LandingScreen : Screen, KoinComponent {
         landingCurrentlyActiveRoutine: SelectedExerciseList,
         elapsedTime: Instant?
     ) {
+        val tabNavigator = LocalTabNavigator.current
+
         Box(modifier = Modifier.clickable {
             AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine) { activeRoutine ->
                 val selectedRoutineList = getSelectedRoutineListFromDB()
@@ -130,6 +132,7 @@ object LandingScreen : Screen, KoinComponent {
                 currentlyActiveRoutine = null
                 viewModel.setCurrentlyActiveRoutine(null)
                 AppNavigator.dismissBottomSheet()
+                (tabNavigator.current as? HomeTab)?.viewModel?.updateContext()
             }
         }) {
             Image(

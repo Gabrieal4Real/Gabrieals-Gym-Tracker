@@ -1,0 +1,17 @@
+import kotlin.collections.List;
+import org.gabrieal.gymtracker.data.model.SelectedExercise;
+import org.gabrieal.gymtracker.data.model.WorkoutProgress;
+
+CREATE TABLE workoutHistoryEntity (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    finishedDate TEXT NOT NULL,
+    routineId INTEGER,
+    position INTEGER,
+    day TEXT,
+    routineName TEXT,
+    isCompleted INTEGER,
+    startingDate TEXT,
+    exercises TEXT AS List<SelectedExercise>,
+    startedOn TEXT,
+    workoutProgress TEXT AS WorkoutProgress
+);

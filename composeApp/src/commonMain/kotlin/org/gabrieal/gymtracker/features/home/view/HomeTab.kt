@@ -77,7 +77,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 object HomeTab : Tab, KoinComponent {
-    private val viewModel: HomeViewModel by inject()
+    val viewModel: HomeViewModel by inject()
 
     private val randomSelectedWorkoutImage = listOf(
         Res.drawable.workout_1,

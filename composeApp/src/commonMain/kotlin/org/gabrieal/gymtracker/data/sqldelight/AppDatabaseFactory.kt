@@ -5,6 +5,7 @@ import db.CurrentlyActiveRoutineEntity
 import db.GymTrackerDatabase
 import db.ProfileEntity
 import db.SelectedExerciseListEntity
+import db.WorkoutHistoryEntity
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -66,4 +67,8 @@ fun createDatabase(): GymTrackerDatabase =
             exercisesAdapter = listColumnAdapter(SelectedExercise.serializer()),
             workoutProgressAdapter = objectColumnAdapter(WorkoutProgress.serializer())
         ),
+        workoutHistoryEntityAdapter = WorkoutHistoryEntity.Adapter(
+            exercisesAdapter = listColumnAdapter(SelectedExercise.serializer()),
+            workoutProgressAdapter = objectColumnAdapter(WorkoutProgress.serializer())
+        )
     )

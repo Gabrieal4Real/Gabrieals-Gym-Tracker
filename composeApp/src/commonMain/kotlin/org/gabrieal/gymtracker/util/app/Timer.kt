@@ -27,3 +27,10 @@ fun ElapsedTime(startTime: Instant?): String {
 
     return formatRestTime(elapsed.inWholeSeconds.toInt())
 }
+
+@OptIn(ExperimentalTime::class)
+fun differenceTime(startTime: Instant?, endTime: Instant?): String {
+    if (startTime == null || endTime == null) return ""
+
+    return formatRestTime((endTime - startTime).inWholeSeconds.toInt())
+}

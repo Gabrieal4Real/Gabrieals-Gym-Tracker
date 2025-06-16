@@ -18,6 +18,7 @@ import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
 import org.gabrieal.gymtracker.features.startWorkout.view.CurrentlyActiveWorkoutBottomSheet
 import org.gabrieal.gymtracker.features.startWorkout.view.StartWorkoutScreen
 import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
+import org.gabrieal.gymtracker.features.workoutHistory.view.WorkoutHistoryScreen
 
 
 object AppNavigator {
@@ -27,6 +28,9 @@ object AppNavigator {
 
     private val _navigationEvents = MutableStateFlow<NavigationEvent?>(null)
     val navigationEvents: StateFlow<NavigationEvent?> = _navigationEvents.asStateFlow()
+
+    private val _refreshHomeTabEvent = MutableStateFlow(false)
+    val refreshHomeTabEvent: StateFlow<Boolean> = _refreshHomeTabEvent.asStateFlow()
 
 
     fun setNavigator(navigator: Navigator) {
@@ -140,6 +144,10 @@ object AppNavigator {
 
     fun hideLoading() {
         appStateViewModel?.hideLoading()
+    }
+
+    fun navigateToWorkoutHistory() {
+        _navigationEvents.value = NavigationEvent.NavigateTo(WorkoutHistoryScreen)
     }
 }
 

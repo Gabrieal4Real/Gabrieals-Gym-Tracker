@@ -34,6 +34,7 @@ import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.sqldelight.getCurrentlyActiveRoutineFromDB
+import org.gabrieal.gymtracker.data.sqldelight.updateWorkoutHistoryDB
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutUiState
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
 import org.gabrieal.gymtracker.util.app.ElapsedTime
@@ -41,6 +42,8 @@ import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
 import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
 import org.gabrieal.gymtracker.util.widgets.BigText
@@ -86,6 +89,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         val totalSets = selectedExerciseList?.exercises?.sumOf { it.sets ?: 0 } ?: 0
         val completedSets = uiState.workoutProgress.exerciseSets.sumOf { it -> it.count { it } }
         val showNotification = uiState.showNotification
+        val showWarningReplace = uiState.showWarningReplace
 
         LaunchedEffect(key1 = showNotification) {
             requestNotificationPermission()
@@ -96,6 +100,24 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
             }
         }
 
+        if (showWarningReplace) {
+            ShowAlertDialog(
+                titleMessage = Pair(
+                    "Workout in Progress",
+                    "Some sets are not completed, are you sure you want to proceed?"
+                ),
+                positiveButton = Pair("Proceed") {
+                    updateWorkoutHistoryDB()
+                    viewModel.setShowWarningReplace(false)
+                    viewModel.markWorkoutAsDone()
+                    viewModel.resetTimer()
+                    viewModel.startWorkout(null)
+                },
+                negativeButton = Pair("Cancel") {
+                    viewModel.setShowWarningReplace(false)
+                }
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -106,7 +128,6 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 CustomGrabber(modifier = Modifier.align(Alignment.CenterHorizontally))
 
                 Column(
@@ -128,6 +149,11 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                             ),
                             border = null,
                             onClick = {
+                                if (completedSets < totalSets) {
+                                    viewModel.setShowWarningReplace(true)
+                                    return@AssistChip
+                                }
+                                updateWorkoutHistoryDB()
                                 viewModel.markWorkoutAsDone()
                                 viewModel.resetTimer()
                                 viewModel.startWorkout(null)
@@ -142,11 +168,13 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
+
                     DurationVolumeSetCard(
                         completedVolume,
                         completedSets,
                         currentlyActiveRoutine?.second
                     )
+
                     Spacer(modifier = Modifier.height(8.dp))
 
                     val addTime = listOf(

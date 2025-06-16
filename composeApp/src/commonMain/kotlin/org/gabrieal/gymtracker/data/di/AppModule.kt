@@ -14,6 +14,7 @@ import org.gabrieal.gymtracker.features.makeAPlan.viewmodel.MakeAPlanViewModel
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
 import org.gabrieal.gymtracker.features.viewAllWorkouts.viewmodel.ViewAllWorkoutViewModel
+import org.gabrieal.gymtracker.features.workoutHistory.viewmodel.WorkoutHistoryViewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -25,6 +26,7 @@ val appModule = module {
 
     //viewmodels
     factory { CalculatorViewModel() }
+    factory { WorkoutHistoryViewModel() }
     factory { CreateSplitViewModel() }
     factory { EditPlanViewModel() }
     factory { HomeViewModel() }

@@ -74,6 +74,8 @@ class ProfileViewModel {
     fun navigateToEditSplit(routines: List<SelectedExerciseList>) =
         AppNavigator.navigateToEditSplit(routines)
 
+    fun navigateToWorkoutHistory() = AppNavigator.navigateToWorkoutHistory()
+
     fun navigateToProteinCalculator() =
         AppNavigator.navigateToCalculatorScreen("Protein Intake", uiState.value.profile)
 

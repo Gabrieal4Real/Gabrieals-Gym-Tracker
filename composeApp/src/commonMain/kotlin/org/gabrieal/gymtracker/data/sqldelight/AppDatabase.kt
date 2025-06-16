@@ -3,9 +3,11 @@ package org.gabrieal.gymtracker.data.sqldelight
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.WorkoutHistory
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
 import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -13,7 +15,27 @@ private val profileQuery = createDatabase().profileEntityQueries
 private val selectedExerciseListQuery = createDatabase().selectedExerciseListEntityQueries
 private val firebaseInfoQuery = createDatabase().firebaseInfoEntityQueries
 private val currentlyActiveRoutineEntity = createDatabase().currentlyActiveRoutineEntityQueries
+private val workoutHistoryEntity = createDatabase().workoutHistoryEntityQueries
 
+@OptIn(ExperimentalTime::class)
+fun updateWorkoutHistoryDB() {
+    workoutHistoryEntity.insertIntoWorkoutHistory(formatInstantToDate(Clock.System.now(),"dd-MM-yyyy HH:mm:ss"))
+}
+
+fun getAllWorkoutHistoryFromDB(): List<WorkoutHistory> {
+    val workoutHistory = workoutHistoryEntity.selectAllHistory().executeAsList()
+    return workoutHistory.map {
+        WorkoutHistory(
+            id = it.id,
+            finishedDate = it.finishedDate,
+            routineName = it.routineName,
+            startingDate = it.startingDate,
+            exercises = it.exercises,
+            startedOn = it.startedOn,
+            workoutProgress = it.workoutProgress
+        )
+    }
+}
 
 @OptIn(ExperimentalTime::class)
 fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedOn: Instant, workoutProgress: WorkoutProgress) {
