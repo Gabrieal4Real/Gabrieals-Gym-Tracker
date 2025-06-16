@@ -111,8 +111,12 @@ object AppNavigator {
         _navigationEvents.value = NavigationEvent.NavigateTo(CalculatorScreen)
     }
 
-    fun openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine: SelectedExerciseList) {
+    fun openBottomSheetCurrentlyActiveWorkoutScreen(
+        landingCurrentlyActiveRoutine: SelectedExerciseList,
+        callback: (SelectedExerciseList) -> Unit
+    ) {
         CurrentlyActiveWorkoutBottomSheet.setSelectedExerciseList(landingCurrentlyActiveRoutine)
+        CurrentlyActiveWorkoutBottomSheet.setCallback(callback)
         bottomSheetNavigatorInstance?.show(CurrentlyActiveWorkoutBottomSheet)
     }
 

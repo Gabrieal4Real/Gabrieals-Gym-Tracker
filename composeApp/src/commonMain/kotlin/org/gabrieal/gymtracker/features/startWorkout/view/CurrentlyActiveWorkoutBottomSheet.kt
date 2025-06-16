@@ -73,6 +73,10 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         viewModel.toggleSetCompleted()
     }
 
+    fun setCallback(callback: (SelectedExerciseList) -> Unit) {
+        viewModel.setCallback(callback)
+    }
+
     @OptIn(ExperimentalTime::class)
     @Composable
     override fun Content() {
@@ -124,7 +128,9 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                             ),
                             border = null,
                             onClick = {
-
+                                viewModel.markWorkoutAsDone()
+                                viewModel.resetTimer()
+                                viewModel.startWorkout(null)
                             },
                             label = {
                                 TinyText(

@@ -40,6 +40,8 @@ import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.sqldelight.getCurrentlyActiveRoutineFromDB
+import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
+import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 import org.gabrieal.gymtracker.features.home.view.HomeTab
 import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
 import org.gabrieal.gymtracker.features.profile.view.ProfileTab
@@ -67,11 +69,9 @@ object LandingScreen : Screen, KoinComponent {
         val landingCurrentlyActiveRoutine = uiState.currentlyActiveRoutine
         val resetCompletedList = uiState.resetCompletedList
 
-        LaunchedEffect(Unit) {
-            currentlyActiveRoutine = getCurrentlyActiveRoutineFromDB()
-            viewModel.setCurrentlyActiveRoutine(currentlyActiveRoutine?.first)
-            viewModel.resetCompletedList()
-        }
+        currentlyActiveRoutine = getCurrentlyActiveRoutineFromDB()
+        viewModel.setCurrentlyActiveRoutine(currentlyActiveRoutine?.first)
+        viewModel.resetCompletedList()
 
         BottomSheetNavigator(
             sheetBackgroundColor = Color.Transparent,
@@ -122,7 +122,15 @@ object LandingScreen : Screen, KoinComponent {
         elapsedTime: Instant?
     ) {
         Box(modifier = Modifier.clickable {
-            AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine)
+            AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine) { activeRoutine ->
+                val selectedRoutineList = getSelectedRoutineListFromDB()
+                selectedRoutineList.find { it.routineName == activeRoutine.routineName }?.let { it.isCompleted = true }
+                setSelectedRoutineListToDB(selectedRoutineList)
+
+                currentlyActiveRoutine = null
+                viewModel.setCurrentlyActiveRoutine(null)
+                AppNavigator.dismissBottomSheet()
+            }
         }) {
             Image(
                 painter = painterResource(Res.drawable.workout_3),
