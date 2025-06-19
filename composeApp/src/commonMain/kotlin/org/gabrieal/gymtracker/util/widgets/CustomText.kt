@@ -171,7 +171,8 @@ fun TinyItalicText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color = colors.textPrimary,
-    textAlign: TextAlign = TextAlign.Start
+    textAlign: TextAlign = TextAlign.Start,
+    maxLines: Int = Int.MAX_VALUE
 ) {
     Text(
         text,
@@ -183,7 +184,9 @@ fun TinyItalicText(
         color = color,
         fontSize = 12.sp,
         modifier = modifier,
-        textAlign = textAlign
+        textAlign = textAlign,
+        overflow = TextOverflow.Ellipsis,
+        maxLines = maxLines
     )
 }
 

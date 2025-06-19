@@ -340,10 +340,23 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                         textAlign = TextAlign.Center
                     )
 
-                    BiggerText(
-                        "${weight?.ifBlank { "0" }}${if (weightUnit == false) "lb" else "kg"}".uppercase(),
-                        modifier = Modifier.padding(top = 8.dp).scale(popOut().value)
-                    )
+                    Row (
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.Bottom,
+                    ){
+                        TinyText(
+                            exercise.sets.toString() + " sets",
+                            modifier = Modifier.padding(end = 12.dp, bottom = 4.dp)
+                        )
+                        BiggerText(
+                            "${weight?.ifBlank { "0" }}${if (weightUnit == false) "lb" else "kg"}".uppercase(),
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                        TinyText(
+                            exercise.reps?.second.toString() + " reps",
+                            modifier = Modifier.padding(start = 12.dp, bottom = 4.dp)
+                        )
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
                     AnimatedDividerWithScale()
@@ -412,7 +425,8 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
         Image(
             painter = painterResource(drawableResource),
             contentDescription = "Tier $tier",
-            modifier = Modifier.size(150.dp).padding(end = 8.dp).scale(popOutExtra().value)
+            contentScale = ContentScale.FillHeight,
+            modifier = Modifier.height(150.dp).scale(popOutExtra().value)
         )
     }
 

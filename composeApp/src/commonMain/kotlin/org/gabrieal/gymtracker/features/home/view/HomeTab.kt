@@ -218,8 +218,9 @@ object HomeTab : Tab, KoinComponent {
                     if (completedRoutine != null) {
                         BiggerText(completedRoutine.routineName ?: "Rest")
                         Spacer(modifier = Modifier.height(2.dp))
-                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
-                            ?: "", textAlign = TextAlign.Center)
+                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() } ?: "",
+                            textAlign = TextAlign.Center,
+                            maxLines = 2)
                         return@Column
                     }
 
@@ -247,7 +248,9 @@ object HomeTab : Tab, KoinComponent {
                     Spacer(modifier = Modifier.height(2.dp))
                     if (followingDayRoutine != null) {
                         TinyItalicText(followingDayRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
-                            ?: "", textAlign = TextAlign.Center)
+                            ?: "",
+                            textAlign = TextAlign.Center,
+                            maxLines = 2)
                         Spacer(modifier = Modifier.height(8.dp))
                         LinkText("Click for more details")
                         return@Column
