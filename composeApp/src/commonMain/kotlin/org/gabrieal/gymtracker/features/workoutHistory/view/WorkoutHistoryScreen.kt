@@ -6,12 +6,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowColumn
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -275,7 +275,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                 val weight = progress?.exerciseWeights?.getOrNull(index)
                 val weightUnit = progress?.exerciseWeightUnit?.getOrNull(index)
 
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth(0.49f)
                         .defaultMinSize(minHeight = 110.dp)
@@ -285,28 +285,51 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                         }
                         .background(colors.black.copy(alpha = 0.18f))
                         .padding(vertical = 8.dp, horizontal = 12.dp)
-
                 ) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        DescriptionText(exercise.name.orEmpty())
-                    }
+                    TinyText(exercise.name.orEmpty(), modifier = Modifier.weight(1f))
 
-                    Icon(
-                        imageVector = Icons.Rounded.Search,
-                        contentDescription = "Search",
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .size(24.dp),
-                        tint = colors.textPrimary.copy(alpha = 0.8f)
-                    )
+                    val sets = progress?.exerciseSets?.getOrNull(index)?.count { it } ?: 0
+                    val setsText = "$sets / ${exercise.sets} sets"
 
-                    SubtitleText(
-                        "${weight?.ifBlank { "0" }}${if (weightUnit == false) "lb" else "kg"}".uppercase(),
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.BottomEnd),
-                        textAlign = TextAlign.End
-                    )
+                            .padding(bottom = 4.dp)
+                            .height(18.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(colors.white.copy(alpha = 0.15f))
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(sets/(exercise.sets?.toFloat() ?: 0f))
+                                .fillMaxHeight()
+                                .background(colors.checkMarkGreen)
+                        )
+
+                        TinyText(
+                            setsText,
+                            modifier = Modifier.align(Alignment.Center),
+                            color = colors.textPrimary
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Rounded.Search,
+                            contentDescription = "Search",
+                            modifier = Modifier.size(24.dp),
+                            tint = colors.textPrimary.copy(alpha = 0.8f)
+                        )
+
+                        SubtitleText(
+                            "${weight?.ifBlank { "0" }}${if (weightUnit == false) "lb" else "kg"}".uppercase(),
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.End
+                        )
+                    }
                 }
             }
         }
