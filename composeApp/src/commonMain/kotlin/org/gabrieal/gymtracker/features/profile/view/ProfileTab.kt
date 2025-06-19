@@ -26,8 +26,6 @@ import androidx.compose.material.icons.rounded.MonitorWeight
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.PersonOutline
 import androidx.compose.material.icons.rounded.PieChart
-import androidx.compose.material.icons.rounded.Sports
-import androidx.compose.material.icons.rounded.SportsBar
 import androidx.compose.material.icons.rounded.SportsGymnastics
 import androidx.compose.material.icons.rounded.WaterDrop
 import androidx.compose.material3.HorizontalDivider
@@ -51,7 +49,6 @@ import cafe.adriel.voyager.navigator.tab.TabOptions
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
-import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.util.app.getBMISummary
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
@@ -59,7 +56,6 @@ import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
-import org.gabrieal.gymtracker.util.widgets.IconNext
 import org.gabrieal.gymtracker.util.widgets.LinkText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyText

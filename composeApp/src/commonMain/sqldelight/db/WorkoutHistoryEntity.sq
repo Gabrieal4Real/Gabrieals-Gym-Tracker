@@ -48,3 +48,9 @@ FROM currentlyActiveRoutineEntity;
 selectAllHistory:
 SELECT * FROM workoutHistoryEntity
 ORDER BY finishedDate DESC;
+
+getLatestWorkoutHistory:
+SELECT * FROM workoutHistoryEntity
+WHERE routineName = :routineName
+ORDER BY finishedDate DESC
+LIMIT 1;

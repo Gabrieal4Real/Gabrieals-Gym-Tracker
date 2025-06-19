@@ -27,7 +27,7 @@ enum class MuscleGroup(val displayName: String) {
                 Shoulders.displayName -> listOf(RearDelt.displayName, FrontDelt.displayName, MiddleDelt.displayName)
                 
                 Biceps.displayName -> listOf(Biceps.displayName)
-                Triceps.displayName -> listOf(Arms.displayName)
+                Triceps.displayName -> listOf(Triceps.displayName)
                 Arms.displayName -> listOf(Triceps.displayName, Biceps.displayName)
 
                 Chest.displayName -> listOf(Chest.displayName)

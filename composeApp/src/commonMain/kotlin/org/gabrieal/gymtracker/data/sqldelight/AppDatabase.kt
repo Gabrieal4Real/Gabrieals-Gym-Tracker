@@ -38,6 +38,25 @@ fun getAllWorkoutHistoryFromDB(): List<WorkoutHistory> {
     }
 }
 
+fun getSpecificWorkoutHistoryFromDB(routineName: String): WorkoutHistory? {
+    val selectedRoutine = workoutHistoryEntity.getLatestWorkoutHistory(routineName).executeAsOneOrNull()
+
+    selectedRoutine?.let {
+        return WorkoutHistory(
+            id = it.id,
+            finishedDate = it.finishedDate,
+            routineName = it.routineName,
+            startingDate = it.startingDate,
+            exercises = it.exercises,
+            startedOn = it.startedOn,
+            workoutProgress = it.workoutProgress,
+            completedVolume = it.completedVolume?.toDouble()
+        )
+    }
+
+    return null
+}
+
 @OptIn(ExperimentalTime::class)
 fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedOn: Instant, workoutProgress: WorkoutProgress) {
     if (activeRoutine == null) {

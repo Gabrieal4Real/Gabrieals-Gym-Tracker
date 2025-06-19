@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -24,7 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.gabrieal.gymtracker.colors
 
@@ -122,7 +125,8 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): I
         Box(
             modifier = Modifier
                 .size(32.dp)
-                .background(minusBackgroundColor, RoundedCornerShape(24.dp))
+                .clip(CircleShape)
+                .background(minusBackgroundColor)
                 .clickable(enabled = selectedValue > minValue) {
                     if (selectedValue > minValue) {
                         selectedValue--
@@ -135,13 +139,15 @@ fun IncrementDecrementButton(initialValue: Int, minValue: Int, maxValue: Int): I
         Spacer(modifier = Modifier.width(16.dp))
         DescriptionText(
             selectedValue.toString(),
-            modifier = Modifier.align(Alignment.CenterVertically)
+            modifier = Modifier.align(Alignment.CenterVertically).width(20.dp),
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.width(16.dp))
         Box(
             modifier = Modifier
                 .size(32.dp)
-                .background(plusBackgroundColor, RoundedCornerShape(24.dp))
+                .clip(CircleShape)
+                .background(plusBackgroundColor)
                 .clickable(enabled = selectedValue < maxValue) {
                     if (selectedValue < maxValue) {
                         selectedValue++
@@ -171,7 +177,10 @@ fun CustomSwitch(
             checkedThumbColor = colors.white,
             checkedTrackColor = colors.bottomNavIndicator,
             uncheckedThumbColor = colors.white.copy(alpha = 0.5f),
-            uncheckedTrackColor = colors.placeholderColor
+            uncheckedTrackColor = colors.slightlyDarkerLinkBlue.copy(alpha = 0.3f),
+            disabledUncheckedBorderColor = colors.white.copy(alpha = 0.2f),
+            disabledUncheckedThumbColor = colors.white.copy(alpha = 0.5f),
+            disabledUncheckedTrackColor = colors.deleteRed.copy(alpha = 0.3f),
         ),
         modifier = modifier,
         thumbContent = if (checked) {

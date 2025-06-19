@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
+import org.gabrieal.gymtracker.data.sqldelight.getSpecificWorkoutHistoryFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setCurrentlyActiveRoutineToDB
 import org.gabrieal.gymtracker.data.sqldelight.updateCurrentlyActiveRoutineToDB
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -26,6 +27,7 @@ class StartWorkoutViewModel {
     val uiState: StateFlow<StartWorkoutUiState> = _uiState.asStateFlow()
 
     private var callback: ((SelectedExerciseList) -> Unit)? = null
+    private var failureCallback: (() -> Unit)? = null
 
     fun setSelectedExerciseList(selectedExerciseList: SelectedExerciseList) =
         _uiState.update { it.copy(selectedExerciseList = selectedExerciseList) }
@@ -39,8 +41,16 @@ class StartWorkoutViewModel {
         }
     }
 
+    fun markWorkoutAsCancelled() {
+        failureCallback?.invoke()
+    }
+
     fun setCallback(callback: (SelectedExerciseList) -> Unit) {
         this.callback = callback
+    }
+    
+    fun setFailureCallback(failureCallback: () -> Unit) {
+        this.failureCallback = failureCallback
     }
 
     @OptIn(ExperimentalTime::class)
@@ -221,4 +231,8 @@ class StartWorkoutViewModel {
 
     fun setWorkoutProgress(workoutProgress: WorkoutProgress) =
         _uiState.update { it.copy(workoutProgress = workoutProgress) }
+
+    fun getPreviousWorkout(): List<String> {
+        return getSpecificWorkoutHistoryFromDB(_uiState.value.selectedExerciseList?.routineName ?: "")?.workoutProgress?.exerciseWeights ?: emptyList()
+    }
 }

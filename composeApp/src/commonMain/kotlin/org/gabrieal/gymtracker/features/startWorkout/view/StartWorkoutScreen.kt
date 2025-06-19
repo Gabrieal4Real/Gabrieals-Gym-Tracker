@@ -70,7 +70,6 @@ object StartWorkoutScreen : Screen, KoinComponent {
         val showWarningReplace = uiState.showWarningReplace
 
         LaunchedEffect(Unit) {
-
             viewModel.updateCurrentActiveExercise(currentlyActiveRoutine?.first)
         }
 
@@ -188,14 +187,8 @@ object StartWorkoutScreen : Screen, KoinComponent {
                     )
                     val exercise = selectedExerciseList?.exercises?.getOrNull(selectedExercise)
                     val sets = Pair("${exercise?.sets ?: "-"} sets", Res.drawable.icon_sets)
-                    val reps = Pair(
-                        "${exercise?.reps?.first ?: "-"} to ${exercise?.reps?.second ?: "-"} reps",
-                        Res.drawable.icon_reps
-                    )
-                    val timer = Pair(
-                        "${formatRestTime(getCurrentTimerInSeconds(exercise?.reps))} rest",
-                        Res.drawable.icon_timer
-                    )
+                    val reps = Pair("${exercise?.reps?.first ?: "-"} to ${exercise?.reps?.second ?: "-"} reps", Res.drawable.icon_reps)
+                    val timer = Pair("${formatRestTime(getCurrentTimerInSeconds(exercise?.reps))} rest", Res.drawable.icon_timer)
                     val listOfPairs = listOf(sets, reps, timer)
                     Spacer(modifier = Modifier.height(8.dp))
                     Row {

@@ -6,7 +6,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
@@ -111,15 +109,6 @@ fun DashedDivider() {
 }
 
 @Composable
-fun CustomVerticalDivider() {
-    VerticalDivider(
-        color = colors.borderStroke,
-        thickness = 1.dp,
-        modifier = Modifier.fillMaxHeight()
-    )
-}
-
-@Composable
 fun RepRangePicker(
     ranges: List<Pair<Int, Int>>,
     selectedRange: Pair<Int, Int>,
@@ -138,14 +127,14 @@ fun RepRangePicker(
                     selectedContainerColor = colors.slightlyDarkerLinkBlue,
                     selectedTrailingIconColor = colors.white
                 ),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(12.dp),
                 selected = range == selectedRange,
                 onClick = { onRangeSelected(range) },
                 elevation = null,
                 label = {
                     TinyText(
-                        "${range.first} - ${range.second} reps",
-                        modifier = Modifier.padding(horizontal = 0.dp, vertical = 12.dp),
+                        "${range.first} to ${range.second}",
+                        modifier = Modifier.padding(horizontal = 0.dp, vertical = 8.dp),
                         color = colors.white
                     )
                 },

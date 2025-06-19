@@ -64,7 +64,6 @@ class MakeAPlanViewModel {
                             day = day,
                             exercises = updatedExercises,
                             routineName = planTitle,
-                            isCompleted = false,
                             startingDate = formatInstantToDate(getMondayOrSameInstant(Clock.System.now()), "dd-MM-yyyy HH:mm:ss")
                         )
                     )

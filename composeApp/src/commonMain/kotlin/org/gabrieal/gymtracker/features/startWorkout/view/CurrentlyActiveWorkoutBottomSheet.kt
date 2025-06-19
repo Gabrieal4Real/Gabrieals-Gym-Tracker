@@ -42,6 +42,7 @@ import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
+import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
 import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
@@ -50,13 +51,13 @@ import org.gabrieal.gymtracker.util.widgets.ClickToStartTimerBar
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomGrabber
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
-import org.gabrieal.gymtracker.util.widgets.CustomNonClickableTextField
 import org.gabrieal.gymtracker.util.widgets.CustomSwitch
 import org.gabrieal.gymtracker.util.widgets.CustomTextField
 import org.gabrieal.gymtracker.util.widgets.CustomUnderlinedTextField
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.RotatingExpandIcon
+import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.koin.core.component.KoinComponent
@@ -75,8 +76,12 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         viewModel.toggleSetCompleted()
     }
 
-    fun setCallback(callback: (SelectedExerciseList) -> Unit) {
+    fun setSuccessCallback(callback: (SelectedExerciseList) -> Unit) {
         viewModel.setCallback(callback)
+    }
+
+    fun setFailureCallback(failureCallback: () -> Unit) {
+        viewModel.setFailureCallback(failureCallback)
     }
 
     @OptIn(ExperimentalTime::class)
@@ -89,6 +94,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         val completedSets = uiState.workoutProgress.exerciseSets.sumOf { it -> it.count { it } }
         val showNotification = uiState.showNotification
         val showWarningReplace = uiState.showWarningReplace
+        val previousWeights = viewModel.getPreviousWorkout()
 
         LaunchedEffect(key1 = showNotification) {
             requestNotificationPermission()
@@ -133,14 +139,33 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        BigText(
+                    Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        AssistChip(
+                            modifier = Modifier.weight(0.38f),
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = colors.deleteRed
+                            ),
+                            border = null,
+                            onClick = {
+                                viewModel.startWorkout(null)
+                                viewModel.markWorkoutAsCancelled()
+                            },
+                            label = {
+                                TinyText(
+                                    text = "Cancel",
+                                    color = colors.white,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            },
+                        )
+                        SubtitleText(
                             selectedExerciseList?.routineName.orEmpty().uppercase(),
                             color = colors.white,
-                            modifier = Modifier.align(Alignment.Center)
+                            modifier = Modifier.padding(horizontal = 2.dp).weight(1f),
+                            textAlign = TextAlign.Center
                         )
                         AssistChip(
-                            modifier = Modifier.align(Alignment.CenterEnd),
+                            modifier = Modifier.weight(0.38f),
                             enabled = completedSets > 0,
                             colors = AssistChipDefaults.assistChipColors(
                                 containerColor = if (completedSets == totalSets) colors.slightlyDarkerLinkBlue else colors.checkMarkGreen,
@@ -161,7 +186,8 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                 TinyText(
                                     text = "Finish",
                                     color = colors.white,
-                                    modifier = Modifier.padding(vertical = 8.dp)
+                                    modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
+                                    textAlign = TextAlign.Center
                                 )
                             },
                         )
@@ -229,7 +255,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                 ) {
                     selectedExerciseList?.exercises?.forEachIndexed { index, exercise ->
                         item {
-                            ExerciseItem(index, exercise, uiState)
+                            ExerciseItem(index, exercise, uiState, previousWeights)
                         }
                     }
                 }
@@ -270,11 +296,19 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
     }
 
     @Composable
-    fun ExerciseItem(index: Int, exercise: SelectedExercise, uiState: StartWorkoutUiState) {
+    fun ExerciseItem(
+        index: Int,
+        exercise: SelectedExercise,
+        uiState: StartWorkoutUiState,
+        previousWeights: List<String>?
+    ) {
         val expanded = uiState.expandedExercises[index]
         val weights = uiState.workoutProgress.exerciseWeights[index]
         val reps = uiState.workoutProgress.exerciseReps[index]
         val sets = uiState.workoutProgress.exerciseSets[index]
+        val previousWeight = previousWeights?.getOrNull(index)
+            ?.takeIf { it.isNotBlank() }
+            ?.let { "$it kg" } ?: "N/A"
 
         CustomCard(
             backgroundEnabled = !expanded,
@@ -302,7 +336,6 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
 
                     if (expanded) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
                             Spacer(Modifier.height(4.dp))
 
                             Row(
@@ -310,42 +343,37 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Column(Modifier.weight(1f)) {
-                                    TinyItalicText("Weight (kg)")
-                                    Spacer(Modifier.height(8.dp))
-                                    CustomTextField(
-                                        value = weights,
-                                        onValueChange = {
-                                            if (it.isValidDecimal() && it.length <= 5)
-                                                viewModel.updateWeight(index, it)
-                                        },
-                                        placeholderText = "75.0"
-                                    )
+                                    TinyItalicText("Previous weight")
+                                    DescriptionText(previousWeight)
                                 }
 
                                 Spacer(Modifier.width(8.dp))
 
-                                Column(Modifier.weight(1f)) {
+                                Column(Modifier.weight(0.5f)) {
                                     TinyItalicText("Rest")
-                                    Spacer(Modifier.height(8.dp))
-                                    CustomNonClickableTextField(
-                                        value = formatRestTime(getCurrentTimerInSeconds(exercise.reps)),
-                                        onClick = {},
-                                        placeholderText = ""
-                                    )
+                                    DescriptionText(formatRestTime(getCurrentTimerInSeconds(exercise.reps)))
                                 }
 
                                 Spacer(Modifier.width(8.dp))
 
-                                Column(Modifier.weight(1f)) {
+                                Column(Modifier.weight(0.5f)) {
                                     TinyItalicText("Rep Range")
-                                    Spacer(Modifier.height(8.dp))
-                                    CustomNonClickableTextField(
-                                        value = "${exercise.reps?.first} to ${exercise.reps?.second}",
-                                        onClick = {},
-                                        placeholderText = ""
-                                    )
+                                    DescriptionText("${exercise.reps?.first} to ${exercise.reps?.second}")
                                 }
                             }
+
+                            Spacer(Modifier.height(8.dp))
+
+                            TinyItalicText("Weight (kg)", modifier = Modifier.align(Alignment.Start))
+                            Spacer(Modifier.height(8.dp))
+                            CustomTextField(
+                                value = weights,
+                                onValueChange = {
+                                    if (it.isValidDecimal() && it.length <= 5)
+                                        viewModel.updateWeight(index, it)
+                                },
+                                placeholderText = "75.0"
+                            )
 
                             Spacer(Modifier.height(20.dp))
 

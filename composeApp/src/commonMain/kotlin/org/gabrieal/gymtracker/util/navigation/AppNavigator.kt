@@ -117,10 +117,12 @@ object AppNavigator {
 
     fun openBottomSheetCurrentlyActiveWorkoutScreen(
         landingCurrentlyActiveRoutine: SelectedExerciseList,
-        callback: (SelectedExerciseList) -> Unit
+        successCallback: (SelectedExerciseList) -> Unit,
+        failureCallback: () -> Unit
     ) {
         CurrentlyActiveWorkoutBottomSheet.setSelectedExerciseList(landingCurrentlyActiveRoutine)
-        CurrentlyActiveWorkoutBottomSheet.setCallback(callback)
+        CurrentlyActiveWorkoutBottomSheet.setSuccessCallback(successCallback)
+        CurrentlyActiveWorkoutBottomSheet.setFailureCallback(failureCallback)
         bottomSheetNavigatorInstance?.show(CurrentlyActiveWorkoutBottomSheet)
     }
 
