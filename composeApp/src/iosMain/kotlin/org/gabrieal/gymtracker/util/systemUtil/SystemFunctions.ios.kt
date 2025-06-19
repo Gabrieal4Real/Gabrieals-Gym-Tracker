@@ -252,3 +252,11 @@ actual fun getMondayOrSameInstant(instant: Instant): Instant {
 
     return Instant.fromEpochSeconds(startOfMonday?.timeIntervalSince1970?.toLong() ?: 0)
 }
+
+actual fun keepScreenOn() {
+    UIApplication.sharedApplication.idleTimerDisabled = true
+}
+
+actual fun allowScreenSleep() {
+    UIApplication.sharedApplication.idleTimerDisabled = false
+}

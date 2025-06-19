@@ -7,4 +7,5 @@ data class WorkoutProgress(
     val exerciseWeights: List<String> = mutableListOf(),
     val exerciseReps: List<List<String>> = mutableListOf(),
     val exerciseSets: List<List<Boolean>> = mutableListOf(),
+    val exerciseWeightUnit: List<Boolean> = mutableListOf(),
 )

@@ -10,12 +10,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import network.chaintech.cmpcharts.common.extensions.roundTwoDecimal
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.data.sqldelight.getSpecificWorkoutHistoryFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setCurrentlyActiveRoutineToDB
 import org.gabrieal.gymtracker.data.sqldelight.updateCurrentlyActiveRoutineToDB
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.systemUtil.allowScreenSleep
+import org.gabrieal.gymtracker.util.systemUtil.keepScreenOn
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
@@ -58,6 +62,7 @@ class StartWorkoutViewModel {
         val weightList = mutableListOf<String>()
         val repsList = mutableListOf<MutableList<String>>()
         val completedSetsList = mutableListOf<MutableList<Boolean>>()
+        val weightUnit = mutableListOf<Boolean>()
 
         currentActiveExercise?.exercises?.forEach { exercise ->
             val setCount = exercise.sets ?: 0
@@ -65,13 +70,15 @@ class StartWorkoutViewModel {
             weightList.add("")
             repsList.add(MutableList(setCount) { "" })
             completedSetsList.add(MutableList(setCount) { false })
+            weightUnit.add(true)
         }
 
         setCurrentlyActiveRoutineToDB(
             currentActiveExercise, Clock.System.now(), WorkoutProgress(
                 exerciseWeights = weightList,
                 exerciseReps = repsList,
-                exerciseSets = completedSetsList
+                exerciseSets = completedSetsList,
+                exerciseWeightUnit = weightUnit
             )
         )
 
@@ -109,7 +116,6 @@ class StartWorkoutViewModel {
             state.copy(expandedExercises = List(state.expandedExercises.size) { it == index && toggled })
         }
 
-    @OptIn(ExperimentalTime::class)
     private fun updateWorkoutProgress(update: (WorkoutProgress) -> WorkoutProgress) {
         val workoutProgress = _uiState.value.workoutProgress
         val updatedWorkoutProgress = update(workoutProgress)
@@ -121,6 +127,12 @@ class StartWorkoutViewModel {
         updateWorkoutProgress {
             it.copy(
                 exerciseWeights = it.exerciseWeights.toMutableList().apply { this[index] = weight })
+        }
+
+    fun toggleWeightUnit(index: Int) =
+        updateWorkoutProgress {
+            it.copy(
+                exerciseWeightUnit = it.exerciseWeightUnit.toMutableList().apply { this[index] = !this[index] })
         }
 
     fun updateReps(index: Int, reps: String, repIndex: Int) =
@@ -144,6 +156,7 @@ class StartWorkoutViewModel {
         val weights = _uiState.value.workoutProgress.exerciseWeights
         val reps = _uiState.value.workoutProgress.exerciseReps
         val sets = _uiState.value.workoutProgress.exerciseSets
+        val weightUnit = _uiState.value.workoutProgress.exerciseWeightUnit
 
         var completedVolume = 0.0
 
@@ -153,12 +166,17 @@ class StartWorkoutViewModel {
 
             repsList.forEachIndexed { repIndex, reps ->
                 if (setsList[repIndex]) {
-                    completedVolume += (if (weight.isEmpty()) 0.0 else weight.toDouble()) * (if (reps.isEmpty()) 0.0 else reps.toDouble())
+                    completedVolume += if (weightUnit[index]) {
+                        (if (weight.isEmpty()) 0.0 else weight.toDouble()) * (if (reps.isEmpty()) 0.0 else reps.toDouble())
+                    } else {
+                        (if (weight.isEmpty()) 0.0 else weight.toDouble() / 2.205) * (if (reps.isEmpty()) 0.0 else reps.toDouble())
+                    }
+
                 }
             }
         }
 
-        _uiState.update { it.copy(completedVolume = completedVolume) }
+        _uiState.update { it.copy(completedVolume = completedVolume.roundTwoDecimal()) }
     }
 
     private var timerJob: Job? = null
@@ -169,6 +187,12 @@ class StartWorkoutViewModel {
     }
 
     fun startTimer() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                keepScreenOn()
+            }
+        }
+
         timerJob?.cancel()
         _uiState.update { it.copy(isRunning = true) }
 
@@ -226,6 +250,12 @@ class StartWorkoutViewModel {
                 currentTime = 0,
                 isRunning = false
             )
+        }
+
+        viewModelScope.launch {
+            withContext(Dispatchers.Main) {
+                allowScreenSleep()
+            }
         }
     }
 

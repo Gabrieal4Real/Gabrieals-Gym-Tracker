@@ -17,18 +17,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import network.chaintech.cmpcharts.common.extensions.roundTwoDecimal
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExercise
@@ -309,6 +318,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         val previousWeight = previousWeights?.getOrNull(index)
             ?.takeIf { it.isNotBlank() }
             ?.let { "$it kg" } ?: "N/A"
+        val weightUnit = uiState.workoutProgress.exerciseWeightUnit[index]
 
         CustomCard(
             backgroundEnabled = !expanded,
@@ -364,16 +374,47 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
 
                             Spacer(Modifier.height(8.dp))
 
-                            TinyItalicText("Weight (kg)", modifier = Modifier.align(Alignment.Start))
+                            TinyItalicText("Weight", modifier = Modifier.align(Alignment.Start))
                             Spacer(Modifier.height(8.dp))
-                            CustomTextField(
-                                value = weights,
-                                onValueChange = {
-                                    if (it.isValidDecimal() && it.length <= 5)
-                                        viewModel.updateWeight(index, it)
-                                },
-                                placeholderText = "75.0"
-                            )
+                            Box {
+                                CustomTextField(
+                                    value = weights,
+                                    onValueChange = {
+                                        if (it.isValidDecimal() && it.split(".").first().length <= 5) {
+                                            viewModel.updateWeight(index, it)
+                                        }
+                                    },
+                                    placeholderText = "75.0",
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                                )
+
+                                Row (modifier = Modifier.align(Alignment.CenterEnd).padding(end = 1.dp)) {
+                                    Button(
+                                        contentPadding = PaddingValues(8.dp),
+                                        shape = RoundedCornerShape(topEnd = 11.dp, bottomEnd = 11.dp),
+                                        onClick = {
+                                            if (weights.isNotEmpty() && weights.split(".").first().length <= 5) {
+                                                if (weightUnit) {
+                                                    val lb = (weights.toDouble() * 2.205).roundTwoDecimal()
+                                                    viewModel.updateWeight(index, lb.toString().removeSuffix(".0"))
+                                                } else {
+                                                    val kg = (weights.toDouble() / 2.205).roundTwoDecimal()
+                                                    viewModel.updateWeight(index, kg.toString().removeSuffix(".0"))
+                                                }
+                                            }
+
+                                            viewModel.toggleWeightUnit(index)
+                                        },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = colors.slightlyDarkerLinkBlue,
+                                            contentColor = colors.white,
+                                        ),
+                                        modifier = Modifier.height(54.dp)
+                                    ) {
+                                        DescriptionText(text = if (weightUnit) "KG" else "LB")
+                                    }
+                                }
+                            }
 
                             Spacer(Modifier.height(20.dp))
 

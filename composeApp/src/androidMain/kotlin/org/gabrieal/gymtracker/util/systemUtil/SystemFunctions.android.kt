@@ -1,6 +1,7 @@
 package org.gabrieal.gymtracker.util.systemUtil
 
 import android.content.Intent
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -209,4 +210,12 @@ actual fun getMondayOrSameInstant(instant: Instant): Instant {
     calendar.set(Calendar.MILLISECOND, 0)
 
     return Instant.fromEpochMilliseconds(calendar.timeInMillis)
+}
+
+actual fun keepScreenOn() {
+    activityReference?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+}
+
+actual fun allowScreenSleep() {
+    activityReference?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 }

@@ -43,6 +43,24 @@ fun popOut(): Animatable<Float, AnimationVector1D> {
 }
 
 @Composable
+fun popOutExtra(): Animatable<Float, AnimationVector1D> {
+    val scale = remember { Animatable(0f) }
+
+    LaunchedEffect(Unit) {
+        scale.animateTo(
+            targetValue = 1.5f,
+            animationSpec = tween(600, easing = FastOutSlowInEasing)
+        )
+        scale.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(300, easing = FastOutSlowInEasing)
+        )
+    }
+
+    return scale
+}
+
+@Composable
 fun AnimatedDividerWithScale() {
     var isExpanded by remember { mutableStateOf(false) }
 

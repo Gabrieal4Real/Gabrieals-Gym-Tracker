@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowColumn
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -59,6 +60,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.icon_reps
 import gymtracker.composeapp.generated.resources.icon_sets
+import gymtracker.composeapp.generated.resources.tier_0
+import gymtracker.composeapp.generated.resources.tier_1
+import gymtracker.composeapp.generated.resources.tier_2
+import gymtracker.composeapp.generated.resources.tier_3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import network.chaintech.chartsLib.ui.linechart.model.IntersectionPoint
@@ -87,7 +92,6 @@ import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
 import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
 import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
-import org.gabrieal.gymtracker.util.widgets.BigText
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
@@ -99,6 +103,7 @@ import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.gabrieal.gymtracker.util.widgets.TitleText
 import org.gabrieal.gymtracker.util.widgets.popOut
+import org.gabrieal.gymtracker.util.widgets.popOutExtra
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -258,16 +263,17 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
     ) {
         var expandedExercise by remember { mutableStateOf<SelectedExercise?>(null) }
 
-        FlowColumn(
+        FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 4.dp),
-            maxItemsInEachColumn = 2,
+            maxItemsInEachRow = 2,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             exercises.forEachIndexed { index, exercise ->
                 val weight = progress?.exerciseWeights?.getOrNull(index)
+                val weightUnit = progress?.exerciseWeightUnit?.getOrNull(index)
 
                 Box(
                     modifier = Modifier
@@ -295,7 +301,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                     )
 
                     SubtitleText(
-                        "${weight?.ifBlank { "0" }}kg".uppercase(),
+                        "${weight?.ifBlank { "0" }}${if (weightUnit == false) "lb" else "kg"}".uppercase(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.BottomEnd),
@@ -307,12 +313,24 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
 
         expandedExercise?.let { exercise ->
             Dialog(onDismissRequest = { expandedExercise = null }) {
+                val index = exercises.indexOf(exercise)
+                val weight = progress?.exerciseWeights?.getOrNull(index)
+                val weightUnit = progress?.exerciseWeightUnit?.getOrNull(index)
+                val reps = progress?.exerciseReps?.getOrNull(index)?.count { it.isNotBlank() && it.toInt() >= (exercise.reps?.second ?: 0) } ?: 0
+                val sets = progress?.exerciseSets?.getOrNull(index)?.count { it } ?: 0
+                val setsText = "$sets out of ${exercise.sets}"
+                val repsText = "$reps out of ${exercise.sets}"
+
+                val listOfTriple = listOf(
+                    Triple("Sets Completed", setsText, Res.drawable.icon_sets),
+                    Triple("Max Reps Hit", repsText, Res.drawable.icon_reps))
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .heightIn(min = 400.dp)
                         .clip(RoundedCornerShape(16.dp))
-                        .background(colors.lighterBackground.copy(alpha = 0.8f))
+                        .background(colors.lighterBackground.copy(alpha = 0.7f))
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -322,30 +340,14 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                         textAlign = TextAlign.Center
                     )
 
-                    val index = exercises.indexOf(exercise)
-                    val weight = progress?.exerciseWeights?.getOrNull(index)
-
                     BiggerText(
-                        "${weight?.ifBlank { "0" }}kg",
+                        "${weight?.ifBlank { "0" }}${if (weightUnit == false) "lb" else "kg"}".uppercase(),
                         modifier = Modifier.padding(top = 8.dp).scale(popOut().value)
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
                     AnimatedDividerWithScale()
                     Spacer(modifier = Modifier.height(16.dp))
-
-                    val sets = Triple(
-                        "Sets Completed",
-                        "${progress?.exerciseSets?.getOrNull(index)?.count { it } ?: 0} out of ${exercise.sets}",
-                        Res.drawable.icon_sets
-                    )
-                    val reps = Triple(
-                        "Max Reps Hit",
-                        "${progress?.exerciseReps?.getOrNull(index)?.count { it.isNotBlank() && it.toInt() >= (exercise.reps?.second ?: 0) } ?: 0} out of ${exercise.sets}",
-                        Res.drawable.icon_reps
-                    )
-
-                    val listOfTriple = listOf(sets, reps)
 
                     listOfTriple.forEach { triple ->
                         Row(
@@ -376,9 +378,42 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
 
                         Spacer(modifier = Modifier.height(16.dp))
                     }
+
+                    getRankingForCompletion(sets, reps, exercise.sets)
                 }
             }
         }
+    }
+
+    @Composable
+    private fun getRankingForCompletion(
+        completedSets: Int,
+        completedReps: Int,
+        maxSets: Int?
+    ) {
+        val totalPoints = (completedSets + completedReps).toDouble()
+        val maxPoints = ((maxSets ?: 0) + (maxSets ?: 0)).toDouble()
+
+        val tier = when {
+            totalPoints.div(maxPoints) >= 0.95 -> 0
+            totalPoints.div(maxPoints) >= 0.8 -> 1
+            totalPoints.div(maxPoints) >= 0.4 -> 2
+            else -> 3
+        }
+
+        val drawableResource = when (tier) {
+            0 -> Res.drawable.tier_0
+            1 -> Res.drawable.tier_1
+            2 -> Res.drawable.tier_2
+            3 -> Res.drawable.tier_3
+            else -> Res.drawable.tier_3
+        }
+
+        Image(
+            painter = painterResource(drawableResource),
+            contentDescription = "Tier $tier",
+            modifier = Modifier.size(150.dp).padding(end = 8.dp).scale(popOutExtra().value)
+        )
     }
 
     @Composable

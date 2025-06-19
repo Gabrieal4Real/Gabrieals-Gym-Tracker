@@ -36,7 +36,8 @@ fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholderText: String,
-    resource: Pair<ImageVector, () -> Unit>? = null
+    resource: Pair<ImageVector, () -> Unit>? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
 ) {
     val customSelectionColors = TextSelectionColors(
         handleColor = colors.slightlyDarkerLinkBlue,
@@ -54,6 +55,7 @@ fun CustomTextField(
                         modifier = Modifier.align(Alignment.CenterStart)
                     )
                 },
+                keyboardOptions = keyboardOptions,
                 onValueChange = onValueChange,
                 textStyle = TextStyle(
                     fontSize = 14.sp,

@@ -66,3 +66,7 @@ expect fun parseDateToInstant(dateString: String, pattern: String): Instant
 
 @OptIn(ExperimentalTime::class)
 expect fun getMondayOrSameInstant(instant: Instant): Instant
+
+expect fun keepScreenOn()
+
+expect fun allowScreenSleep()
