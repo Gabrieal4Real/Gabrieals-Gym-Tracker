@@ -98,15 +98,13 @@ actual fun ShowInputDialog(
                     onValueChange = {
                         when (type) {
                             KeyboardType.Decimal -> {
-                                if (it.isEmpty() || it.isValidDecimal()) {
-                                    text = it
-                                }
+                                text =
+                                    it.takeIf { input -> input.isEmpty() || input.isValidDecimal() } ?: text
                             }
 
                             KeyboardType.Number -> {
-                                if (it.isEmpty() || it.isValidNumber()) {
-                                    text = it
-                                }
+                                text =
+                                    it.takeIf { input -> input.isEmpty() || input.isValidNumber() } ?: text
                             }
 
                             else -> {

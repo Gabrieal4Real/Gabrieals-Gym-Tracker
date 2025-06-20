@@ -52,7 +52,7 @@ class StartWorkoutViewModel {
     fun setCallback(callback: (SelectedExerciseList) -> Unit) {
         this.callback = callback
     }
-    
+
     fun setFailureCallback(failureCallback: () -> Unit) {
         this.failureCallback = failureCallback
     }
@@ -64,13 +64,18 @@ class StartWorkoutViewModel {
         val completedSetsList = mutableListOf<MutableList<Boolean>>()
         val weightUnit = mutableListOf<Boolean>()
 
-        currentActiveExercise?.exercises?.forEach { exercise ->
+        val previousWorkout =
+            getSpecificWorkoutHistoryFromDB(currentActiveExercise?.routineName ?: "")
+
+        currentActiveExercise?.exercises?.forEachIndexed { index, exercise ->
             val setCount = exercise.sets ?: 0
 
             weightList.add("")
             repsList.add(MutableList(setCount) { "" })
             completedSetsList.add(MutableList(setCount) { false })
-            weightUnit.add(true)
+
+            val unitList = previousWorkout?.workoutProgress?.exerciseWeightUnit
+            weightUnit.add(unitList?.getOrNull(index) ?: true)
         }
 
         setCurrentlyActiveRoutineToDB(
@@ -132,7 +137,8 @@ class StartWorkoutViewModel {
     fun toggleWeightUnit(index: Int) =
         updateWorkoutProgress {
             it.copy(
-                exerciseWeightUnit = it.exerciseWeightUnit.toMutableList().apply { this[index] = !this[index] })
+                exerciseWeightUnit = it.exerciseWeightUnit.toMutableList()
+                    .apply { this[index] = !this[index] })
         }
 
     fun updateReps(index: Int, reps: String, repIndex: Int) =
@@ -163,18 +169,19 @@ class StartWorkoutViewModel {
         weights.forEachIndexed { index, weight ->
             val repsList = reps[index]
             val setsList = sets[index]
+            val isLb = weightUnit[index]
 
-            repsList.forEachIndexed { repIndex, reps ->
+            val weightValue = weight.toDoubleOrNull()?.takeIf { weight.isNotEmpty() } ?: 0.0
+
+            repsList.forEachIndexed { repIndex, rep ->
                 if (setsList[repIndex]) {
-                    completedVolume += if (weightUnit[index]) {
-                        (if (weight.isEmpty()) 0.0 else weight.toDouble()) * (if (reps.isEmpty()) 0.0 else reps.toDouble())
-                    } else {
-                        (if (weight.isEmpty()) 0.0 else weight.toDouble() / 2.205) * (if (reps.isEmpty()) 0.0 else reps.toDouble())
-                    }
-
+                    val repsValue = rep.toDoubleOrNull()?.takeIf { rep.isNotEmpty() } ?: 0.0
+                    val convertedWeight = if (isLb) weightValue else weightValue / 2.205
+                    completedVolume += convertedWeight * repsValue
                 }
             }
         }
+
 
         _uiState.update { it.copy(completedVolume = completedVolume.roundTwoDecimal()) }
     }
@@ -262,7 +269,10 @@ class StartWorkoutViewModel {
     fun setWorkoutProgress(workoutProgress: WorkoutProgress) =
         _uiState.update { it.copy(workoutProgress = workoutProgress) }
 
-    fun getPreviousWorkout(): List<String> {
-        return getSpecificWorkoutHistoryFromDB(_uiState.value.selectedExerciseList?.routineName ?: "")?.workoutProgress?.exerciseWeights ?: emptyList()
-    }
+    private fun getPreviousWorkoutProgress() =
+        getSpecificWorkoutHistoryFromDB(_uiState.value.selectedExerciseList?.routineName ?: "")?.workoutProgress
+
+    fun getPreviousWorkout() = getPreviousWorkoutProgress()?.exerciseWeights ?: emptyList()
+
+    fun getPreviousWeightUnit() = getPreviousWorkoutProgress()?.exerciseWeightUnit ?: emptyList()
 }

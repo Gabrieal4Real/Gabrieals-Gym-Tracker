@@ -29,7 +29,6 @@ import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.start_editing
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
-import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.features.makeAPlan.viewmodel.MakeAPlanViewModel
 import org.gabrieal.gymtracker.templates
 import org.gabrieal.gymtracker.util.app.getCurrentPlan

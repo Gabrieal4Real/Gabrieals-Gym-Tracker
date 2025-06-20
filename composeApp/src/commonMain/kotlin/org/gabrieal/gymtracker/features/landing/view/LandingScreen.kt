@@ -124,20 +124,24 @@ object LandingScreen : Screen, KoinComponent {
         val tabNavigator = LocalTabNavigator.current
 
         Box(modifier = Modifier.clickable {
-            AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(landingCurrentlyActiveRoutine, { activeRoutine ->
-                val selectedRoutineList = getSelectedRoutineListFromDB()
-                selectedRoutineList.find { it.routineName == activeRoutine.routineName }?.let { it.isCompleted = true }
-                setSelectedRoutineListToDB(selectedRoutineList)
+            AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(
+                landingCurrentlyActiveRoutine,
+                { activeRoutine ->
+                    val selectedRoutineList = getSelectedRoutineListFromDB()
+                    selectedRoutineList.find { it.routineName == activeRoutine.routineName }
+                        ?.let { it.isCompleted = true }
+                    setSelectedRoutineListToDB(selectedRoutineList)
 
-                currentlyActiveRoutine = null
-                viewModel.setCurrentlyActiveRoutine(null)
-                AppNavigator.dismissBottomSheet()
-                (tabNavigator.current as? HomeTab)?.viewModel?.updateContext()
-            }, {
-                currentlyActiveRoutine = null
-                viewModel.setCurrentlyActiveRoutine(null)
-                AppNavigator.dismissBottomSheet()
-            })
+                    currentlyActiveRoutine = null
+                    viewModel.setCurrentlyActiveRoutine(null)
+                    AppNavigator.dismissBottomSheet()
+                    (tabNavigator.current as? HomeTab)?.viewModel?.updateContext()
+                },
+                {
+                    currentlyActiveRoutine = null
+                    viewModel.setCurrentlyActiveRoutine(null)
+                    AppNavigator.dismissBottomSheet()
+                })
         }) {
             Image(
                 painter = painterResource(Res.drawable.workout_3),

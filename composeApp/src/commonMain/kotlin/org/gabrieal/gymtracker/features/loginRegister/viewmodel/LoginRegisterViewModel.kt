@@ -31,9 +31,11 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
 
     fun changeRegisterMode() = _uiState.update { it.copy(isRegisterMode = !it.isRegisterMode) }
 
-    fun loginExistingUser(email: String, password: String) = performAuth(email, password, isRegister = false)
+    fun loginExistingUser(email: String, password: String) =
+        performAuth(email, password, isRegister = false)
 
-    fun registerNewUser(email: String, password: String) = performAuth(email, password, isRegister = true)
+    fun registerNewUser(email: String, password: String) =
+        performAuth(email, password, isRegister = true)
 
     private fun performAuth(email: String, password: String, isRegister: Boolean) {
         viewModelScope.launch {
@@ -117,8 +119,9 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
         AppNavigator.dismissBottomSheet()
     }
 
-    private fun clearUserInput() = _uiState.update { it.copy(userName = "", email = "", password = "") }
-    
+    private fun clearUserInput() =
+        _uiState.update { it.copy(userName = "", email = "", password = "") }
+
 
     private fun updateProfile(email: String? = null, userName: String? = null) {
         val currentProfile = _uiState.value.profile
@@ -129,7 +132,7 @@ class LoginRegisterViewModel(private val loginRegisterRepo: LoginRegisterRepo) {
         _uiState.update { it.copy(profile = updatedProfile) }
     }
 
-    
+
     fun updateError() = _uiState.update { it.copy(error = null) }
 
     fun updateName(userName: String) = _uiState.update { it.copy(userName = userName) }

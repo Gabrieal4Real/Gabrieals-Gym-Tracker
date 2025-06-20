@@ -84,18 +84,19 @@ fun CustomTextField(
                     focusedContainerColor = colors.white,
                     unfocusedContainerColor = colors.white
                 ),
-                trailingIcon = resource?.let { (icon, click) -> {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = icon.name,
-                        tint = colors.black,
-                        modifier = Modifier.size(48.dp).align(Alignment.CenterEnd)
-                            .padding(start = 8.dp, end = 8.dp).clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = click
-                            )
-                    )
+                trailingIcon = resource?.let { (icon, click) ->
+                    {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = icon.name,
+                            tint = colors.black,
+                            modifier = Modifier.size(48.dp).align(Alignment.CenterEnd)
+                                .padding(start = 8.dp, end = 8.dp).clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null,
+                                    onClick = click
+                                )
+                        )
                     }
                 }
             )
@@ -152,7 +153,8 @@ fun CustomNonClickableTextField(
                 unfocusedContainerColor = colors.white,
                 disabledContainerColor = colors.textPrimary
             ),
-            trailingIcon = resource?.let { (icon, click) -> {
+            trailingIcon = resource?.let { (icon, click) ->
+                {
                     Icon(
                         imageVector = icon,
                         contentDescription = icon.name,

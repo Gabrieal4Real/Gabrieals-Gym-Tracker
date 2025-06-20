@@ -22,17 +22,12 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,11 +46,9 @@ import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
-import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
 import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
-import org.gabrieal.gymtracker.util.widgets.BigText
 import org.gabrieal.gymtracker.util.widgets.ClickToStartTimerBar
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomGrabber
@@ -104,6 +97,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         val showNotification = uiState.showNotification
         val showWarningReplace = uiState.showWarningReplace
         val previousWeights = viewModel.getPreviousWorkout()
+        val previousWeightUnit = viewModel.getPreviousWeightUnit()
 
         LaunchedEffect(key1 = showNotification) {
             requestNotificationPermission()
@@ -148,7 +142,10 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                     modifier = Modifier.fillMaxWidth().padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         AssistChip(
                             modifier = Modifier.weight(0.38f),
                             colors = AssistChipDefaults.assistChipColors(
@@ -264,7 +261,13 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                 ) {
                     selectedExerciseList?.exercises?.forEachIndexed { index, exercise ->
                         item {
-                            ExerciseItem(index, exercise, uiState, previousWeights)
+                            ExerciseItem(
+                                index,
+                                exercise,
+                                uiState,
+                                previousWeights,
+                                previousWeightUnit
+                            )
                         }
                     }
                 }
@@ -309,16 +312,20 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         index: Int,
         exercise: SelectedExercise,
         uiState: StartWorkoutUiState,
-        previousWeights: List<String>?
+        previousWeights: List<String>,
+        previousWeightUnits: List<Boolean>
     ) {
         val expanded = uiState.expandedExercises[index]
         val weights = uiState.workoutProgress.exerciseWeights[index]
         val reps = uiState.workoutProgress.exerciseReps[index]
         val sets = uiState.workoutProgress.exerciseSets[index]
-        val previousWeight = previousWeights?.getOrNull(index)
-            ?.takeIf { it.isNotBlank() }
-            ?.let { "$it kg" } ?: "N/A"
         val weightUnit = uiState.workoutProgress.exerciseWeightUnit[index]
+        val previousWeightUnit = previousWeightUnits.getOrNull(index)
+            ?.let { if (!previousWeightUnits[index]) "LB" else "KG" } ?: "KG"
+
+        val previousWeight = previousWeights.getOrNull(index)
+            ?.takeIf { it.isNotBlank() }
+            ?.let { "$it $previousWeightUnit" } ?: "N/A"
 
         CustomCard(
             backgroundEnabled = !expanded,
@@ -388,22 +395,19 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                 )
 
-                                Row (modifier = Modifier.align(Alignment.CenterEnd).padding(end = 1.dp)) {
+                                Row(modifier = Modifier.align(Alignment.CenterEnd).padding(end = 1.dp)) {
                                     Button(
                                         contentPadding = PaddingValues(8.dp),
                                         shape = RoundedCornerShape(topEnd = 11.dp, bottomEnd = 11.dp),
                                         onClick = {
-                                            if (weights.isNotEmpty() && weights.split(".").first().length <= 5) {
-                                                if (weightUnit) {
-                                                    val lb = (weights.toDouble() * 2.205).roundTwoDecimal()
-                                                    viewModel.updateWeight(index, lb.toString().removeSuffix(".0"))
-                                                } else {
-                                                    val kg = (weights.toDouble() / 2.205).roundTwoDecimal()
-                                                    viewModel.updateWeight(index, kg.toString().removeSuffix(".0"))
-                                                }
+                                            if (weights.isNotEmpty() && weights.substringBefore(".").length <= 5) {
+                                                val factor = if (weightUnit) 2.205 else 1 / 2.205
+                                                val converted = (weights.toDouble() * factor).roundTwoDecimal()
+                                                viewModel.updateWeight(index, converted.toString().removeSuffix(".0"))
                                             }
 
                                             viewModel.toggleWeightUnit(index)
+                                            viewModel.toggleSetCompleted()
                                         },
                                         colors = ButtonDefaults.buttonColors(
                                             containerColor = colors.slightlyDarkerLinkBlue,

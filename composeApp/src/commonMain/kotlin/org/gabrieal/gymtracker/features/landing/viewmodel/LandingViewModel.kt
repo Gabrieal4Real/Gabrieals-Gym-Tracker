@@ -12,9 +12,12 @@ class LandingViewModel {
     private val _uiState = MutableStateFlow(LandingUiState())
     val uiState: StateFlow<LandingUiState> = _uiState.asStateFlow()
 
-    fun setCurrentlyActiveRoutine(currentlyActiveRoutine: SelectedExerciseList?) = _uiState.update { it.copy(currentlyActiveRoutine = currentlyActiveRoutine) }
+    fun setCurrentlyActiveRoutine(currentlyActiveRoutine: SelectedExerciseList?) =
+        _uiState.update { it.copy(currentlyActiveRoutine = currentlyActiveRoutine) }
 
-    fun resetCompletedList() = setCompletedRoutineList(resetAllCompletedStatus(getSelectedRoutineListFromDB()))
+    fun resetCompletedList() =
+        setCompletedRoutineList(resetAllCompletedStatus(getSelectedRoutineListFromDB()))
 
-    fun setCompletedRoutineList(resetCompletedList: Boolean) = _uiState.update { it.copy(resetCompletedList = resetCompletedList) }
+    fun setCompletedRoutineList(resetCompletedList: Boolean) =
+        _uiState.update { it.copy(resetCompletedList = resetCompletedList) }
 }

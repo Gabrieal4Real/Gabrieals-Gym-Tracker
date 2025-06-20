@@ -4,11 +4,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.WorkoutHistory
 import org.gabrieal.gymtracker.util.app.planTitles
-import org.gabrieal.gymtracker.util.enums.ActivityLevel
-import org.gabrieal.gymtracker.util.enums.FitnessGoal
 
 class WorkoutHistoryViewModel {
     private val _uiState = MutableStateFlow(WorkoutHistoryUiState())

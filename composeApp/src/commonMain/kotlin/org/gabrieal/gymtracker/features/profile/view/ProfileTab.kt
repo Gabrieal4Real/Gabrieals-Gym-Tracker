@@ -302,8 +302,9 @@ object ProfileTab : Tab, KoinComponent {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         typeOfData.forEachIndexed { index, pair ->
-                            val title: String =
-                                if (pair.first.first != null) "${pair.first.first}${pair.first.third}" else "No Data"
+                            val title =
+                                pair.first.first?.let { "$it${pair.first.third}" } ?: "No Data"
+
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.weight(1f).clickable {
