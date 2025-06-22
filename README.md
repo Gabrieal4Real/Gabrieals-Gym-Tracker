@@ -3,9 +3,8 @@
 A modern, multiplatform gym tracking app built with Kotlin Multiplatform and Jetpack Compose. Track your workouts, visualize progress, and manage your fitness journey across devices.
 
 ## Screenshot
-<img width="1369" alt="GABRIEAL'S GYM TRACKER" src="https://github.com/user-attachments/assets/8e006899-8872-48fb-9d13-0745ab063b5a" />
 
-
+<img width="1387" alt="Screenshot 2025-06-23 at 1 13 02 AM" src="https://github.com/user-attachments/assets/20c06d5c-373d-438f-bdf0-58761a57b25b" />
 
 ## Features
 
