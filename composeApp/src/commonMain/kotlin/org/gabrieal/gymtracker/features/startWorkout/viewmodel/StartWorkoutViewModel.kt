@@ -11,12 +11,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import network.chaintech.cmpcharts.common.extensions.roundTwoDecimal
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.data.sqldelight.getSpecificWorkoutHistoryFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setCurrentlyActiveRoutineToDB
 import org.gabrieal.gymtracker.data.sqldelight.updateCurrentlyActiveRoutineToDB
+import org.gabrieal.gymtracker.util.app.roundTwoDecimal
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.allowScreenSleep
 import org.gabrieal.gymtracker.util.systemUtil.keepScreenOn

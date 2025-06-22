@@ -50,11 +50,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import cafe.adriel.voyager.core.screen.Screen
 import gymtracker.composeapp.generated.resources.Res
@@ -66,26 +63,12 @@ import gymtracker.composeapp.generated.resources.tier_2
 import gymtracker.composeapp.generated.resources.tier_3
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import network.chaintech.chartsLib.ui.linechart.model.IntersectionPoint
-import network.chaintech.cmpcharts.axis.AxisProperties
-import network.chaintech.cmpcharts.common.extensions.formatToSinglePrecision
-import network.chaintech.cmpcharts.common.model.Point
-import network.chaintech.cmpcharts.common.ui.GridLinesUtil
-import network.chaintech.cmpcharts.common.ui.SelectionHighlightPoint
-import network.chaintech.cmpcharts.common.ui.SelectionHighlightPopUp
-import network.chaintech.cmpcharts.common.ui.ShadowUnderLine
-import network.chaintech.cmpcharts.ui.linechart.LineChart
-import network.chaintech.cmpcharts.ui.linechart.model.Line
-import network.chaintech.cmpcharts.ui.linechart.model.LineChartProperties
-import network.chaintech.cmpcharts.ui.linechart.model.LinePlotData
-import network.chaintech.cmpcharts.ui.linechart.model.LineStyle
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.WorkoutHistory
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.data.sqldelight.getAllWorkoutHistoryFromDB
 import org.gabrieal.gymtracker.features.workoutHistory.viewmodel.WorkoutHistoryViewModel
-import org.gabrieal.gymtracker.util.app.RegularText
 import org.gabrieal.gymtracker.util.app.differenceTime
 import org.gabrieal.gymtracker.util.app.planTitles
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -95,6 +78,7 @@ import org.gabrieal.gymtracker.util.widgets.AnimatedDividerWithScale
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
+import org.gabrieal.gymtracker.util.widgets.CustomLineChart
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
@@ -130,6 +114,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
             Header()
             VolumeGraph(groupedHistory, pagerState.currentPage)
             WorkoutTabs(planTitles, selectedTabIndex, pagerState, scope)
+            CustomHorizontalDivider()
             WorkoutPages(groupedHistory, pagerState)
         }
     }
@@ -173,9 +158,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                     )
                 }
             },
-            divider = {
-                CustomHorizontalDivider()
-            }
+            divider = {}
         ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
@@ -462,88 +445,19 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                 ?: emptyList() else emptyList()
 
         var isSampleData = false
-        var pointsData = completedVolumes.filterNotNull().asReversed().mapIndexed { index, volume ->
-            Point(
-                x = index.toFloat() + 1,
-                y = volume.toFloat()
-            )
-        }
 
-        if (pointsData.isEmpty() || pointsData.size < 8) {
+        var pointsData = completedVolumes.filterNotNull().asReversed()
+
+        if (pointsData.isEmpty() || pointsData.size < 3) {
             isSampleData = true
-            pointsData = List(8) { index ->
-                Point(
-                    x = index.toFloat() + 1,
-                    y = (100..2000).random().toFloat()
-                )
-            }
+            pointsData = List(4) { (100..2000).random().toDouble() }
         }
-
-        val textMeasurer = rememberTextMeasurer()
-
-        val steps = 4
-        val xAxisProperties = AxisProperties(
-            font = RegularText(),
-            shouldExtendLineToEnd = true,
-            stepSize = 48.dp,
-            initialDrawPadding = 8.dp,
-            labelFontSize = 12.sp,
-            labelPadding = 4.dp,
-            labelColor = colors.white,
-            lineColor = colors.white,
-            stepCount = pointsData.size - 1,
-            labelFormatter = { i -> pointsData[i].x.toInt().toString() },
-        )
-
-        val yAxisProperties = AxisProperties(
-            font = RegularText(),
-            initialDrawPadding = 20.dp,
-            labelFontSize = 12.sp,
-            labelPadding = 4.dp,
-            stepCount = steps,
-            labelColor = colors.white,
-            lineColor = colors.white,
-            labelFormatter = { i ->
-                val yMin = pointsData.minOf { it.y }
-                val yMax = pointsData.maxOf { it.y }
-                val yScale = (yMax - yMin) / steps
-                ((i * yScale) + yMin).formatToSinglePrecision()
-            }
-        )
-
-        val lineChartProperties = LineChartProperties(
-            paddingTop = 16.dp,
-            bottomPadding = 12.dp,
-            backgroundColor = colors.lighterBackground,
-            linePlotData = LinePlotData(
-                lines = listOf(
-                    Line(
-                        dataPoints = pointsData,
-                        LineStyle(color = colors.slightlyDarkerLinkBlue),
-                        IntersectionPoint(color = colors.slightlyDarkerLinkBlue),
-                        SelectionHighlightPoint(color = colors.lightMaroon),
-                        ShadowUnderLine(),
-                        SelectionHighlightPopUp(
-                            textMeasurer = textMeasurer,
-                            backgroundColor = colors.maroon,
-                            labelColor = colors.white,
-                            labelTypeface = FontWeight.Bold
-                        )
-                    )
-                )
-            ),
-            xAxisProperties = xAxisProperties,
-            yAxisProperties = yAxisProperties,
-            gridLines = GridLinesUtil(color = colors.placeholderColor)
-        )
 
         Box(modifier = Modifier.height(220.dp).fillMaxWidth()) {
-            LineChart(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(colors.lighterBackground).blur(if (isSampleData) 2.dp else 0.dp),
-                lineChartProperties = lineChartProperties
-            )
+            CustomLineChart(points = pointsData, modifier = Modifier.fillMaxSize()
+                .background(colors.lighterBackground)
+                .blur(if (isSampleData) 2.dp else 0.dp)
+                .padding(vertical = 8.dp, horizontal = 12.dp))
 
             if (isSampleData) {
                 DescriptionText(

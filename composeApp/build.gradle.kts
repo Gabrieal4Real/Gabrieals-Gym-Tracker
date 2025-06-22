@@ -78,7 +78,7 @@ kotlin {
 
             implementation(libs.insert.koin.koin.core)
 
-            implementation(libs.cmpcharts)
+            implementation(libs.vico.multiplatform)
         }
     }
 }

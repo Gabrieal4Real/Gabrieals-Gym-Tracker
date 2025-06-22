@@ -32,7 +32,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import network.chaintech.cmpcharts.common.extensions.roundTwoDecimal
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExercise
@@ -46,6 +45,7 @@ import org.gabrieal.gymtracker.util.app.formatRestTime
 import org.gabrieal.gymtracker.util.app.getCurrentTimerInSeconds
 import org.gabrieal.gymtracker.util.app.isValidDecimal
 import org.gabrieal.gymtracker.util.app.isValidNumber
+import org.gabrieal.gymtracker.util.app.roundTwoDecimal
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.notifyPlatform
 import org.gabrieal.gymtracker.util.systemUtil.requestNotificationPermission
