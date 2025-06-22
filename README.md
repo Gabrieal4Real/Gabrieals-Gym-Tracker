@@ -1,14 +1,84 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# Gabrieal's Gym Tracker
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+A modern, multiplatform gym tracking app built with Kotlin Multiplatform and Jetpack Compose. Track your workouts, visualize progress, and manage your fitness journey across devices.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## Features
 
+- Track and log workouts, sets, reps, and weights
+- Visualize workout history with beautiful charts (powered by [Vico](https://github.com/patrykandpatrick/vico))
+- User authentication and cloud sync (Firebase/Firestore)
+- Clean, modern UI with Compose Multiplatform
+- Cross-platform: Android, iOS
+- Uses native dialogs on each platform when required for confirmations, warnings, or input (ensuring familiar UX)
+- Built-in workout timer with notification support to alert you when your rest period is over
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## Optimizations & Architecture
+
+- **Dependency Injection:** All screens use Koin for dependency injection, ensuring ViewModels are managed by the DI container for maintainability and testability.
+- **ProGuard & Minification:** Release builds are optimized with ProGuard for minification and resource shrinking. Custom rules are provided for Kotlin, Koin, Voyager, and Compose.
+- **App Bundle Configuration:** Android App Bundles are configured to split APKs by density and ABI, reducing download size. Language splitting is disabled to include all language resources in each APK. Debug builds have App Bundle features enabled but minification disabled for easier debugging.
+- **Back Press Handling:** Custom back press behavior in MakeAPlanScreen using Voyager's BackHandler (with @InternalVoyagerApi) to show a warning dialog.
+
+## Getting Started
+
+### Prerequisites
+
+- JDK 17+
+- Android Studio (for Android/iOS/desktop builds)
+- Kotlin Multiplatform Mobile plugin
+- Gradle (wrapper included)
+
+### Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Gabrieal4Real/Gabrieals-Gym-Tracker.git
+   cd Gabrieals-Gym-Tracker
+   ```
+2. **Configure API Keys:**
+   - Open `composeApp/src/commonMain/kotlin/org/gabrieal/gymtracker/data/network/APIService.kt`.
+   - Replace `[API_KEY]` and `[PROJECT_ID]` with your Firebase project credentials.
+3. **Install dependencies:**
+   ```bash
+   ./gradlew build
+   ```
+4. **Run the app:**
+   - For Android: Use Android Studio’s device manager.
+   - For iOS: Open the project in Xcode via the generated `.xcworkspace`.
+   - For Desktop: Run the Compose Desktop target.
+
+## Tech Stack
+
+- [Kotlin Multiplatform (KMM)](https://kotlinlang.org/lp/mobile/)  
+- [Jetpack Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)  
+- [Vico (charting library)](https://github.com/patrykandpatrick/vico)  
+- [Firebase/Firestore](https://firebase.google.com/) (authentication & cloud storage)  
+- [Koin (dependency injection)](https://insert-koin.io/)  
+- [SQLDelight (local database)](https://cashapp.github.io/sqldelight/)  
+- [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines) (async, background work)  
+- [StateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/) (reactive state management)
+- [Voyager (navigation)](https://github.com/adrielcafe/voyager)
+
+## Platform Support
+
+- **Android**: Fully supported
+- **iOS**: Fully supported (via Kotlin Multiplatform and Compose for iOS)
+
+## Project Structure
+
+```
+composeApp/
+  ├── src/
+  │   ├── commonMain/
+  │   │   └── kotlin/org/gabrieal/gymtracker/
+  │   │       ├── features/
+  │   │       ├── data/
+  │   │       ├── util/
+  │   │       └── ...
+  │   ├── commonMain/sqldelight/
+  │   │   └── <your .sq files for SQLDelight go here>
+  ├── build.gradle.kts
+gradle/
+  └── libs.versions.toml
+
+---
