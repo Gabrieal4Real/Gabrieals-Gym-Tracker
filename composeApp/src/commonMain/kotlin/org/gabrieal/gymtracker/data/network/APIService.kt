@@ -32,8 +32,8 @@ import kotlin.time.ExperimentalTime
 object APIService {
     private val authBaseUrl = "https://identitytoolkit.googleapis.com/v1"
     private val firestoreBaseUrl = "https://firestore.googleapis.com/v1"
-    private val apiKey = "AIzaSyCepDau1NuwTqpzdKeTBm-klT48vbJDpZ8"
-    private val projectId = "gabrieal-gym-tracker"
+    private val apiKey = "[API_KEY]"
+    private val projectId = "[PROJECT_ID]"
 
     fun registerUrl(): String = "$authBaseUrl/accounts:signUp?key=$apiKey"
     fun loginUrl(): String = "$authBaseUrl/accounts:signInWithPassword?key=$apiKey"
