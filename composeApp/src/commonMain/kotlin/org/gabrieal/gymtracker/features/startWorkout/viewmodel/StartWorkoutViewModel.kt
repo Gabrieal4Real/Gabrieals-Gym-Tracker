@@ -270,9 +270,15 @@ class StartWorkoutViewModel {
         _uiState.update { it.copy(workoutProgress = workoutProgress) }
 
     private fun getPreviousWorkoutProgress() =
-        getSpecificWorkoutHistoryFromDB(_uiState.value.selectedExerciseList?.routineName ?: "")?.workoutProgress
+        getSpecificWorkoutHistoryFromDB(
+            _uiState.value.selectedExerciseList?.routineName ?: ""
+        )?.workoutProgress
 
     fun getPreviousWorkout() = getPreviousWorkoutProgress()?.exerciseWeights ?: emptyList()
 
+    fun getPreviousReps() = getPreviousWorkoutProgress()?.exerciseReps ?: emptyList()
+
     fun getPreviousWeightUnit() = getPreviousWorkoutProgress()?.exerciseWeightUnit ?: emptyList()
+
+    fun showTooltip(maxRepsHit: Boolean) = _uiState.update { it.copy(showTooltip = maxRepsHit) }
 }

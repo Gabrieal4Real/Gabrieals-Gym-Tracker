@@ -16,20 +16,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.KeyboardDoubleArrowUp
+import androidx.compose.material.icons.rounded.SwipeRightAlt
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import org.gabrieal.gymtracker.colors
@@ -60,6 +68,7 @@ import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
 import org.gabrieal.gymtracker.util.widgets.RotatingExpandIcon
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
+import org.gabrieal.gymtracker.util.widgets.TinierText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.koin.core.component.KoinComponent
@@ -97,6 +106,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         val showNotification = uiState.showNotification
         val showWarningReplace = uiState.showWarningReplace
         val previousWeights = viewModel.getPreviousWorkout()
+        val previousReps = viewModel.getPreviousReps()
         val previousWeightUnit = viewModel.getPreviousWeightUnit()
 
         LaunchedEffect(key1 = showNotification) {
@@ -228,7 +238,7 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        addTime.forEachIndexed() { index, (label, seconds) ->
+                        addTime.forEachIndexed { index, (label, seconds) ->
                             Box(
                                 modifier = Modifier
                                     .height(42.dp)
@@ -266,7 +276,8 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                 exercise,
                                 uiState,
                                 previousWeights,
-                                previousWeightUnit
+                                previousWeightUnit,
+                                previousReps
                             )
                         }
                     }
@@ -313,13 +324,21 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
         exercise: SelectedExercise,
         uiState: StartWorkoutUiState,
         previousWeights: List<String>,
-        previousWeightUnits: List<Boolean>
+        previousWeightUnits: List<Boolean>,
+        previousReps: List<List<String>>
     ) {
         val expanded = uiState.expandedExercises[index]
         val weights = uiState.workoutProgress.exerciseWeights[index]
         val reps = uiState.workoutProgress.exerciseReps[index]
         val sets = uiState.workoutProgress.exerciseSets[index]
         val weightUnit = uiState.workoutProgress.exerciseWeightUnit[index]
+        val showTooltip = uiState.showTooltip
+        val previousRepsList = previousReps.getOrNull(index)
+
+        val maxRepsHit =
+            previousRepsList?.count { it.isNotEmpty() && it == exercise.reps?.second.toString() } == exercise.sets
+
+
         val previousWeightUnit = previousWeightUnits.getOrNull(index)
             ?.let { if (!previousWeightUnits[index]) "LB" else "KG" } ?: "KG"
 
@@ -387,7 +406,9 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                 CustomTextField(
                                     value = weights,
                                     onValueChange = {
-                                        if (it.isValidDecimal() && it.split(".").first().length <= 5) {
+                                        if (it.isValidDecimal() && it.split(".")
+                                                .first().length <= 5
+                                        ) {
                                             viewModel.updateWeight(index, it)
                                         }
                                     },
@@ -395,15 +416,58 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                 )
 
-                                Row(modifier = Modifier.align(Alignment.CenterEnd).padding(end = 1.dp)) {
+                                Row(
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                        .padding(end = 1.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box {
+                                        Icon(
+                                            imageVector = if (maxRepsHit) Icons.Rounded.KeyboardDoubleArrowUp else Icons.Rounded.SwipeRightAlt,
+                                            contentDescription = "Increase weight",
+                                            tint = colors.textPrimary,
+                                            modifier = Modifier
+                                                .padding(end = 6.dp)
+                                                .clip(CircleShape)
+                                                .background(
+                                                    color =
+                                                        if (maxRepsHit) colors.checkMarkGreen
+                                                        else colors.deleteRed.copy(alpha = 0.95f)
+                                                )
+                                                .clickable {
+                                                    viewModel.showTooltip(true)
+                                                }.padding(2.dp)
+                                        )
+
+                                        DropdownMenu(
+                                            offset = DpOffset((-2).dp, (2).dp),
+                                            shape = RoundedCornerShape(8.dp),
+                                            containerColor = colors.black.copy(alpha = 0.7f),
+                                            expanded = showTooltip,
+                                            onDismissRequest = { viewModel.showTooltip(false) }
+                                        ) {
+                                            TinierText(
+                                                "🟢 Increase the weight\n🔴 Maintain previous weight",
+                                                modifier = Modifier.padding(horizontal = 4.dp)
+                                            )
+                                        }
+                                    }
+
                                     Button(
                                         contentPadding = PaddingValues(8.dp),
-                                        shape = RoundedCornerShape(topEnd = 11.dp, bottomEnd = 11.dp),
+                                        shape = RoundedCornerShape(
+                                            topEnd = 11.dp,
+                                            bottomEnd = 11.dp
+                                        ),
                                         onClick = {
                                             if (weights.isNotEmpty() && weights.substringBefore(".").length <= 5) {
                                                 val factor = if (weightUnit) 2.205 else 1 / 2.205
-                                                val converted = (weights.toDouble() * factor).roundTwoDecimal()
-                                                viewModel.updateWeight(index, converted.toString().removeSuffix(".0"))
+                                                val converted =
+                                                    (weights.toDouble() * factor).roundTwoDecimal()
+                                                viewModel.updateWeight(
+                                                    index,
+                                                    converted.toString().removeSuffix(".0")
+                                                )
                                             }
 
                                             viewModel.toggleWeightUnit(index)

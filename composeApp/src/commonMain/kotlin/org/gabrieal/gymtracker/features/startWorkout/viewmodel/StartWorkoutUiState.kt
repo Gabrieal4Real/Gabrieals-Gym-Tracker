@@ -17,4 +17,5 @@ data class StartWorkoutUiState(
     val currentTime: Int = 0,
     val isRunning: Boolean = false,
     val showNotification: Boolean = false,
+    val showTooltip: Boolean = false
 )

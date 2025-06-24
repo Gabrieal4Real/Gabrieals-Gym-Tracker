@@ -294,6 +294,7 @@ object HomeTab : Tab, KoinComponent {
     fun ProgressSummary(selectedRoutineList: List<SelectedExerciseList>) {
         CustomCard(
             enabled = true,
+            isAnimated = true,
             content = {
                 Column(
                     modifier = Modifier.padding(16.dp),

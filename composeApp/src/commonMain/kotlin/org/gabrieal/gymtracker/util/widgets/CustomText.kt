@@ -242,6 +242,26 @@ fun MarqueeTinyItalicText(
 }
 
 /**
+ * Poppins Regular with size 10
+ */
+@Composable
+fun TinierText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textPrimary,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    Text(
+        text,
+        style = TextStyle(fontFamily = RegularText(), lineHeight = 14.sp),
+        color = color,
+        fontSize = 10.sp,
+        modifier = modifier,
+        textAlign = textAlign
+    )
+}
+
+/**
  * Poppins Regular with size 12, with blue link
  */
 @Composable
