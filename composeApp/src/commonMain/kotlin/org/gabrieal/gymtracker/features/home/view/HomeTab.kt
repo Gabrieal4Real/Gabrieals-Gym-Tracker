@@ -205,6 +205,9 @@ object HomeTab : Tab, KoinComponent {
     @Composable
     fun LastWorkoutHighlight(selectedRoutineList: List<SelectedExerciseList>) {
         CustomCard(
+            onClick = {
+                viewModel.requestSpotifyToken(listOf("https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d"))
+            },
             enabled = true,
             content = {
                 Column(

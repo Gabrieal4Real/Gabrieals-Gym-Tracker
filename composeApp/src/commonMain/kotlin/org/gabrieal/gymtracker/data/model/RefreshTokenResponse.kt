@@ -12,3 +12,10 @@ data class RefreshTokenResponse(
     val user_id: String = "",
     val project_id: String = ""
 )
+
+@Serializable
+data class SpotifyRefreshTokenResponse(
+    val access_token: String = "",
+    val expires_in: Int = 0,
+    val token_type: String = "",
+)

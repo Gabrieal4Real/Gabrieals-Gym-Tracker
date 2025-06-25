@@ -6,9 +6,13 @@ import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.utils.EmptyContent.headers
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
+import io.ktor.http.Parameters
 import io.ktor.http.contentType
+import io.ktor.http.headers
 import io.ktor.http.isSuccess
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -30,17 +34,29 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 object APIService {
-    private val authBaseUrl = "https://identitytoolkit.googleapis.com/v1"
-    private val firestoreBaseUrl = "https://firestore.googleapis.com/v1"
-    private val apiKey = "[API_KEY]"
-    private val projectId = "[PROJECT_ID]"
+    private const val authBaseUrl = "https://identitytoolkit.googleapis.com/v1"
+    private const val firestoreBaseUrl = "https://firestore.googleapis.com/v1"
+
+    private const val apiKey = "[API_KEY]"
+    private const val projectId = "[PROJECT_ID]"
+    internal const val spotifyClientId = "[SPOTIFY_CLIENT_ID]"
+    internal const val spotifyClientSecret = "[SPOTIFY_CLIENT_SECRET]"
 
     fun registerUrl(): String = "$authBaseUrl/accounts:signUp?key=$apiKey"
     fun loginUrl(): String = "$authBaseUrl/accounts:signInWithPassword?key=$apiKey"
     fun refreshTokenUrl(): String = "https://securetoken.googleapis.com/v1/token?key=$apiKey"
     fun userDocumentPath(uid: String): String =
         "$firestoreBaseUrl/projects/$projectId/databases/(default)/documents/users/$uid"
+    fun spotifyTrackPath(trackId: String): String = "https://api.spotify.com/v1/tracks/$trackId"
+    fun spotifyRequestTokenUrl(): String = "https://accounts.spotify.com/api/token"
 }
+
+fun getSpotifyBody() =
+    buildString {
+        append("grant_type=client_credentials")
+        append("&client_id=${APIService.spotifyClientId}")
+        append("&client_secret=${APIService.spotifyClientSecret}")
+    }
 
 fun JsonElement.toFirestoreValue(): Map<String, Any>? = when (this) {
     is JsonPrimitive -> when {
@@ -97,11 +113,12 @@ suspend inline fun <reified T> HttpClient.makeRequest(
     method: HttpMethod,
     url: String,
     headers: Map<String, String> = emptyMap(),
-    body: Any? = null
+    body: Any? = null,
+    contentType: ContentType = ContentType.Application.Json
 ): Pair<Boolean, T> {
     val response: HttpResponse = this.request(url) {
         this.method = method
-        contentType(ContentType.Application.Json)
+        contentType(contentType)
 
         headers.forEach { (key, value) ->
             header(key, value)
