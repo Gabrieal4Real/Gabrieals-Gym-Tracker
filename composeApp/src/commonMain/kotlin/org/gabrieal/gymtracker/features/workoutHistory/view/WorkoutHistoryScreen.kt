@@ -38,10 +38,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -99,13 +97,103 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
     override fun Content() {
         val scope = rememberCoroutineScope()
         val uiState by viewModel.uiState.collectAsState()
+        val expandedExercise = uiState.expandedExercise
         val groupedHistory = uiState.groupedAndSortedHistory
         val pagerState = rememberPagerState(pageCount = { planTitles.size })
         val selectedTabIndex by remember { derivedStateOf { pagerState.currentPage } }
+        val exercise = expandedExercise?.first
+        val progress = expandedExercise?.second
+        val index = expandedExercise?.third ?: 0
 
         LaunchedEffect(Unit) {
             viewModel.setWorkoutHistoryList(getAllWorkoutHistoryFromDB())
         }
+
+        if (expandedExercise != null)
+            Dialog(onDismissRequest = { viewModel.setExpandedExercise(null) }) {
+                val weight = progress?.exerciseWeights?.getOrNull(index)
+                val weightUnit = progress?.exerciseWeightUnit?.getOrNull(index)
+                val reps = progress?.exerciseReps?.getOrNull(index)
+                    ?.count { it.isNotBlank() && it.toInt() >= (exercise?.reps?.second ?: 0) } ?: 0
+                val sets = progress?.exerciseSets?.getOrNull(index)?.count { it } ?: 0
+                val setsText = "$sets out of ${exercise?.sets}"
+                val repsText = "$reps out of ${exercise?.sets}"
+
+                val listOfTriple = listOf(
+                    Triple("Sets Completed", setsText, Res.drawable.icon_sets),
+                    Triple("Max Reps Hit", repsText, Res.drawable.icon_reps)
+                )
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 400.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(colors.lighterBackground.copy(alpha = 0.7f))
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    SubtitleText(
+                        exercise?.name.orEmpty().uppercase(),
+                        color = colors.textPrimary,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        TinyText(
+                            exercise?.sets.toString() + " sets",
+                            modifier = Modifier.padding(end = 12.dp, bottom = 4.dp)
+                        )
+                        BiggerText(
+                            "${weight?.ifBlank { "0" }}${if (weightUnit == false) "lb" else "kg"}".uppercase(),
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                        TinyText(
+                            exercise?.reps?.second.toString() + " reps",
+                            modifier = Modifier.padding(start = 12.dp, bottom = 4.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                    AnimatedDividerWithScale()
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    listOfTriple.forEach { triple ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(triple.third),
+                                contentDescription = triple.third.toString(),
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.size(40.dp),
+                                colorFilter = ColorFilter.tint(colors.textPrimary)
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+                            DashedDivider()
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.Center,
+                            ) {
+                                TinyText(triple.first, color = colors.textPrimary)
+                                SubtitleText(triple.second, color = colors.textPrimary)
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    getRankingForCompletion(sets, reps, exercise?.sets)
+                }
+            }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -227,10 +315,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                 TinyText("Started on")
                 SubtitleText(formattedDate.uppercase())
 
-                ExerciseGrid(
-                    exercises = workout.exercises.orEmpty(),
-                    progress = workout.workoutProgress
-                )
+                ExerciseGrid(workout.exercises.orEmpty(), workout.workoutProgress)
 
                 Spacer(modifier = Modifier.height(8.dp))
                 TinyItalicText("Completed in $elapsedTime")
@@ -243,8 +328,6 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
         exercises: List<SelectedExercise>,
         progress: WorkoutProgress?
     ) {
-        var expandedExercise by remember { mutableStateOf<SelectedExercise?>(null) }
-
         FlowRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -263,7 +346,7 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                         .defaultMinSize(minHeight = 110.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-                            expandedExercise = exercise
+                            viewModel.setExpandedExercise(Triple(exercise, progress, exercises.indexOf(exercise)))
                         }
                         .background(colors.black.copy(alpha = 0.18f))
                         .padding(vertical = 8.dp, horizontal = 12.dp)
@@ -316,94 +399,6 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
                 }
             }
         }
-
-        expandedExercise?.let { exercise ->
-            Dialog(onDismissRequest = { expandedExercise = null }) {
-                val index = exercises.indexOf(exercise)
-                val weight = progress?.exerciseWeights?.getOrNull(index)
-                val weightUnit = progress?.exerciseWeightUnit?.getOrNull(index)
-                val reps = progress?.exerciseReps?.getOrNull(index)
-                    ?.count { it.isNotBlank() && it.toInt() >= (exercise.reps?.second ?: 0) } ?: 0
-                val sets = progress?.exerciseSets?.getOrNull(index)?.count { it } ?: 0
-                val setsText = "$sets out of ${exercise.sets}"
-                val repsText = "$reps out of ${exercise.sets}"
-
-                val listOfTriple = listOf(
-                    Triple("Sets Completed", setsText, Res.drawable.icon_sets),
-                    Triple("Max Reps Hit", repsText, Res.drawable.icon_reps)
-                )
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 400.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(colors.lighterBackground.copy(alpha = 0.7f))
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    SubtitleText(
-                        exercise.name.orEmpty().uppercase(),
-                        color = colors.textPrimary,
-                        textAlign = TextAlign.Center
-                    )
-
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.Bottom,
-                    ) {
-                        TinyText(
-                            exercise.sets.toString() + " sets",
-                            modifier = Modifier.padding(end = 12.dp, bottom = 4.dp)
-                        )
-                        BiggerText(
-                            "${weight?.ifBlank { "0" }}${if (weightUnit == false) "lb" else "kg"}".uppercase(),
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
-                        TinyText(
-                            exercise.reps?.second.toString() + " reps",
-                            modifier = Modifier.padding(start = 12.dp, bottom = 4.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    AnimatedDividerWithScale()
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    listOfTriple.forEach { triple ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(triple.third),
-                                contentDescription = triple.third.toString(),
-                                contentScale = ContentScale.Fit,
-                                modifier = Modifier.size(40.dp),
-                                colorFilter = ColorFilter.tint(colors.textPrimary)
-                            )
-
-                            Spacer(modifier = Modifier.width(8.dp))
-                            DashedDivider()
-                            Spacer(modifier = Modifier.width(8.dp))
-
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.Center,
-                            ) {
-                                TinyText(triple.first, color = colors.textPrimary)
-                                SubtitleText(triple.second, color = colors.textPrimary)
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
-
-                    getRankingForCompletion(sets, reps, exercise.sets)
-                }
-            }
-        }
     }
 
     @Composable
@@ -446,18 +441,17 @@ object WorkoutHistoryScreen : Screen, KoinComponent {
 
         var isSampleData = false
 
-        var pointsData = completedVolumes.filterNotNull().asReversed()
+        var pointsData = mutableListOf<Double>()
+        pointsData.add(0.0)
+        pointsData.addAll(completedVolumes.filterNotNull().asReversed())
 
-        if (pointsData.isEmpty() || pointsData.size < 3) {
+        if (pointsData.isEmpty() || pointsData.size < 2) {
             isSampleData = true
-            pointsData = List(4) { (100..2000).random().toDouble() }
+            pointsData = MutableList(4) { (100..2000).random().toDouble() }
         }
 
-        Box(modifier = Modifier.height(220.dp).fillMaxWidth()) {
-            CustomLineChart(points = pointsData, modifier = Modifier.fillMaxSize()
-                .background(colors.lighterBackground)
-                .blur(if (isSampleData) 2.dp else 0.dp)
-                .padding(vertical = 8.dp, horizontal = 12.dp))
+        Box(modifier = Modifier.height(240.dp).fillMaxWidth().background(colors.lighterBackground).padding(vertical = 8.dp, horizontal = 12.dp)) {
+            CustomLineChart(points = pointsData, modifier = Modifier.fillMaxSize().blur(if (isSampleData) 2.dp else 0.dp))
 
             if (isSampleData) {
                 DescriptionText(

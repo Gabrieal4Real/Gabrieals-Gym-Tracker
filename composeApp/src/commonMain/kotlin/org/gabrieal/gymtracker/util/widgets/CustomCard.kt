@@ -72,7 +72,7 @@ fun CustomCard(
                         Brush.sweepGradient(
                             listOf(
                                 colors.slightlyDarkerLinkBlue,
-                                colors.borderStroke,
+                                colors.gold,
                                 colors.textPrimary,
                                 colors.borderStroke,
                                 colors.slightlyDarkerLinkBlue

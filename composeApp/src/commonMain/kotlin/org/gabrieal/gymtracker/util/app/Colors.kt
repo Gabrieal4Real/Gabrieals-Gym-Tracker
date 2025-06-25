@@ -19,6 +19,7 @@ abstract class AppColors {
     abstract val deleteRed: Color
     abstract val checkMarkGreen: Color
     abstract val bottomNavIndicator: Color
+    abstract val gold: Color
 }
 
 object DarkColors : AppColors() {
@@ -39,6 +40,7 @@ object DarkColors : AppColors() {
     override val deleteRed = Color(0xFF991B1B)
     override val checkMarkGreen = Color(0xFF708A58)
     override val bottomNavIndicator = Color(0xFF096B68)
+    override val gold = Color(0xFFD4AF37)
 }
 
 object LightColors : AppColors() {
@@ -59,4 +61,5 @@ object LightColors : AppColors() {
     override val deleteRed = Color(0xFFD32F2F)
     override val checkMarkGreen = Color(0xFFA0C878)
     override val bottomNavIndicator = Color(0xFF096B68)
+    override val gold = Color(0xFFD4AF37)
 }

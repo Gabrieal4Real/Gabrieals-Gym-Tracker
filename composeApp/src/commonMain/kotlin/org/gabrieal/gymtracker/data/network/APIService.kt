@@ -52,9 +52,7 @@ fun JsonElement.toFirestoreValue(): Map<String, Any>? = when (this) {
     }
 
     is JsonArray -> mapOf(
-        "arrayValue" to mapOf(
-            "values" to mapNotNull { it.toFirestoreValue() }
-        )
+        "arrayValue" to mapOf("values" to mapNotNull { it.toFirestoreValue() })
     )
 
     is JsonObject -> mapOf(

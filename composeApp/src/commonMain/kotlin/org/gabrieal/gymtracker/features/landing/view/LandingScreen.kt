@@ -12,8 +12,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FitnessCenter
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.rounded.FitnessCenter
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -174,6 +184,15 @@ object LandingScreen : Screen, KoinComponent {
 private fun RowScope.TabNavigationItem(tab: Tab) {
     val tabNavigator = LocalTabNavigator.current
 
+    val tripleOfTabIcons = listOf(
+        Triple(ProfileTab, Icons.Rounded.Person, Icons.Outlined.Person),
+        Triple(HomeTab, Icons.Rounded.Home, Icons.Outlined.Home),
+        Triple(ViewAllWorkoutTabScreen, Icons.Rounded.FitnessCenter, Icons.Outlined.FitnessCenter),
+    )
+
+    val selectedIcon = tripleOfTabIcons.find { it.first == tab }?.second
+    val unselectedIcon = tripleOfTabIcons.find { it.first == tab }?.third
+
     NavigationBarItem(
         colors = NavigationBarItemDefaults.colors(
             selectedIconColor = colors.textPrimary,
@@ -186,12 +205,11 @@ private fun RowScope.TabNavigationItem(tab: Tab) {
         onClick = { tabNavigator.current = tab },
         label = { TinyText(tab.options.title) },
         icon = {
-            tab.options.icon?.let {
-                Icon(
-                    painter = it,
-                    contentDescription = tab.options.title
-                )
-            }
+            val it = if (tabNavigator.current == tab) selectedIcon else unselectedIcon
+            Icon(
+                imageVector = it ?: Icons.Outlined.Home,
+                contentDescription = tab.options.title,
+            )
         }
     )
 }

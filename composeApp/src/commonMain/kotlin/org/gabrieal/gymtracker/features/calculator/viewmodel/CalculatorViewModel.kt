@@ -9,7 +9,6 @@ import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.FitnessGoal
 
 class CalculatorViewModel {
-
     private val _uiState = MutableStateFlow(CalculatorUiState())
 
     val uiState: StateFlow<CalculatorUiState> = _uiState.asStateFlow()
