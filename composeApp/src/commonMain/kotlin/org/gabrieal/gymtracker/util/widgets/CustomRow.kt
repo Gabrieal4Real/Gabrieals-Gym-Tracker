@@ -317,11 +317,13 @@ fun DotsIndicator(
         verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(totalDots) { index ->
+            val isSelected = index == selectedIndex
             Box(
                 modifier = Modifier
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(if (index == selectedIndex) Color.White else Color.Gray)
+                    .width(if (isSelected) 16.dp else 8.dp)
+                    .height(4.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (isSelected) Color.White else Color.Gray),
             )
         }
     }

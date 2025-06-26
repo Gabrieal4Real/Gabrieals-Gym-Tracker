@@ -396,7 +396,7 @@ object HomeTab : Tab, KoinComponent {
             DotsIndicator(
                 totalDots = pageCount ?: 0,
                 selectedIndex = pagerState.currentPage,
-                modifier = Modifier.align(Alignment.TopCenter).padding(16.dp)
+                modifier = Modifier.align(Alignment.TopCenter).padding(12.dp)
             )
 
             Box(
