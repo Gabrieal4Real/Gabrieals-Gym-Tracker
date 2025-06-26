@@ -6,13 +6,9 @@ import io.ktor.client.request.header
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.utils.EmptyContent.headers
 import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
-import io.ktor.http.Parameters
 import io.ktor.http.contentType
-import io.ktor.http.headers
 import io.ktor.http.isSuccess
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
@@ -47,7 +43,7 @@ object APIService {
     fun refreshTokenUrl(): String = "https://securetoken.googleapis.com/v1/token?key=$apiKey"
     fun userDocumentPath(uid: String): String =
         "$firestoreBaseUrl/projects/$projectId/databases/(default)/documents/users/$uid"
-    fun spotifyTrackPath(trackId: String): String = "https://api.spotify.com/v1/tracks/$trackId"
+    fun spotifyTrackPath(trackId: String): String = "https://api.spotify.com/v1/tracks?ids=$trackId"
     fun spotifyRequestTokenUrl(): String = "https://accounts.spotify.com/api/token"
 }
 

@@ -4,14 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SpotifyTracks(
-    val track: List<SpotifyTrack>,
+    val tracks: List<SpotifyTrack>? = null,
 )
 
 @Serializable
 data class SpotifyTrack(
     val name: String,
     val artists: List<Artist>,
-    val album: Album
+    val album: Album,
 )
 
 @Serializable

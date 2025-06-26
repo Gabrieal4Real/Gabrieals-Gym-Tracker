@@ -79,6 +79,8 @@ kotlin {
             implementation(libs.insert.koin.koin.core)
 
             implementation(libs.vico.multiplatform)
+
+            implementation(libs.coil.compose)
         }
     }
 }

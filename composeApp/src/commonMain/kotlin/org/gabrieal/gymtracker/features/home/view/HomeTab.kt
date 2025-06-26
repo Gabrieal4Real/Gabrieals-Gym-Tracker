@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.runtime.Composable
@@ -39,6 +42,7 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import coil3.compose.AsyncImage
 import gymtracker.composeapp.generated.resources.Res
 import gymtracker.composeapp.generated.resources.habit_1
 import gymtracker.composeapp.generated.resources.habit_2
@@ -49,15 +53,10 @@ import gymtracker.composeapp.generated.resources.habit_6
 import gymtracker.composeapp.generated.resources.habit_7
 import gymtracker.composeapp.generated.resources.habit_8
 import gymtracker.composeapp.generated.resources.icon_protein
-import gymtracker.composeapp.generated.resources.workout_1
-import gymtracker.composeapp.generated.resources.workout_2
-import gymtracker.composeapp.generated.resources.workout_3
-import gymtracker.composeapp.generated.resources.workout_4
-import gymtracker.composeapp.generated.resources.workout_5
-import gymtracker.composeapp.generated.resources.workout_7
-import gymtracker.composeapp.generated.resources.workout_8
+import gymtracker.composeapp.generated.resources.spotify_icon
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SpotifyTracks
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
 import org.gabrieal.gymtracker.util.app.longFormDays
 import org.gabrieal.gymtracker.util.systemUtil.Resources
@@ -67,7 +66,9 @@ import org.gabrieal.gymtracker.util.widgets.CustomCard
 import org.gabrieal.gymtracker.util.widgets.DashedDivider
 import org.gabrieal.gymtracker.util.widgets.DescriptionItalicText
 import org.gabrieal.gymtracker.util.widgets.DescriptionText
+import org.gabrieal.gymtracker.util.widgets.DotsIndicator
 import org.gabrieal.gymtracker.util.widgets.LinkText
+import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
@@ -78,16 +79,6 @@ import org.koin.core.component.inject
 
 object HomeTab : Tab, KoinComponent {
     val viewModel: HomeViewModel by inject()
-
-    private val randomSelectedWorkoutImage = listOf(
-        Res.drawable.workout_1,
-        Res.drawable.workout_2,
-        Res.drawable.workout_3,
-        Res.drawable.workout_4,
-        Res.drawable.workout_5,
-        Res.drawable.workout_7,
-        Res.drawable.workout_8
-    ).random()
 
     private val randomSelectedHabitImage = listOf(
         Res.drawable.habit_1,
@@ -113,8 +104,8 @@ object HomeTab : Tab, KoinComponent {
     @Composable
     override fun Content() {
         val uiState by viewModel.uiState.collectAsState()
-
         val selectedRoutineList = uiState.selectedRoutineList
+        val spotifyTracks = uiState.spotifyTracks
 
         val todayRoutine =
             selectedRoutineList.find { it.day.equals(getTodayDayName(), ignoreCase = false) }
@@ -141,6 +132,13 @@ object HomeTab : Tab, KoinComponent {
 
         LaunchedEffect(Unit) {
             viewModel.updateContext()
+            viewModel.requestSpotifyToken(
+                listOf(
+                    "https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d",
+                    "https://open.spotify.com/track/0iaa1DkqOki4FFGq3QjGs3?si=65c78c9b834642d0",
+                    "https://open.spotify.com/track/3K5KXm1uZjiyQk0J7op1xf?si=01468c515fe14746"
+                )
+            )
         }
 
         Column(
@@ -162,7 +160,8 @@ object HomeTab : Tab, KoinComponent {
                             WorkoutHeader(
                                 animateCurrentAspectRatio,
                                 animateCurrentBackgroundOpacity,
-                                todayRoutine
+                                todayRoutine,
+                                spotifyTracks
                             )
                         }
                         item {
@@ -205,9 +204,6 @@ object HomeTab : Tab, KoinComponent {
     @Composable
     fun LastWorkoutHighlight(selectedRoutineList: List<SelectedExerciseList>) {
         CustomCard(
-            onClick = {
-                viewModel.requestSpotifyToken(listOf("https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d"))
-            },
             enabled = true,
             content = {
                 Column(
@@ -221,7 +217,8 @@ object HomeTab : Tab, KoinComponent {
                     if (completedRoutine != null) {
                         BiggerText(completedRoutine.routineName ?: "Rest")
                         Spacer(modifier = Modifier.height(2.dp))
-                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() } ?: "",
+                        TinyItalicText(completedRoutine.exercises?.joinToString(", ") { it.name.orEmpty() }
+                            ?: "",
                             textAlign = TextAlign.Center,
                             maxLines = 2)
                         return@Column
@@ -345,8 +342,15 @@ object HomeTab : Tab, KoinComponent {
     fun WorkoutHeader(
         animateCurrentAspectRatio: Float,
         animateCurrentBackgroundOpacity: Float,
-        selectedRoutine: SelectedExerciseList?
+        selectedRoutine: SelectedExerciseList?,
+        spotifyTracks: SpotifyTracks?
     ) {
+        val workoutImages = viewModel.getListOfWorkoutImages()
+        val spotifyAlbumDescription = viewModel.getSpotifyAlbumDescription(spotifyTracks)
+
+        val pageCount = if (!spotifyTracks?.tracks.isNullOrEmpty()) { spotifyTracks?.tracks?.size } else { workoutImages.size }
+        val pagerState = rememberPagerState(pageCount = { pageCount ?: 0 })
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -359,11 +363,40 @@ object HomeTab : Tab, KoinComponent {
                     }
                 }
         ) {
-            Image(
-                painter = painterResource(randomSelectedWorkoutImage),
-                contentDescription = "Workout image",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize()
+            HorizontalPager(state = pagerState, modifier = Modifier.matchParentSize()) {
+                if (spotifyAlbumDescription.isNotEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        AsyncImage(
+                            model = spotifyTracks?.tracks?.get(it)?.album?.images?.firstOrNull()?.url
+                                ?: "",
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        Image(
+                            painter = painterResource(Res.drawable.spotify_icon),
+                            contentDescription = "Spotify",
+                            alpha = (1f - animateCurrentBackgroundOpacity).coerceIn(0f, 0.95f),
+                            modifier = Modifier
+                                .padding(12.dp)
+                                .size(40.dp)
+                                .align(Alignment.TopEnd)
+                        )
+                    }
+                } else
+                    Image(
+                        painter = painterResource(workoutImages[it].first),
+                        contentDescription = "Workout image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
+            }
+
+            DotsIndicator(
+                totalDots = pageCount ?: 0,
+                selectedIndex = pagerState.currentPage,
+                modifier = Modifier.align(Alignment.TopCenter).padding(16.dp)
             )
 
             Box(
@@ -381,7 +414,6 @@ object HomeTab : Tab, KoinComponent {
 
             Row(
                 modifier = Modifier
-                    .padding(16.dp)
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .background(
@@ -391,13 +423,18 @@ object HomeTab : Tab, KoinComponent {
                                 colors.black.copy(alpha = animateCurrentBackgroundOpacity)
                             )
                         )
-                    ),
+                    ).padding(16.dp),
                 verticalAlignment = Alignment.Bottom,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
                     DescriptionItalicText("Today's Workout")
                     BiggerText(selectedRoutine?.routineName ?: "Rest Day")
+                    MarqueeTinyItalicText(if (spotifyAlbumDescription.isNotEmpty()) {
+                        spotifyAlbumDescription[pagerState.currentPage].second
+                    } else {
+                        workoutImages[pagerState.currentPage].second
+                    }, modifier = Modifier.padding(end = 16.dp))
                 }
 
                 BiggerText(">")

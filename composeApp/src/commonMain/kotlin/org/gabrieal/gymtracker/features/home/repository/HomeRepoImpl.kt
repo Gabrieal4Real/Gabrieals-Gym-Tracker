@@ -25,6 +25,6 @@ class HomeRepoImpl(private val spotifyService: SpotifyService) : HomeRepo {
         }
 
         val (success, result) = spotifyService.getTracks(listOfTrackIds, spotifyUid)
-        return if (success) result as? SpotifyTracks else null
+        return if (success) result else null
     }
 }
