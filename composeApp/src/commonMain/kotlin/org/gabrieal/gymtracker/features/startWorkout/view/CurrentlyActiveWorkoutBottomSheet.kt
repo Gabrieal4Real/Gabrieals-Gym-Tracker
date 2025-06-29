@@ -35,6 +35,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
@@ -71,6 +72,7 @@ import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinierText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
+import org.gabrieal.gymtracker.util.widgets.popOut
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.ExperimentalTime
@@ -181,7 +183,12 @@ object CurrentlyActiveWorkoutBottomSheet : Screen, KoinComponent {
                             textAlign = TextAlign.Center
                         )
                         AssistChip(
-                            modifier = Modifier.weight(0.38f),
+                            modifier = Modifier.weight(0.38f).then(
+                                if (completedSets == totalSets) {
+                                    Modifier.scale(popOut().value)
+                                } else {
+                                    Modifier
+                                }),
                             enabled = completedSets > 0,
                             colors = AssistChipDefaults.assistChipColors(
                                 containerColor = if (completedSets == totalSets) colors.slightlyDarkerLinkBlue else colors.checkMarkGreen,

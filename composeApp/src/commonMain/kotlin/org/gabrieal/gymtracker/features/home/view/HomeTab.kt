@@ -132,13 +132,6 @@ object HomeTab : Tab, KoinComponent {
 
         LaunchedEffect(Unit) {
             viewModel.updateContext()
-            viewModel.requestSpotifyToken(
-                listOf(
-                    "https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d",
-                    "https://open.spotify.com/track/0iaa1DkqOki4FFGq3QjGs3?si=65c78c9b834642d0",
-                    "https://open.spotify.com/track/3K5KXm1uZjiyQk0J7op1xf?si=01468c515fe14746"
-                )
-            )
         }
 
         Column(

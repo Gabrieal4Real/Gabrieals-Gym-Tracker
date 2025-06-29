@@ -11,6 +11,7 @@ import gymtracker.composeapp.generated.resources.workout_8
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +22,7 @@ import org.gabrieal.gymtracker.data.model.SpotifyTracks
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 import org.gabrieal.gymtracker.features.home.repository.HomeRepo
+import org.gabrieal.gymtracker.features.home.view.HomeTab.viewModel
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 class HomeViewModel(private val homeRepo: HomeRepo) {
@@ -28,6 +30,16 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    init {
+        requestSpotifyToken(
+            listOf(
+                "https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d",
+                "https://open.spotify.com/track/0iaa1DkqOki4FFGq3QjGs3?si=65c78c9b834642d0",
+                "https://open.spotify.com/track/3K5KXm1uZjiyQk0J7op1xf?si=01468c515fe14746"
+            )
+        )
+    }
 
     fun updateContext() = loadRoutines()
 
@@ -75,16 +87,13 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
         }
     }
 
-    fun requestSpotifyToken(trackId: List<String>) {
+    private fun requestSpotifyToken(trackId: List<String>) {
         viewModelScope.launch {
-            AppNavigator.showLoading()
             try {
                 val spotifyToken = homeRepo.requestSpotifyToken()
                 getTrackInfo(trackId, spotifyToken?.access_token.orEmpty())
             } catch (e: Exception) {
                 _uiState.update { it.copy(error = e.message) }
-            } finally {
-                AppNavigator.hideLoading()
             }
         }
     }
