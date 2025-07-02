@@ -8,11 +8,14 @@ import org.gabrieal.gymtracker.data.model.SelectedExercise
 import org.gabrieal.gymtracker.data.model.WorkoutHistory
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.util.app.planTitles
+import org.gabrieal.gymtracker.util.systemUtil.parseDateToInstant
+import kotlin.time.ExperimentalTime
 
 class WorkoutHistoryViewModel {
     private val _uiState = MutableStateFlow(WorkoutHistoryUiState())
     val uiState: StateFlow<WorkoutHistoryUiState> = _uiState.asStateFlow()
 
+    @OptIn(ExperimentalTime::class)
     fun setWorkoutHistoryList(workoutHistoryList: List<WorkoutHistory>) {
         _uiState.update { it.copy(workoutHistoryList = workoutHistoryList) }
 
@@ -21,7 +24,7 @@ class WorkoutHistoryViewModel {
                 .filter { it.routineName in planTitles && it.finishedDate.isNotBlank() }
                 .groupBy { it.routineName ?: "" }
                 .mapValues { (_, list) ->
-                    list.sortedByDescending { it.finishedDate }
+                    list.sortedByDescending { parseDateToInstant(it.finishedDate, "dd-MM-yyyy HH:mm:ss") }
                 }
 
         val sortedWorkoutHistoryList: LinkedHashMap<String, List<WorkoutHistory>> = linkedMapOf()

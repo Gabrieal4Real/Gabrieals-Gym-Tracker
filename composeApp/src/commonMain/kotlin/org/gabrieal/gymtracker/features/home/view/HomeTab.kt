@@ -44,14 +44,6 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import coil3.compose.AsyncImage
 import gymtracker.composeapp.generated.resources.Res
-import gymtracker.composeapp.generated.resources.habit_1
-import gymtracker.composeapp.generated.resources.habit_2
-import gymtracker.composeapp.generated.resources.habit_3
-import gymtracker.composeapp.generated.resources.habit_4
-import gymtracker.composeapp.generated.resources.habit_5
-import gymtracker.composeapp.generated.resources.habit_6
-import gymtracker.composeapp.generated.resources.habit_7
-import gymtracker.composeapp.generated.resources.habit_8
 import gymtracker.composeapp.generated.resources.icon_protein
 import gymtracker.composeapp.generated.resources.spotify_icon
 import org.gabrieal.gymtracker.colors
@@ -79,26 +71,6 @@ import org.koin.core.component.inject
 
 object HomeTab : Tab, KoinComponent {
     val viewModel: HomeViewModel by inject()
-
-    private val randomSelectedHabitImage = listOf(
-        Res.drawable.habit_1,
-        Res.drawable.habit_2,
-        Res.drawable.habit_3,
-        Res.drawable.habit_4,
-        Res.drawable.habit_5,
-        Res.drawable.habit_6,
-        Res.drawable.habit_7,
-        Res.drawable.habit_8
-    ).random()
-
-    private val restDayMessage = listOf(
-        "Time to recharge!\nRest up and treat yourself today.\n🔋🍰😴",
-        "Kick back, relax, and let your body recover.\n🧘‍♂️💤🛀",
-        "Netflix, snacks, and gains incoming.\n📺🍿🔥",
-        "Even superheroes take a break—enjoy your rest day!\n🦸‍♂️🛌✨",
-        "Take a deep breath, prioritise recovery and self-care.\n🌿🫁🕯️",
-        "Your body grows when you rest.\nEmbrace the pause and feel good today.\n🌙💪🧠"
-    ).random()
 
     @OptIn(InternalVoyagerApi::class)
     @Composable
@@ -177,7 +149,7 @@ object HomeTab : Tab, KoinComponent {
 
                                 // Habit Image
                                 Image(
-                                    painter = painterResource(randomSelectedHabitImage),
+                                    painter = painterResource(viewModel.randomSelectedHabitImage),
                                     contentDescription = "Habit",
                                     contentScale = ContentScale.FillHeight,
                                     modifier = Modifier.height(220.dp)
@@ -249,11 +221,11 @@ object HomeTab : Tab, KoinComponent {
                         return@Column
                     }
 
-                    TinyItalicText(restDayMessage, textAlign = TextAlign.Center)
+                    TinyItalicText(viewModel.restDayMessage, textAlign = TextAlign.Center)
                 }
             },
             onClick = {
-                followingDayRoutine?.let {
+                followingDayRoutine?.let { it ->
                     viewModel.navigateToStartWorkout(it) {
                         viewModel.updateSelectedRoutine(it)
                     }
@@ -341,7 +313,11 @@ object HomeTab : Tab, KoinComponent {
         val workoutImages = viewModel.getListOfWorkoutImages()
         val spotifyAlbumDescription = viewModel.getSpotifyAlbumDescription(spotifyTracks)
 
-        val pageCount = if (!spotifyTracks?.tracks.isNullOrEmpty()) { spotifyTracks?.tracks?.size } else { workoutImages.size }
+        val pageCount = if (!spotifyTracks?.tracks.isNullOrEmpty()) {
+            spotifyTracks?.tracks?.size
+        } else {
+            workoutImages.size
+        }
         val pagerState = rememberPagerState(pageCount = { pageCount ?: 0 })
 
         Box(
@@ -349,7 +325,7 @@ object HomeTab : Tab, KoinComponent {
                 .fillMaxWidth()
                 .aspectRatio(animateCurrentAspectRatio)
                 .clickable {
-                    selectedRoutine?.let {
+                    selectedRoutine?.let { it ->
                         viewModel.navigateToStartWorkout(it) {
                             viewModel.updateSelectedRoutine(it)
                         }
@@ -423,11 +399,13 @@ object HomeTab : Tab, KoinComponent {
                 Column {
                     DescriptionItalicText("Today's Workout")
                     BiggerText(selectedRoutine?.routineName ?: "Rest Day")
-                    MarqueeTinyItalicText(if (spotifyAlbumDescription.isNotEmpty()) {
-                        spotifyAlbumDescription[pagerState.currentPage].second
-                    } else {
-                        workoutImages[pagerState.currentPage].second
-                    }, modifier = Modifier.padding(end = 16.dp))
+                    MarqueeTinyItalicText(
+                        if (spotifyAlbumDescription.isNotEmpty()) {
+                            spotifyAlbumDescription[pagerState.currentPage].second
+                        } else {
+                            workoutImages[pagerState.currentPage].second
+                        }, modifier = Modifier.padding(end = 16.dp)
+                    )
                 }
 
                 BiggerText(">")
