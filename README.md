@@ -61,7 +61,7 @@ A modern, multiplatform gym tracking app built with Kotlin Multiplatform and Jet
 - [SQLDelight (local database)](https://cashapp.github.io/sqldelight/)  
 - [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines) (async, background work)  
 - [StateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/) (reactive state management)
-- [Voyager (navigation)](https://github.com/adrielcafe/voyager)
+- [Voyager](https://github.com/adrielcafe/voyager) (navigation)
 
 ## Platform Support
 
