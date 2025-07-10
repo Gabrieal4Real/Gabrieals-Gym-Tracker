@@ -55,7 +55,7 @@ A modern, multiplatform gym tracking app built with Kotlin Multiplatform and Jet
 
 - [Kotlin Multiplatform (KMM)](https://kotlinlang.org/lp/mobile/)  
 - [Jetpack Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)  
-- [Vico (charting library)](https://github.com/patrykandpatrick/vico)  
+- [Vico](https://github.com/patrykandpatrick/vico) (charting library)
 - [Firebase/Firestore](https://firebase.google.com/) (authentication & cloud storage)  
 - [Koin (dependency injection)](https://insert-koin.io/)  
 - [SQLDelight (local database)](https://cashapp.github.io/sqldelight/)  
