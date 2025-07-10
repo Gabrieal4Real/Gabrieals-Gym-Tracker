@@ -49,7 +49,6 @@ A modern, multiplatform gym tracking app built with Kotlin Multiplatform and Jet
 4. **Run the app:**
    - For Android: Use Android Studio’s device manager.
    - For iOS: Open the project in Xcode via the generated `.xcworkspace`.
-   - For Desktop: Run the Compose Desktop target.
 
 ## Tech Stack
 
