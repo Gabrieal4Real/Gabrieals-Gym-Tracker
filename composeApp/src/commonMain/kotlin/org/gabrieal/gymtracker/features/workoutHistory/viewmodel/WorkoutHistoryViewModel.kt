@@ -23,9 +23,6 @@ class WorkoutHistoryViewModel {
             workoutHistoryList
                 .filter { it.routineName in planTitles && it.finishedDate.isNotBlank() }
                 .groupBy { it.routineName ?: "" }
-                .mapValues { (_, list) ->
-                    list.sortedByDescending { parseDateToInstant(it.finishedDate, "dd-MM-yyyy HH:mm:ss") }
-                }
 
         val sortedWorkoutHistoryList: LinkedHashMap<String, List<WorkoutHistory>> = linkedMapOf()
 
