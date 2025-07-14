@@ -49,19 +49,18 @@ A modern, multiplatform gym tracking app built with Kotlin Multiplatform and Jet
 4. **Run the app:**
    - For Android: Use Android Studio’s device manager.
    - For iOS: Open the project in Xcode via the generated `.xcworkspace`.
-   - For Desktop: Run the Compose Desktop target.
 
 ## Tech Stack
 
 - [Kotlin Multiplatform (KMM)](https://kotlinlang.org/lp/mobile/)  
 - [Jetpack Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)  
-- [Vico (charting library)](https://github.com/patrykandpatrick/vico)  
+- [Vico](https://github.com/patrykandpatrick/vico) (charting library)
 - [Firebase/Firestore](https://firebase.google.com/) (authentication & cloud storage)  
 - [Koin (dependency injection)](https://insert-koin.io/)  
 - [SQLDelight (local database)](https://cashapp.github.io/sqldelight/)  
 - [Kotlinx Coroutines](https://github.com/Kotlin/kotlinx.coroutines) (async, background work)  
 - [StateFlow](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/) (reactive state management)
-- [Voyager (navigation)](https://github.com/adrielcafe/voyager)
+- [Voyager](https://github.com/adrielcafe/voyager) (navigation)
 
 ## Platform Support
 
