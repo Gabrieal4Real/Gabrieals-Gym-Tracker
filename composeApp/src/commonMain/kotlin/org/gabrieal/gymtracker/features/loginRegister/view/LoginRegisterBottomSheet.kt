@@ -21,7 +21,6 @@ import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.features.loginRegister.viewmodel.LoginRegisterViewModel
 import org.gabrieal.gymtracker.util.app.isValidEmail
 import org.gabrieal.gymtracker.util.app.isValidPassword
-import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.util.widgets.ConfirmButton
 import org.gabrieal.gymtracker.util.widgets.CustomGrabber
 import org.gabrieal.gymtracker.util.widgets.CustomTextField
@@ -46,16 +45,10 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
         val userName = uiState.userName
         val email = uiState.email
         val password = uiState.password
-        val error = uiState.error
 
         Box(
             modifier = Modifier.fillMaxWidth().fillMaxHeight(0.8f).background(colors.background)
         ) {
-            if (!error.isNullOrBlank()) {
-                ShowToast(error)
-                viewModel.updateError()
-            }
-
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -112,17 +105,7 @@ object LoginRegisterBottomSheet : Screen, KoinComponent {
                     ConfirmButton(
                         if (isRegisterMode) "Register" else "Login",
                         onClick = {
-                            if (isRegisterMode) {
-                                viewModel.registerNewUser(
-                                    email = email ?: "",
-                                    password = password ?: ""
-                                )
-                            } else {
-                                viewModel.loginExistingUser(
-                                    email = email ?: "",
-                                    password = password ?: ""
-                                )
-                            }
+
                         },
                         enabled = isEnabled(isRegisterMode, userName, email, password),
                         modifier = Modifier.fillMaxWidth().padding(16.dp)

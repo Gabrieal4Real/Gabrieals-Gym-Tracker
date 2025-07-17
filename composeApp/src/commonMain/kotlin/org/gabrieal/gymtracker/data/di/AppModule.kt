@@ -10,8 +10,6 @@ import org.gabrieal.gymtracker.features.home.repository.HomeRepo
 import org.gabrieal.gymtracker.features.home.repository.HomeRepoImpl
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
 import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
-import org.gabrieal.gymtracker.features.loginRegister.repository.LoginRegisterRepo
-import org.gabrieal.gymtracker.features.loginRegister.repository.LoginRegisterRepoImpl
 import org.gabrieal.gymtracker.features.loginRegister.viewmodel.LoginRegisterViewModel
 import org.gabrieal.gymtracker.features.makeAPlan.viewmodel.MakeAPlanViewModel
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
@@ -26,7 +24,6 @@ val appModule = module {
     single { SpotifyService(get()) }
 
     //repositories
-    single<LoginRegisterRepo> { LoginRegisterRepoImpl(get()) }
     single<HomeRepo> { HomeRepoImpl(get()) }
 
     //viewmodels
@@ -36,7 +33,7 @@ val appModule = module {
     factory { EditPlanViewModel() }
     factory { HomeViewModel(get()) }
     factory { LandingViewModel() }
-    factory { LoginRegisterViewModel(get()) }
+    factory { LoginRegisterViewModel() }
     factory { MakeAPlanViewModel() }
     factory { ProfileViewModel() }
     factory { StartWorkoutViewModel() }

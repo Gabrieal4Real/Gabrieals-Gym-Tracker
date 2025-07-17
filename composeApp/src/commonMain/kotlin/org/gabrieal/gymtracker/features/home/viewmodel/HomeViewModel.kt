@@ -23,6 +23,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
@@ -127,29 +128,28 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
 
     private fun requestSpotifyToken(trackId: List<String>) {
         viewModelScope.launch {
-            try {
-                val spotifyToken = homeRepo.requestSpotifyToken()
-                getTrackInfo(trackId, spotifyToken?.access_token.orEmpty())
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
-            }
+            homeRepo.requestSpotifyToken()
+                .catch { e ->
+                    _uiState.update { it.copy(error = e.message) }
+                }
+                .collect { token ->
+                    getTrackInfo(trackId, token.access_token)
+                }
         }
     }
 
     private fun getTrackInfo(trackId: List<String>, token: String) {
         viewModelScope.launch {
-            try {
-                val spotifyTracks = homeRepo.getTrackInfo(trackId, token)
-                _uiState.update { it.copy(spotifyTracks = spotifyTracks) }
-            } catch (e: Exception) {
-                _uiState.update { it.copy(error = e.message) }
-            } finally {
-                AppNavigator.hideLoading()
-            }
+            homeRepo.getTrackInfo(trackId, token)
+                .catch { e ->
+                    _uiState.update { it.copy(error = e.message) }
+                }
+                .collect { spotifyTracks ->
+                    _uiState.update { it.copy(spotifyTracks = spotifyTracks) }
+                }
+            AppNavigator.hideLoading()
         }
     }
-
-
 
     fun getListOfWorkoutImages() = listOfInfluencers
 

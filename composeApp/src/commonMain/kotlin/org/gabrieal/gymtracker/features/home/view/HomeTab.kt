@@ -122,6 +122,9 @@ object HomeTab : Tab, KoinComponent {
                 ) {
                     LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
                         stickyHeader {
+                            println("stickyHeader")
+                            println(spotifyTracks)
+
                             WorkoutHeader(
                                 animateCurrentAspectRatio,
                                 animateCurrentBackgroundOpacity,
@@ -314,11 +317,11 @@ object HomeTab : Tab, KoinComponent {
         val spotifyAlbumDescription = viewModel.getSpotifyAlbumDescription(spotifyTracks)
 
         val pageCount = if (!spotifyTracks?.tracks.isNullOrEmpty()) {
-            spotifyTracks?.tracks?.size
+            spotifyTracks.tracks.size
         } else {
             workoutImages.size
         }
-        val pagerState = rememberPagerState(pageCount = { pageCount ?: 0 })
+        val pagerState = rememberPagerState(pageCount = { pageCount })
 
         Box(
             modifier = Modifier
@@ -336,8 +339,7 @@ object HomeTab : Tab, KoinComponent {
                 if (spotifyAlbumDescription.isNotEmpty()) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         AsyncImage(
-                            model = spotifyTracks?.tracks?.get(it)?.album?.images?.firstOrNull()?.url
-                                ?: "",
+                            model = spotifyAlbumDescription[it].first,
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxSize()
