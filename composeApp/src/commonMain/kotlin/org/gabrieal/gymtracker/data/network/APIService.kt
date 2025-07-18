@@ -3,8 +3,8 @@ package org.gabrieal.gymtracker.data.network
 import io.ktor.http.encodeURLParameter
 
 object APIService {
-    internal const val spotifyClientId = "f9e9d1031a144ac38ccf5b6e50e7cd6d"
-    internal const val spotifyClientSecret = "c8da180a1ba6459cbc628b357567b69e"
+    internal const val spotifyClientId = "[SPOTIFY_CLIENT_ID]"
+    internal const val spotifyClientSecret = "[SPOTIFY_CLIENT_SECRET]"
 
     internal const val spotifyRedirectUri = "gabriealgymtracker://callback"
     fun spotifyTrackPath(trackId: String): String = "https://api.spotify.com/v1/tracks?ids=$trackId"
