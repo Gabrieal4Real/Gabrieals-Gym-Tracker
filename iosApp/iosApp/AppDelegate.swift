@@ -1,6 +1,5 @@
 import UIKit
 import UserNotifications
-import ComposeApp
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?

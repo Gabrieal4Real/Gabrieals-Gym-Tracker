@@ -111,7 +111,9 @@ object HomeTab : Tab, KoinComponent {
 
         LaunchedEffect(Unit) {
             viewModel.updateContext()
-            viewModel.launchSpotifyAuth()
+            if (uiState.accessToken == null) {
+                viewModel.launchSpotifyAuth()
+            }
         }
 
         LaunchedEffect(Unit) {

@@ -153,6 +153,8 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
     }
 
     fun handleRedirectedCode(accessToken: String) {
+        _uiState.update { it.copy(accessToken = accessToken) }
+
         viewModelScope.launch {
             homeRepo.getExchangeToken(accessToken, currentVerifier)
                 .catch { e ->

@@ -1,6 +1,7 @@
 package org.gabrieal.gymtracker.features.home.viewmodel
 
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SpotifyRefreshTokenResponse
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 
 data class HomeUiState(
@@ -9,4 +10,5 @@ data class HomeUiState(
     val error: String? = null,
     val spotifyTracks: SpotifyTracks? = null,
     val spotifyUrl: String? = null,
+    val accessToken: String? = null
 )

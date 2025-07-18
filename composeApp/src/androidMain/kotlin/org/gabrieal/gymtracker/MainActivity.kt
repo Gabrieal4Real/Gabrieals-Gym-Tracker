@@ -30,8 +30,6 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent.data?.let { uri ->
-            println("qwertyuiop")
-            println("qwertyuiop$uri")
             if (uri.scheme == "gabriealgymtracker" && uri.host == "callback") {
                 uri.getQueryParameter("code")?.let {
                     SpotifyRedirectHandler.emitCode(it)
