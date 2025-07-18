@@ -18,8 +18,9 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <data android:scheme="gabriealgymtracker" android:host="callback" />
             </intent-filter>
         </activity>
     </application>

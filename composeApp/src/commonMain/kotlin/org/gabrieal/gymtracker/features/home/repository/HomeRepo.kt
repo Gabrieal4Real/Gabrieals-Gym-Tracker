@@ -5,6 +5,10 @@ import org.gabrieal.gymtracker.data.model.SpotifyRefreshTokenResponse
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 
 interface HomeRepo {
-    suspend fun requestSpotifyToken(): Flow<SpotifyRefreshTokenResponse>
-    suspend fun getTrackInfo(spotifyUrls: List<String>, spotifyUid: String): Flow<SpotifyTracks>
+    suspend fun getTrackInfo(spotifyUrls: List<String>, accessToken: String): Flow<SpotifyTracks>
+    suspend fun getCurrentPlayback(accessToken: String): Flow<Any>
+    suspend fun getExchangeToken(
+        accessToken: String,
+        codeVerifier: String
+    ): Flow<SpotifyRefreshTokenResponse>
 }

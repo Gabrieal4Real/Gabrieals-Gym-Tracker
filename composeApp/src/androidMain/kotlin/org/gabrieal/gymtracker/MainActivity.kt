@@ -1,12 +1,15 @@
 package org.gabrieal.gymtracker
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import org.gabrieal.gymtracker.util.systemUtil.SpotifyRedirectHandler
 import org.gabrieal.gymtracker.util.systemUtil.activityReference
+import kotlin.let
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,6 +24,19 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             App()
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.data?.let { uri ->
+            println("qwertyuiop")
+            println("qwertyuiop$uri")
+            if (uri.scheme == "gabriealgymtracker" && uri.host == "callback") {
+                uri.getQueryParameter("code")?.let {
+                    SpotifyRedirectHandler.emitCode(it)
+                }
+            }
         }
     }
 }

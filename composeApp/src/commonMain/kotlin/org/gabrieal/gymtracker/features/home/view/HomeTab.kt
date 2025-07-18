@@ -50,8 +50,11 @@ import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
+import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
 import org.gabrieal.gymtracker.util.app.longFormDays
+import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.util.systemUtil.SpotifyRedirectHandler
 import org.gabrieal.gymtracker.util.systemUtil.getTodayDayName
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.CustomCard
@@ -102,8 +105,19 @@ object HomeTab : Tab, KoinComponent {
 
         BackHandler(enabled = true) {}
 
+        uiState.spotifyUrl?.let { url ->
+            OpenURL(url)
+        }
+
         LaunchedEffect(Unit) {
             viewModel.updateContext()
+            viewModel.launchSpotifyAuth()
+        }
+
+        LaunchedEffect(Unit) {
+            SpotifyRedirectHandler.codeFlow.collect { code ->
+                viewModel.handleRedirectedCode(code)
+            }
         }
 
         Column(
@@ -122,9 +136,6 @@ object HomeTab : Tab, KoinComponent {
                 ) {
                     LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
                         stickyHeader {
-                            println("stickyHeader")
-                            println(spotifyTracks)
-
                             WorkoutHeader(
                                 animateCurrentAspectRatio,
                                 animateCurrentBackgroundOpacity,
