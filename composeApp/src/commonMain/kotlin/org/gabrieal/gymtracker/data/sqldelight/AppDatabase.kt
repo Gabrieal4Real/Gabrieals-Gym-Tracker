@@ -1,6 +1,5 @@
 package org.gabrieal.gymtracker.data.sqldelight
 
-import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.WorkoutHistory
@@ -13,13 +12,17 @@ import kotlin.time.Instant
 
 private val profileQuery = createDatabase().profileEntityQueries
 private val selectedExerciseListQuery = createDatabase().selectedExerciseListEntityQueries
-private val firebaseInfoQuery = createDatabase().firebaseInfoEntityQueries
 private val currentlyActiveRoutineEntity = createDatabase().currentlyActiveRoutineEntityQueries
 private val workoutHistoryEntity = createDatabase().workoutHistoryEntityQueries
 
 @OptIn(ExperimentalTime::class)
 fun updateWorkoutHistoryDB(completedVolume: Double) {
-    workoutHistoryEntity.insertIntoWorkoutHistory(formatInstantToDate(Clock.System.now(),"dd-MM-yyyy HH:mm:ss"), completedVolume.toLong())
+    workoutHistoryEntity.insertIntoWorkoutHistory(
+        formatInstantToDate(
+            Clock.System.now(),
+            "dd-MM-yyyy HH:mm:ss"
+        ), completedVolume.toLong()
+    )
 }
 
 fun getAllWorkoutHistoryFromDB(): List<WorkoutHistory> {
@@ -39,7 +42,8 @@ fun getAllWorkoutHistoryFromDB(): List<WorkoutHistory> {
 }
 
 fun getSpecificWorkoutHistoryFromDB(routineName: String): WorkoutHistory? {
-    val selectedRoutine = workoutHistoryEntity.getLatestWorkoutHistory(routineName).executeAsOneOrNull()
+    val selectedRoutine =
+        workoutHistoryEntity.getLatestWorkoutHistory(routineName).executeAsOneOrNull()
 
     selectedRoutine?.let {
         return WorkoutHistory(
@@ -58,7 +62,11 @@ fun getSpecificWorkoutHistoryFromDB(routineName: String): WorkoutHistory? {
 }
 
 @OptIn(ExperimentalTime::class)
-fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedOn: Instant, workoutProgress: WorkoutProgress) {
+fun setCurrentlyActiveRoutineToDB(
+    activeRoutine: SelectedExerciseList?,
+    startedOn: Instant,
+    workoutProgress: WorkoutProgress
+) {
     if (activeRoutine == null) {
         currentlyActiveRoutineEntity.deleteCurrentlyActiveRoutine()
         return
@@ -77,7 +85,8 @@ fun setCurrentlyActiveRoutineToDB(activeRoutine: SelectedExerciseList?, startedO
 }
 
 fun updateCurrentlyActiveRoutineToDB(workoutProgress: WorkoutProgress) {
-    val currentlyActiveRoutine = currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
+    val currentlyActiveRoutine =
+        currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
 
     if (currentlyActiveRoutine != null) {
         currentlyActiveRoutineEntity.insertOrReplaceCurrentlyActiveRoutine(
@@ -95,7 +104,8 @@ fun updateCurrentlyActiveRoutineToDB(workoutProgress: WorkoutProgress) {
 
 @OptIn(ExperimentalTime::class)
 fun getCurrentlyActiveRoutineFromDB(): Triple<SelectedExerciseList, Instant, WorkoutProgress>? {
-    val currentlyActiveRoutine = currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
+    val currentlyActiveRoutine =
+        currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
 
     currentlyActiveRoutine?.let {
         return Triple(
@@ -177,28 +187,4 @@ fun getProfileFromDB(): Profile {
     }
 
     return Profile()
-}
-
-fun setFirebaseInfoToDB(firebaseInfo: FirebaseInfo) {
-    firebaseInfoQuery.insertOrReplaceFirebaseInfo(
-        uid = firebaseInfo.uid,
-        token = firebaseInfo.token,
-        refreshToken = firebaseInfo.refreshToken,
-        expiresAt = firebaseInfo.expiresAt
-    )
-}
-
-fun getFirebaseInfoFromDB(): FirebaseInfo {
-    val firebaseInfo = firebaseInfoQuery.selectFirebaseInfo().executeAsOneOrNull()
-
-    firebaseInfo?.let {
-        return FirebaseInfo(
-            uid = it.uid,
-            token = it.token,
-            refreshToken = it.refreshToken,
-            expiresAt = it.expiresAt
-        )
-    }
-
-    return FirebaseInfo()
 }

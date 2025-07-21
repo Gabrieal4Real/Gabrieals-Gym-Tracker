@@ -40,8 +40,6 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private var currentVerifier: String = ""
-
     val listOfInfluencers = listOf(
         Res.drawable.workout_1 to "Lean Beef Patty • Female fitness influencer known for strength training and high-intensity workouts",
         Res.drawable.workout_2 to "Arnold Schwarzenegger • 7x Mr. Olympia, iconic bodybuilder and actor, pioneer of modern bodybuilding",
@@ -119,6 +117,7 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
     }
 
     private fun getTrackInfo(trackId: List<String>, accessToken: String) {
+        AppNavigator.showLoading()
         viewModelScope.launch {
             homeRepo.getTrackInfo(trackId, accessToken)
                 .catch { e ->
@@ -132,6 +131,7 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
     }
 
     private fun getCurrentPlayback(accessToken: String) {
+        AppNavigator.showLoading()
         viewModelScope.launch {
             homeRepo.getCurrentPlayback(accessToken)
                 .catch { e ->
@@ -140,35 +140,6 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
                 .collect { currentPlayback ->
                     println("qwertyuiop")
                     println("qwertyuiop: $currentPlayback")
-                }
-            AppNavigator.hideLoading()
-        }
-    }
-
-    fun launchSpotifyAuth() {
-        currentVerifier = PKCE.generateCodeVerifier()
-        val challenge = PKCE.generateCodeChallenge(currentVerifier)
-        val url = APIService.authUrl(challenge)
-        _uiState.update { it.copy(spotifyUrl = url) }
-    }
-
-    fun handleRedirectedCode(accessToken: String) {
-        _uiState.update { it.copy(accessToken = accessToken) }
-
-        viewModelScope.launch {
-            homeRepo.getExchangeToken(accessToken, currentVerifier)
-                .catch { e ->
-                    _uiState.update { it.copy(error = e.message) }
-                }
-                .collect {
-                    getTrackInfo(
-                        listOf(
-                            "https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d",
-                            "https://open.spotify.com/track/0iaa1DkqOki4FFGq3QjGs3?si=65c78c9b834642d0",
-                            "https://open.spotify.com/track/3K5KXm1uZjiyQk0J7op1xf?si=01468c515fe14746"
-                        ), it.access_token
-                    )
-                    getCurrentPlayback(it.access_token)
                 }
             AppNavigator.hideLoading()
         }

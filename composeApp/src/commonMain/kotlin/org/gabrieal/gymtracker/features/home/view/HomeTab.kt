@@ -105,21 +105,8 @@ object HomeTab : Tab, KoinComponent {
 
         BackHandler(enabled = true) {}
 
-        uiState.spotifyUrl?.let { url ->
-            OpenURL(url)
-        }
-
         LaunchedEffect(Unit) {
             viewModel.updateContext()
-            if (uiState.accessToken == null) {
-                viewModel.launchSpotifyAuth()
-            }
-        }
-
-        LaunchedEffect(Unit) {
-            SpotifyRedirectHandler.codeFlow.collect { code ->
-                viewModel.handleRedirectedCode(code)
-            }
         }
 
         Column(

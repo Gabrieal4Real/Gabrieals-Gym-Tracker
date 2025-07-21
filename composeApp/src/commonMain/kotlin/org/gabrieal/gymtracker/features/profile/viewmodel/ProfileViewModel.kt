@@ -1,32 +1,41 @@
 package org.gabrieal.gymtracker.features.profile.viewmodel
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import org.gabrieal.gymtracker.data.model.CalorieInput
-import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
-import org.gabrieal.gymtracker.data.sqldelight.getFirebaseInfoFromDB
+import org.gabrieal.gymtracker.data.network.APIService
 import org.gabrieal.gymtracker.data.sqldelight.getProfileFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
-import org.gabrieal.gymtracker.data.sqldelight.setFirebaseInfoToDB
 import org.gabrieal.gymtracker.data.sqldelight.setProfileToDB
+import org.gabrieal.gymtracker.features.home.repository.HomeRepo
 import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.Gender
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
+import org.gabrieal.gymtracker.util.systemUtil.PKCE
 
-class ProfileViewModel {
+class ProfileViewModel(private val homeRepo: HomeRepo) {
+
+    private val viewModelScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
 
+    private var currentVerifier: String = ""
+
     fun updateContext() {
         loadRoutines()
         loadProfile()
-        loadFirebaseInfo()
     }
 
     private fun loadRoutines() {
@@ -42,11 +51,6 @@ class ProfileViewModel {
     private fun loadProfile() {
         val profile = getProfileFromDB()
         _uiState.update { it.copy(profile = profile) }
-    }
-
-    private fun loadFirebaseInfo() {
-        val firebaseInfo = getFirebaseInfoFromDB()
-        _uiState.update { it.copy(firebaseInfo = firebaseInfo) }
     }
 
     fun setWeightHeightBMIClicked(weightHeightBMIClicked: Int) {
@@ -95,29 +99,32 @@ class ProfileViewModel {
         }
     }
 
-    fun navigateToLoginRegister() {
-        val callback = { profile: Profile? ->
-            _uiState.update { it.copy(profile = profile) }
-            saveProfile()
-            loadFirebaseInfo()
-        }
+    fun launchSpotifyAuthBrowser() {
+        currentVerifier = PKCE.generateCodeVerifier()
+        val challenge = PKCE.generateCodeChallenge(currentVerifier)
+        val url = APIService.authUrl(challenge)
+        _uiState.update { it.copy(spotifyUrl = url) }
+    }
 
-        AppNavigator.openBottomSheetLoginRegisterScreen(
-            profile = uiState.value.profile,
-            callback = callback
-        )
+    fun loginViaSpotify(accessToken: String) {
+        AppNavigator.showLoading()
+        _uiState.update { it.copy(accessToken = accessToken) }
+
+        viewModelScope.launch {
+            homeRepo.getExchangeToken(accessToken, currentVerifier)
+                .catch { e ->
+                    _uiState.update { it.copy(error = e.message) }
+                }
+                .collect { response ->
+                    _uiState.update { it.copy(accessToken = response.access_token) }
+                }
+            AppNavigator.hideLoading()
+        }
     }
 
     fun setLoggingOut(loggingOut: Boolean) = _uiState.update { it.copy(loggingOut = loggingOut) }
 
     fun logout() {
-        setFirebaseInfoToDB(
-            FirebaseInfo(
-                uid = null,
-                token = null
-            )
-        )
-        loadFirebaseInfo()
         setLoggingOut(false)
     }
 }

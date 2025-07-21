@@ -48,6 +48,7 @@ fun CustomCard(
     onClick: (() -> Unit)? = null,
     backgroundEnabled: Boolean = true,
     isAnimated: Boolean = false,
+    modifier: Modifier = Modifier.fillMaxWidth(),
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
@@ -57,8 +58,7 @@ fun CustomCard(
             2.dp,
             if (!isAnimated) colors.borderStroke else Color.Transparent
         ),
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .then(
                 if (enabled && onClick != null) {
                     Modifier.clickable(onClick = onClick)

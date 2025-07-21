@@ -13,7 +13,6 @@ import org.gabrieal.gymtracker.features.app.viewmodel.AppStateViewModel
 import org.gabrieal.gymtracker.features.calculator.view.CalculatorScreen
 import org.gabrieal.gymtracker.features.createSplit.view.CreateSplitScreen
 import org.gabrieal.gymtracker.features.editPlan.view.EditPlanScreen
-import org.gabrieal.gymtracker.features.loginRegister.view.LoginRegisterBottomSheet
 import org.gabrieal.gymtracker.features.makeAPlan.view.MakeAPlanScreen
 import org.gabrieal.gymtracker.features.startWorkout.view.CurrentlyActiveWorkoutBottomSheet
 import org.gabrieal.gymtracker.features.startWorkout.view.StartWorkoutScreen
@@ -124,12 +123,6 @@ object AppNavigator {
         CurrentlyActiveWorkoutBottomSheet.setSuccessCallback(successCallback)
         CurrentlyActiveWorkoutBottomSheet.setFailureCallback(failureCallback)
         bottomSheetNavigatorInstance?.show(CurrentlyActiveWorkoutBottomSheet)
-    }
-
-    fun openBottomSheetLoginRegisterScreen(profile: Profile?, callback: (Profile?) -> Unit) {
-        LoginRegisterBottomSheet.setProfile(profile ?: Profile())
-        LoginRegisterBottomSheet.setCallback(callback)
-        bottomSheetNavigatorInstance?.show(LoginRegisterBottomSheet)
     }
 
     fun dismissBottomSheet() {

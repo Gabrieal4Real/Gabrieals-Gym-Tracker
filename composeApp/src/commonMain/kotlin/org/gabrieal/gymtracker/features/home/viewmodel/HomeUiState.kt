@@ -9,6 +9,4 @@ data class HomeUiState(
     val hasRoutines: Boolean = false,
     val error: String? = null,
     val spotifyTracks: SpotifyTracks? = null,
-    val spotifyUrl: String? = null,
-    val accessToken: String? = null
 )
