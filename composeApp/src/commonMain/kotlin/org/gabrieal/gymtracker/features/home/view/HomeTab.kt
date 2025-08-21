@@ -107,6 +107,7 @@ object HomeTab : Tab, KoinComponent {
 
         LaunchedEffect(Unit) {
             viewModel.updateContext()
+            viewModel.updateSpotifyInfo()
         }
 
         Column(
@@ -365,7 +366,7 @@ object HomeTab : Tab, KoinComponent {
             }
 
             DotsIndicator(
-                totalDots = pageCount ?: 0,
+                totalDots = pageCount,
                 selectedIndex = pagerState.currentPage,
                 modifier = Modifier.align(Alignment.TopCenter).padding(12.dp)
             )

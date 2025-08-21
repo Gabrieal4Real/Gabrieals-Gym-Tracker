@@ -34,7 +34,7 @@ val appModule = module {
     factory { CreateSplitViewModel() }
     factory { EditPlanViewModel() }
     factory { HomeViewModel(get()) }
-    factory { LandingViewModel() }
+    factory { LandingViewModel(get()) }
     factory { MakeAPlanViewModel() }
     factory { ProfileViewModel(get()) }
     factory { StartWorkoutViewModel() }

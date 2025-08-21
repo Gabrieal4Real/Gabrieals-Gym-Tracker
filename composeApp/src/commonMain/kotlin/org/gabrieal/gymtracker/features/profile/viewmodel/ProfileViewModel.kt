@@ -113,7 +113,10 @@ class ProfileViewModel(private val profileRepo: ProfileRepo) {
     fun launchSpotifyAuthBrowser() {
         currentVerifier = PKCE.generateCodeVerifier()
         val challenge = PKCE.generateCodeChallenge(currentVerifier)
-        val url = APIService.authUrl(challenge)
+        setSpotifyUrl(APIService.authUrl(challenge))
+    }
+
+    fun setSpotifyUrl(url: String?) {
         _uiState.update { it.copy(spotifyUrl = url) }
     }
 
@@ -136,9 +139,7 @@ class ProfileViewModel(private val profileRepo: ProfileRepo) {
     fun getSpotifyUserInfo() {
         val spotifyToken = getSpotifyTokenFromDB()
 
-        if (spotifyToken == null || spotifyToken.access_token.isNullOrBlank()) {
-            return
-        }
+        if (spotifyToken?.access_token.isNullOrBlank()) return
 
         AppNavigator.showLoading()
         viewModelScope.launch {

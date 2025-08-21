@@ -19,11 +19,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.SkipNext
+import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -39,16 +41,21 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import gymtracker.composeapp.generated.resources.Res
+import gymtracker.composeapp.generated.resources.workout_1
 import gymtracker.composeapp.generated.resources.workout_3
 import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SpotifyPlayback
 import org.gabrieal.gymtracker.data.sqldelight.getCurrentlyActiveRoutineFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
@@ -62,6 +69,7 @@ import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
 import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
+import org.gabrieal.gymtracker.util.widgets.TinyItalicText
 import org.gabrieal.gymtracker.util.widgets.TinyText
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.component.KoinComponent
@@ -72,16 +80,28 @@ import kotlin.time.Instant
 object LandingScreen : Screen, KoinComponent {
     private val viewModel: LandingViewModel by inject()
 
+
     @OptIn(ExperimentalMaterialApi::class, ExperimentalTime::class)
     @Composable
     override fun Content() {
+        val lifecycleOwner = LocalLifecycleOwner.current
+
         val uiState by viewModel.uiState.collectAsState()
         val landingCurrentlyActiveRoutine = uiState.currentlyActiveRoutine
         val resetCompletedList = uiState.resetCompletedList
+        val currentPlayback = uiState.spotifyPlayback
 
-        currentlyActiveRoutine = getCurrentlyActiveRoutineFromDB()
-        viewModel.setCurrentlyActiveRoutine(currentlyActiveRoutine?.first)
-        viewModel.resetCompletedList()
+        LaunchedEffect(uiState.currentlyActiveRoutine) {
+            currentlyActiveRoutine = getCurrentlyActiveRoutineFromDB()
+            viewModel.setCurrentlyActiveRoutine(currentlyActiveRoutine?.first)
+            viewModel.resetCompletedList()
+        }
+
+        LaunchedEffect(lifecycleOwner) {
+            lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                viewModel.needRefreshCurrentPlayback()
+            }
+        }
 
         BottomSheetNavigator(
             sheetBackgroundColor = Color.Transparent,
@@ -97,6 +117,10 @@ object LandingScreen : Screen, KoinComponent {
                         Column {
                             landingCurrentlyActiveRoutine?.let {
                                 CurrentlyActiveWorkout(it, currentlyActiveRoutine?.second)
+                            }
+
+                            currentPlayback?.let {
+                                CurrentlyPlaying(it)
                             }
 
                             NavigationBar(
@@ -133,50 +157,133 @@ object LandingScreen : Screen, KoinComponent {
     ) {
         val tabNavigator = LocalTabNavigator.current
 
-        Box(modifier = Modifier.clickable {
-            AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(
-                landingCurrentlyActiveRoutine,
-                { activeRoutine ->
-                    val selectedRoutineList = getSelectedRoutineListFromDB()
-                    selectedRoutineList.find { it.routineName == activeRoutine.routineName }
-                        ?.let { it.isCompleted = true }
-                    setSelectedRoutineListToDB(selectedRoutineList)
+        Box(
+            modifier = Modifier.clickable {
+                AppNavigator.openBottomSheetCurrentlyActiveWorkoutScreen(
+                    landingCurrentlyActiveRoutine,
+                    { activeRoutine ->
+                        val selectedRoutineList = getSelectedRoutineListFromDB()
 
-                    currentlyActiveRoutine = null
-                    viewModel.setCurrentlyActiveRoutine(null)
-                    AppNavigator.dismissBottomSheet()
-                    (tabNavigator.current as? HomeTab)?.viewModel?.updateContext()
-                },
-                {
-                    currentlyActiveRoutine = null
-                    viewModel.setCurrentlyActiveRoutine(null)
-                    AppNavigator.dismissBottomSheet()
-                })
-        }) {
+                        selectedRoutineList.find { it.routineName == activeRoutine.routineName }
+                            ?.let { it.isCompleted = true }
+
+                        setSelectedRoutineListToDB(selectedRoutineList)
+
+                        currentlyActiveRoutine = null
+                        viewModel.setCurrentlyActiveRoutine(null)
+
+                        AppNavigator.dismissBottomSheet()
+                        (tabNavigator.current as? HomeTab)?.viewModel?.updateContext()
+                    },
+                    {
+                        currentlyActiveRoutine = null
+                        viewModel.setCurrentlyActiveRoutine(null)
+                        AppNavigator.dismissBottomSheet()
+                    }
+                )
+            }
+        ) {
             Image(
                 painter = painterResource(Res.drawable.workout_3),
                 contentDescription = "Workout image",
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize().blur(80.dp)
+                modifier = Modifier
+                    .matchParentSize()
+                    .blur(80.dp)
             )
+
             Column(modifier = Modifier.fillMaxWidth()) {
                 CustomHorizontalDivider()
-                Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 14.dp, horizontal = 16.dp),
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SubtitleText(
-                            "Currently Active: ${landingCurrentlyActiveRoutine.routineName.orEmpty()}",
+                            text = "Currently Active: ${landingCurrentlyActiveRoutine.routineName.orEmpty()}",
                             modifier = Modifier.weight(1f)
                         )
                         TinyText(ElapsedTime(elapsedTime))
                     }
+
                     Spacer(modifier = Modifier.height(2.dp))
+
                     MarqueeTinyItalicText(
-                        landingCurrentlyActiveRoutine.exercises?.joinToString(
-                            ", "
-                        ) { it.name.orEmpty() } ?: "")
+                        text = landingCurrentlyActiveRoutine.exercises
+                            ?.joinToString(", ") { it.name.orEmpty() }
+                            .orEmpty()
+                    )
                 }
             }
         }
+
+    }
+
+    @Composable
+    fun CurrentlyPlaying(playback: SpotifyPlayback) {
+        Box(
+            modifier = Modifier.clickable {
+                // Intent to Spotify app
+            }
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.workout_1),
+                contentDescription = "Workout image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .matchParentSize()
+                    .blur(80.dp)
+            )
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                CustomHorizontalDivider()
+
+                Row(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 14.dp, horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        SubtitleText(text = playback.item?.name.orEmpty())
+                        Spacer(modifier = Modifier.height(2.dp))
+                        TinyItalicText(text = playback.item?.artists?.firstOrNull()?.name.orEmpty())
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Icon(
+                        imageVector = Icons.Rounded.SkipPrevious,
+                        contentDescription = "Spotify Previous",
+                        tint = colors.textPrimary,
+                        modifier = Modifier.padding(horizontal = 6.dp).size(34.dp).clickable {
+                            // Pause Play API
+                        }
+                    )
+
+                    Icon(
+                        imageVector = playback.is_playing?.let { Icons.Rounded.Pause }
+                            ?: Icons.Rounded.PlayArrow,
+                        contentDescription = "Spotify Play/Pause",
+                        tint = colors.textPrimary,
+                        modifier = Modifier.padding(horizontal = 6.dp).size(34.dp).clickable {
+                            // Pause Play API
+                        }
+                    )
+
+                    Icon(
+                        imageVector = Icons.Rounded.SkipNext,
+                        contentDescription = "Spotify Next",
+                        tint = colors.textPrimary,
+                        modifier = Modifier.padding(horizontal = 6.dp).size(34.dp).clickable {
+                            // Pause Play API
+                        }
+                    )
+                }
+            }
+        }
+
     }
 }
 

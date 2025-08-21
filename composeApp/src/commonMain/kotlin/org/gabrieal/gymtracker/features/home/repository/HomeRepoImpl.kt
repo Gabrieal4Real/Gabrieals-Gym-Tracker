@@ -2,7 +2,7 @@ package org.gabrieal.gymtracker.features.home.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.gabrieal.gymtracker.data.model.SpotifyRefreshTokenResponse
+import org.gabrieal.gymtracker.data.model.SpotifyPlayback
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 import org.gabrieal.gymtracker.data.network.SpotifyService
 
@@ -25,13 +25,13 @@ class HomeRepoImpl(private val spotifyService: SpotifyService) : HomeRepo {
             }
     }
 
-    override suspend fun getCurrentPlayback(accessToken: String): Flow<Any> {
+    override suspend fun getCurrentPlayback(accessToken: String): Flow<SpotifyPlayback> {
         return spotifyService.getSpotifyPlayback(accessToken)
             .map { result ->
                 runCatching { result.getOrThrow() }
-                    .onFailure {
-                        println("Error fetching current playback: ${it.message}")
-                        throw it
+                    .getOrElse { e ->
+                        println("Error fetching current playback info: ${e.message}")
+                        throw e
                     }
             }
     }

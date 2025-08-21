@@ -1,6 +1,12 @@
 package org.gabrieal.gymtracker.features.profile.view
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -81,6 +87,7 @@ object ProfileTab : Tab, KoinComponent {
 
         uiState.spotifyUrl?.let { url ->
             OpenURL(url)
+            viewModel.setSpotifyUrl(null)
         }
 
         BackHandler(enabled = true) {}
@@ -252,37 +259,45 @@ object ProfileTab : Tab, KoinComponent {
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().clickable {
-                            if (profile?.userName == null)
-                                viewModel.launchSpotifyAuthBrowser()
-                        },
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        ProfileIcon(profile?.profileImage ?: "")
-
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Column {
-                            SubtitleText((profile?.userName ?: "Not Logged In").uppercase())
-                            profile?.userName?.let { TinyText(profile.email ?: "") }
-                                ?: LinkText("Login with Spotify")
+                    AnimatedContent(
+                        targetState = profile?.userName,
+                        label = "profile_animation",
+                        transitionSpec = {
+                            (slideInHorizontally { it } + fadeIn()) togetherWith (slideOutHorizontally { -it } + fadeOut())
                         }
+                    ) { userName ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().clickable {
+                                if (userName == null)
+                                    viewModel.launchSpotifyAuthBrowser()
+                            },
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            ProfileIcon(profile?.profileImage ?: "")
 
-                        profile?.userName?.let {
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.Logout,
-                                contentDescription = "Logout",
-                                tint = colors.white,
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(colors.deleteRed)
-                                    .clickable {
-                                        viewModel.setLoggingOut(true)
-                                    }
-                                    .padding(6.dp)
-                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                SubtitleText((userName ?: "Not Logged In").uppercase())
+                                userName?.let { TinyText(profile?.email ?: "") }
+                                    ?: LinkText("Login with Spotify")
+                            }
+
+                            userName?.let {
+                                Spacer(modifier = Modifier.weight(1f))
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Rounded.Logout,
+                                    contentDescription = "Logout",
+                                    tint = colors.white,
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(colors.deleteRed)
+                                        .clickable {
+                                            viewModel.setLoggingOut(true)
+                                        }
+                                        .padding(6.dp)
+                                )
+                            }
                         }
                     }
 

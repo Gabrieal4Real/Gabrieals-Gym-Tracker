@@ -27,13 +27,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
-import org.gabrieal.gymtracker.data.network.APIService
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSpotifyTokenFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 import org.gabrieal.gymtracker.features.home.repository.HomeRepo
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
-import org.gabrieal.gymtracker.util.systemUtil.PKCE
 
 class HomeViewModel(private val homeRepo: HomeRepo) {
     private val viewModelScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
@@ -117,17 +115,28 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
         }
     }
 
-    private fun getTrackInfo(trackId: List<String>) {
+    fun updateSpotifyInfo() {
         val spotifyToken = getSpotifyTokenFromDB()
 
-        if (spotifyToken == null || spotifyToken.access_token.isNullOrBlank()) {
+        if (spotifyToken?.access_token.isNullOrBlank() || _uiState.value.spotifyTracks != null) {
             return
         }
 
+        getTrackInfo(
+            listOf(
+                "https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d",
+                "https://open.spotify.com/track/0iaa1DkqOki4FFGq3QjGs3?si=65c78c9b834642d0",
+                "https://open.spotify.com/track/3K5KXm1uZjiyQk0J7op1xf?si=01468c515fe14746"
+            ),
+            spotifyToken.access_token
+        )
+    }
+
+    private fun getTrackInfo(trackId: List<String>, spotifyToken: String) {
         AppNavigator.showLoading()
 
         viewModelScope.launch {
-            homeRepo.getTrackInfo(trackId, spotifyToken.access_token)
+            homeRepo.getTrackInfo(trackId, spotifyToken)
                 .catch { e ->
                     _uiState.update { it.copy(error = e.message) }
                 }
@@ -138,34 +147,14 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
         }
     }
 
-    private fun getCurrentPlayback() {
-        val spotifyToken = getSpotifyTokenFromDB()
-
-        if (spotifyToken == null || spotifyToken.access_token.isNullOrBlank()) {
-            return
-        }
-
-        AppNavigator.showLoading()
-        viewModelScope.launch {
-            homeRepo.getCurrentPlayback(spotifyToken.access_token)
-                .catch { e ->
-                    _uiState.update { it.copy(error = e.message) }
-                }
-                .collect { currentPlayback ->
-
-                }
-            AppNavigator.hideLoading()
-        }
-    }
-
     fun getListOfWorkoutImages() = listOfInfluencers
 
     fun getSpotifyAlbumDescription(spotifyTracks: SpotifyTracks?): List<Pair<String?, String>> {
         return spotifyTracks?.tracks?.map { it ->
-            it.album.images.firstOrNull()?.url to "${it.name} • ${it.album.name} • ${
-                it.artists.joinToString(
+            it.album?.images?.firstOrNull()?.url to "${it.name} • ${it.album?.name} • ${
+                it.artists?.joinToString(
                     ", "
-                ) { it.name }
+                ) { it.name.toString() }
             }"
         } ?: emptyList()
     }
