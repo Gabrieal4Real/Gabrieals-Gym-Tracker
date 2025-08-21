@@ -5,6 +5,7 @@ import db.CurrentlyActiveRoutineEntity
 import db.GymTrackerDatabase
 import db.ProfileEntity
 import db.SelectedExerciseListEntity
+import db.SpotifyRefreshTokenEntity
 import db.WorkoutHistoryEntity
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer

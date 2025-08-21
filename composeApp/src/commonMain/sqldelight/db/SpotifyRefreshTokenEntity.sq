@@ -1,3 +1,17 @@
 CREATE TABLE spotifyRefreshTokenEntity (
+    id INTEGER NOT NULL PRIMARY KEY,
+    accessToken TEXT,
+    expiresIn INTEGER,
+    tokenType TEXT
+);
 
+selectSpotifyRefreshToken:
+SELECT * FROM spotifyRefreshTokenEntity
+WHERE id = 1;
+
+insertOrReplaceSpotifyRefreshToken:
+INSERT OR REPLACE INTO spotifyRefreshTokenEntity (
+    id, accessToken, expiresIn, tokenType
+) VALUES (
+    1, ?, ?, ?
 );

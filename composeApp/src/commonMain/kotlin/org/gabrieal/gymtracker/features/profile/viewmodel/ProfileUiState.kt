@@ -11,5 +11,4 @@ data class ProfileUiState(
 
     val spotifyUrl: String? = null,
     val error: String? = null,
-    val accessToken: String? = null
 )

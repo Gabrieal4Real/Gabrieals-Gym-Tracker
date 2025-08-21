@@ -15,13 +15,16 @@ import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.network.APIService
 import org.gabrieal.gymtracker.data.sqldelight.getProfileFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
+import org.gabrieal.gymtracker.data.sqldelight.getSpotifyTokenFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setProfileToDB
+import org.gabrieal.gymtracker.data.sqldelight.updateSpotifyTokenToDB
 import org.gabrieal.gymtracker.features.home.repository.HomeRepo
 import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.Gender
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.PKCE
+import org.gabrieal.gymtracker.util.systemUtil.SpotifyRedirectHandler
 
 class ProfileViewModel(private val homeRepo: HomeRepo) {
 
@@ -30,6 +33,13 @@ class ProfileViewModel(private val homeRepo: HomeRepo) {
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            SpotifyRedirectHandler.codeFlow.collect { code ->
+                loginViaSpotify(code)
+            }
+        }
+    }
 
     private var currentVerifier: String = ""
 
@@ -108,7 +118,6 @@ class ProfileViewModel(private val homeRepo: HomeRepo) {
 
     fun loginViaSpotify(accessToken: String) {
         AppNavigator.showLoading()
-        _uiState.update { it.copy(accessToken = accessToken) }
 
         viewModelScope.launch {
             homeRepo.getExchangeToken(accessToken, currentVerifier)
@@ -116,7 +125,7 @@ class ProfileViewModel(private val homeRepo: HomeRepo) {
                     _uiState.update { it.copy(error = e.message) }
                 }
                 .collect { response ->
-                    _uiState.update { it.copy(accessToken = response.access_token) }
+                    updateSpotifyTokenToDB(response)
                 }
             AppNavigator.hideLoading()
         }

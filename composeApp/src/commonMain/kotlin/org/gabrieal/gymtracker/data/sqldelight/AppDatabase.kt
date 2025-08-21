@@ -2,6 +2,7 @@ package org.gabrieal.gymtracker.data.sqldelight
 
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
+import org.gabrieal.gymtracker.data.model.SpotifyRefreshTokenResponse
 import org.gabrieal.gymtracker.data.model.WorkoutHistory
 import org.gabrieal.gymtracker.data.model.WorkoutProgress
 import org.gabrieal.gymtracker.util.systemUtil.formatInstantToDate
@@ -12,12 +13,14 @@ import kotlin.time.Instant
 
 private val profileQuery = createDatabase().profileEntityQueries
 private val selectedExerciseListQuery = createDatabase().selectedExerciseListEntityQueries
-private val currentlyActiveRoutineEntity = createDatabase().currentlyActiveRoutineEntityQueries
-private val workoutHistoryEntity = createDatabase().workoutHistoryEntityQueries
+private val currentlyActiveRoutineQuery = createDatabase().currentlyActiveRoutineEntityQueries
+private val workoutHistoryQuery = createDatabase().workoutHistoryEntityQueries
+
+private val spotifyQuery = createDatabase().spotifyRefreshTokenEntityQueries
 
 @OptIn(ExperimentalTime::class)
 fun updateWorkoutHistoryDB(completedVolume: Double) {
-    workoutHistoryEntity.insertIntoWorkoutHistory(
+    workoutHistoryQuery.insertIntoWorkoutHistory(
         formatInstantToDate(
             Clock.System.now(),
             "dd-MM-yyyy HH:mm:ss"
@@ -26,7 +29,7 @@ fun updateWorkoutHistoryDB(completedVolume: Double) {
 }
 
 fun getAllWorkoutHistoryFromDB(): List<WorkoutHistory> {
-    val workoutHistory = workoutHistoryEntity.selectAllHistory().executeAsList()
+    val workoutHistory = workoutHistoryQuery.selectAllHistory().executeAsList()
     return workoutHistory.map {
         WorkoutHistory(
             id = it.id,
@@ -43,7 +46,7 @@ fun getAllWorkoutHistoryFromDB(): List<WorkoutHistory> {
 
 fun getSpecificWorkoutHistoryFromDB(routineName: String): WorkoutHistory? {
     val selectedRoutine =
-        workoutHistoryEntity.getLatestWorkoutHistory(routineName).executeAsOneOrNull()
+        workoutHistoryQuery.getLatestWorkoutHistory(routineName).executeAsOneOrNull()
 
     selectedRoutine?.let {
         return WorkoutHistory(
@@ -68,11 +71,11 @@ fun setCurrentlyActiveRoutineToDB(
     workoutProgress: WorkoutProgress
 ) {
     if (activeRoutine == null) {
-        currentlyActiveRoutineEntity.deleteCurrentlyActiveRoutine()
+        currentlyActiveRoutineQuery.deleteCurrentlyActiveRoutine()
         return
     }
 
-    currentlyActiveRoutineEntity.insertOrReplaceCurrentlyActiveRoutine(
+    currentlyActiveRoutineQuery.insertOrReplaceCurrentlyActiveRoutine(
         position = activeRoutine.position?.toLong(),
         day = activeRoutine.day,
         routineName = activeRoutine.routineName,
@@ -86,10 +89,10 @@ fun setCurrentlyActiveRoutineToDB(
 
 fun updateCurrentlyActiveRoutineToDB(workoutProgress: WorkoutProgress) {
     val currentlyActiveRoutine =
-        currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
+        currentlyActiveRoutineQuery.selectCurrentlyActiveRoutine().executeAsOneOrNull()
 
     if (currentlyActiveRoutine != null) {
-        currentlyActiveRoutineEntity.insertOrReplaceCurrentlyActiveRoutine(
+        currentlyActiveRoutineQuery.insertOrReplaceCurrentlyActiveRoutine(
             position = currentlyActiveRoutine.position,
             day = currentlyActiveRoutine.day,
             routineName = currentlyActiveRoutine.routineName,
@@ -105,7 +108,7 @@ fun updateCurrentlyActiveRoutineToDB(workoutProgress: WorkoutProgress) {
 @OptIn(ExperimentalTime::class)
 fun getCurrentlyActiveRoutineFromDB(): Triple<SelectedExerciseList, Instant, WorkoutProgress>? {
     val currentlyActiveRoutine =
-        currentlyActiveRoutineEntity.selectCurrentlyActiveRoutine().executeAsOneOrNull()
+        currentlyActiveRoutineQuery.selectCurrentlyActiveRoutine().executeAsOneOrNull()
 
     currentlyActiveRoutine?.let {
         return Triple(
@@ -187,4 +190,24 @@ fun getProfileFromDB(): Profile {
     }
 
     return Profile()
+}
+
+fun getSpotifyTokenFromDB(): SpotifyRefreshTokenResponse? {
+    return spotifyQuery.selectSpotifyRefreshToken().executeAsOneOrNull()
+        ?.takeIf { !it.accessToken.isNullOrEmpty() }
+        ?.let {
+            SpotifyRefreshTokenResponse(
+                access_token = it.accessToken,
+                expires_in = it.expiresIn?.toInt(),
+                token_type = it.tokenType
+            )
+        }
+}
+
+fun updateSpotifyTokenToDB(spotifyRefreshTokenResponse: SpotifyRefreshTokenResponse) {
+    spotifyQuery.insertOrReplaceSpotifyRefreshToken(
+        accessToken = spotifyRefreshTokenResponse.access_token,
+        expiresIn = spotifyRefreshTokenResponse.expires_in?.toLong(),
+        tokenType = spotifyRefreshTokenResponse.token_type
+    )
 }

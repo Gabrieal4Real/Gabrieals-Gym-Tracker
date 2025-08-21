@@ -29,6 +29,7 @@ import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 import org.gabrieal.gymtracker.data.network.APIService
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
+import org.gabrieal.gymtracker.data.sqldelight.getSpotifyTokenFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 import org.gabrieal.gymtracker.features.home.repository.HomeRepo
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
@@ -116,10 +117,17 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
         }
     }
 
-    private fun getTrackInfo(trackId: List<String>, accessToken: String) {
+    private fun getTrackInfo(trackId: List<String>) {
+        val spotifyToken = getSpotifyTokenFromDB()
+
+        if (spotifyToken == null || spotifyToken.access_token.isNullOrBlank()) {
+            return
+        }
+
         AppNavigator.showLoading()
+
         viewModelScope.launch {
-            homeRepo.getTrackInfo(trackId, accessToken)
+            homeRepo.getTrackInfo(trackId, spotifyToken.access_token)
                 .catch { e ->
                     _uiState.update { it.copy(error = e.message) }
                 }
@@ -130,16 +138,21 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
         }
     }
 
-    private fun getCurrentPlayback(accessToken: String) {
+    private fun getCurrentPlayback() {
+        val spotifyToken = getSpotifyTokenFromDB()
+
+        if (spotifyToken == null || spotifyToken.access_token.isNullOrBlank()) {
+            return
+        }
+
         AppNavigator.showLoading()
         viewModelScope.launch {
-            homeRepo.getCurrentPlayback(accessToken)
+            homeRepo.getCurrentPlayback(spotifyToken.access_token)
                 .catch { e ->
                     _uiState.update { it.copy(error = e.message) }
                 }
                 .collect { currentPlayback ->
-                    println("qwertyuiop")
-                    println("qwertyuiop: $currentPlayback")
+
                 }
             AppNavigator.hideLoading()
         }
