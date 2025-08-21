@@ -12,14 +12,14 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
-import org.gabrieal.gymtracker.data.model.SpotifyPlayback
+import org.gabrieal.gymtracker.data.model.SpotifyPlayerState
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSpotifyTokenFromDB
 import org.gabrieal.gymtracker.features.home.repository.HomeRepo
+import org.gabrieal.gymtracker.features.landing.repository.LandingRepo
 import org.gabrieal.gymtracker.util.app.resetAllCompletedStatus
-import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
-class LandingViewModel(private val homeRepo: HomeRepo) {
+class LandingViewModel(private val homeRepo: HomeRepo, private val landingRepo: LandingRepo) {
     private val viewModelScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     private val _uiState = MutableStateFlow(LandingUiState())
@@ -73,6 +73,22 @@ class LandingViewModel(private val homeRepo: HomeRepo) {
                     _uiState.update { it.copy(spotifyPlayback = currentPlayback) }
                     delay(getCurrentWaitTimeInMillis())
                     needRefreshCurrentPlayback()
+                }
+        }
+    }
+
+    fun postPlayerState(playerState: SpotifyPlayerState) {
+        val spotifyToken = getSpotifyTokenFromDB()
+
+        if (spotifyToken?.access_token.isNullOrBlank()) return
+
+        viewModelScope.launch {
+            landingRepo.postPlayerState(spotifyToken.access_token, playerState)
+                .catch { e ->
+
+                }
+                .collect {
+                    getCurrentPlayback()
                 }
         }
     }

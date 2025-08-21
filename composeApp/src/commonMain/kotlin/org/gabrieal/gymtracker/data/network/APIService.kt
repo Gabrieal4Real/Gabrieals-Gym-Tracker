@@ -10,10 +10,12 @@ object APIService {
 
     internal const val spotifyRedirectUri = "gabriealgymtracker://callback"
     fun spotifyTrackPath(trackId: String): String = "https://api.spotify.com/v1/tracks?ids=$trackId"
-    fun spotifyPlaybackPath(): String = "https://api.spotify.com/v1/me/player"
+    fun spotifyPlaybackPath(): String = "https://api.spotify.com/v1/me/player/currently-playing"
     fun spotifyRequestTokenUrl(): String = "https://accounts.spotify.com/api/token"
 
     fun spotifyUserProfilePath(): String = "https://api.spotify.com/v1/me"
+
+    fun spotifyPlayPauseSkip(): String = "https://api.spotify.com/v1/me/player/"
 
     fun authUrl(codeChallenge: String): String =
         buildString {
@@ -24,12 +26,14 @@ object APIService {
             append("&code_challenge_method=S256")
             append("&code_challenge=$codeChallenge")
             append("&scope=")
-            append(listOf(
-                "user-read-playback-state",
-                "user-modify-playback-state",
-                "user-read-currently-playing",
-                "user-read-private",
-                "user-read-email"
-            ).joinToString("%20"))
+            append(
+                listOf(
+                    "user-read-playback-state",
+                    "user-modify-playback-state",
+                    "user-read-currently-playing",
+                    "user-read-private",
+                    "user-read-email"
+                ).joinToString("%20")
+            )
         }
 }

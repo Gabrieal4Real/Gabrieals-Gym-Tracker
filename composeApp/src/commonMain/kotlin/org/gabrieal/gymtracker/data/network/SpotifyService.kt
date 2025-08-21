@@ -5,24 +5,25 @@ import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.header
 import io.ktor.client.request.request
-import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
-import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.gabrieal.gymtracker.data.model.SpotifyPlayback
+import org.gabrieal.gymtracker.data.model.SpotifyPlayerState
 import org.gabrieal.gymtracker.data.model.SpotifyProfile
 import org.gabrieal.gymtracker.data.model.SpotifyRefreshTokenResponse
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 
 class SpotifyService(private val client: HttpClient) {
 
-    fun exchangeToken(code: String, codeVerifier: String): Flow<Result<SpotifyRefreshTokenResponse>> = flow {
+    fun exchangeToken(
+        code: String,
+        codeVerifier: String
+    ): Flow<Result<SpotifyRefreshTokenResponse>> = flow {
         emit(
             runCatching {
                 val response: HttpResponse = client.submitForm(
@@ -89,4 +90,30 @@ class SpotifyService(private val client: HttpClient) {
             }
         )
     }
+
+    fun postPlayerState(accessToken: String, playerState: SpotifyPlayerState): Flow<Result<Any>> =
+        flow {
+            emit(
+                runCatching {
+                    val response: HttpResponse =
+                        client.request(APIService.spotifyPlayPauseSkip() + playerState.playerState) {
+                            method = if (playerState.seekable) HttpMethod.Post else HttpMethod.Put
+                            header("Authorization", "Bearer $accessToken")
+                            url {
+                                parameters.append(
+                                    "device_id",
+                                    ""
+                                )
+                            }
+                        }
+
+                    if (!response.status.isSuccess()) {
+                        val errorBody = response.bodyAsText()
+                        throw Exception("HTTP ${response.status.value}: ${response.status.description} - $errorBody")
+                    }
+
+                    response.body<Any>()
+                }
+            )
+        }
 }

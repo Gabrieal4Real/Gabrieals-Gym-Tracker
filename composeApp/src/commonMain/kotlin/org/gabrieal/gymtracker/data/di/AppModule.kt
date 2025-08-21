@@ -9,6 +9,8 @@ import org.gabrieal.gymtracker.features.editPlan.viewmodel.EditPlanViewModel
 import org.gabrieal.gymtracker.features.home.repository.HomeRepo
 import org.gabrieal.gymtracker.features.home.repository.HomeRepoImpl
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
+import org.gabrieal.gymtracker.features.landing.repository.LandingRepo
+import org.gabrieal.gymtracker.features.landing.repository.LandingRepoImpl
 import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
 import org.gabrieal.gymtracker.features.makeAPlan.viewmodel.MakeAPlanViewModel
 import org.gabrieal.gymtracker.features.profile.repository.ProfileRepo
@@ -27,6 +29,7 @@ val appModule = module {
     //repositories
     single<HomeRepo> { HomeRepoImpl(get()) }
     single<ProfileRepo> { ProfileRepoImpl(get()) }
+    single<LandingRepo> { LandingRepoImpl(get()) }
 
     //viewmodels
     factory { CalculatorViewModel() }
@@ -34,7 +37,7 @@ val appModule = module {
     factory { CreateSplitViewModel() }
     factory { EditPlanViewModel() }
     factory { HomeViewModel(get()) }
-    factory { LandingViewModel(get()) }
+    factory { LandingViewModel(get(), get()) }
     factory { MakeAPlanViewModel() }
     factory { ProfileViewModel(get()) }
     factory { StartWorkoutViewModel() }

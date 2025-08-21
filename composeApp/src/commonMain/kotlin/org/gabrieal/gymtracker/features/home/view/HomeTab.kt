@@ -322,7 +322,7 @@ object HomeTab : Tab, KoinComponent {
         } else {
             workoutImages.size
         }
-        val pagerState = rememberPagerState(pageCount = { pageCount })
+        val pagerState = rememberPagerState( pageCount = { pageCount })
 
         Box(
             modifier = Modifier

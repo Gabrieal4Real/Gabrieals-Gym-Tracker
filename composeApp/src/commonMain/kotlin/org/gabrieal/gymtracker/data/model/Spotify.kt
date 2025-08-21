@@ -2,6 +2,14 @@ package org.gabrieal.gymtracker.data.model
 
 import kotlinx.serialization.Serializable
 
+
+enum class SpotifyPlayerState(val playerState: String, val seekable: Boolean) {
+    PLAY("play", false),
+    PAUSE("pause", false),
+    NEXT("next", true),
+    PREVIOUS("previous", true),
+}
+
 @Serializable
 data class SpotifyTracks(
     val tracks: List<SpotifyTrack>? = null,

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -21,9 +23,9 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.rounded.FitnessCenter
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PauseCircleFilled
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material.icons.rounded.PlayArrow
+import androidx.compose.material.icons.rounded.PlayCircleFilled
 import androidx.compose.material.icons.rounded.SkipNext
 import androidx.compose.material.icons.rounded.SkipPrevious
 import androidx.compose.material3.Icon
@@ -56,6 +58,7 @@ import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.currentlyActiveRoutine
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.SpotifyPlayback
+import org.gabrieal.gymtracker.data.model.SpotifyPlayerState
 import org.gabrieal.gymtracker.data.sqldelight.getCurrentlyActiveRoutineFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
@@ -67,6 +70,7 @@ import org.gabrieal.gymtracker.util.app.ElapsedTime
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
+import org.gabrieal.gymtracker.util.widgets.DotsIndicator
 import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
@@ -115,13 +119,11 @@ object LandingScreen : Screen, KoinComponent {
                 Scaffold(
                     bottomBar = {
                         Column {
-                            landingCurrentlyActiveRoutine?.let {
-                                CurrentlyActiveWorkout(it, currentlyActiveRoutine?.second)
-                            }
-
-                            currentPlayback?.let {
-                                CurrentlyPlaying(it)
-                            }
+                            ActiveWorkoutAndPlaybackPager(
+                                landingCurrentlyActiveRoutine,
+                                currentlyActiveRoutine?.second,
+                                currentPlayback
+                            )
 
                             NavigationBar(
                                 containerColor = colors.background,
@@ -148,6 +150,42 @@ object LandingScreen : Screen, KoinComponent {
             viewModel.setCompletedRoutineList(false)
         }
     }
+
+
+    @OptIn(ExperimentalTime::class)
+    @Composable
+    fun ActiveWorkoutAndPlaybackPager(
+        landingCurrentlyActiveRoutine: SelectedExerciseList?,
+        elapsedTime: Instant?,
+        currentPlayback: SpotifyPlayback?
+    ) {
+        val pages = mutableListOf<@Composable () -> Unit>()
+
+        if (landingCurrentlyActiveRoutine != null) {
+            pages.add({ CurrentlyActiveWorkout(landingCurrentlyActiveRoutine, elapsedTime) })
+        }
+
+        if (currentPlayback != null) {
+            pages.add({ CurrentlyPlaying(currentPlayback) })
+        }
+
+        if (pages.isNotEmpty()) {
+            val pagerState = rememberPagerState { pages.size }
+
+            Box(modifier = Modifier.fillMaxWidth().background(colors.black)) {
+                HorizontalPager(state = pagerState) { page ->
+                    pages[page].invoke()
+                }
+
+                DotsIndicator(
+                    totalDots = pages.size,
+                    selectedIndex = pagerState.currentPage,
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
+                )
+            }
+        }
+    }
+
 
     @OptIn(ExperimentalTime::class)
     @Composable
@@ -198,7 +236,7 @@ object LandingScreen : Screen, KoinComponent {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 14.dp, horizontal = 16.dp),
+                        .padding(vertical = 12.dp, horizontal = 16.dp),
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         SubtitleText(
@@ -215,6 +253,8 @@ object LandingScreen : Screen, KoinComponent {
                             ?.joinToString(", ") { it.name.orEmpty() }
                             .orEmpty()
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }
@@ -242,7 +282,7 @@ object LandingScreen : Screen, KoinComponent {
 
                 Row(
                     modifier = Modifier.fillMaxWidth()
-                        .padding(vertical = 14.dp, horizontal = 16.dp),
+                        .padding(vertical = 12.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
@@ -257,18 +297,17 @@ object LandingScreen : Screen, KoinComponent {
                         imageVector = Icons.Rounded.SkipPrevious,
                         contentDescription = "Spotify Previous",
                         tint = colors.textPrimary,
-                        modifier = Modifier.padding(horizontal = 6.dp).size(34.dp).clickable {
-                            // Pause Play API
+                        modifier = Modifier.padding(horizontal = 6.dp).size(30.dp).clickable {
+                            viewModel.postPlayerState(SpotifyPlayerState.PREVIOUS)
                         }
                     )
 
                     Icon(
-                        imageVector = playback.is_playing?.let { Icons.Rounded.Pause }
-                            ?: Icons.Rounded.PlayArrow,
+                        imageVector = if (playback.is_playing == true) Icons.Rounded.PauseCircleFilled else Icons.Rounded.PlayCircleFilled,
                         contentDescription = "Spotify Play/Pause",
                         tint = colors.textPrimary,
-                        modifier = Modifier.padding(horizontal = 6.dp).size(34.dp).clickable {
-                            // Pause Play API
+                        modifier = Modifier.padding(horizontal = 6.dp).size(40.dp).clickable {
+                            viewModel.postPlayerState(if (playback.is_playing == true) SpotifyPlayerState.PAUSE else SpotifyPlayerState.PLAY)
                         }
                     )
 
@@ -276,14 +315,15 @@ object LandingScreen : Screen, KoinComponent {
                         imageVector = Icons.Rounded.SkipNext,
                         contentDescription = "Spotify Next",
                         tint = colors.textPrimary,
-                        modifier = Modifier.padding(horizontal = 6.dp).size(34.dp).clickable {
-                            // Pause Play API
+                        modifier = Modifier.padding(horizontal = 6.dp).size(30.dp).clickable {
+                            viewModel.postPlayerState(SpotifyPlayerState.NEXT)
                         }
                     )
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
-
     }
 }
 
