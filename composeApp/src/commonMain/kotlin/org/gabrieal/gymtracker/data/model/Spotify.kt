@@ -29,3 +29,11 @@ data class AlbumImage(
     val height: Int,
     val width: Int
 )
+
+@Serializable
+data class SpotifyProfile(
+    var display_name: String? = null,
+    var images: List<AlbumImage>? = null,
+    var product: String? = null,
+    var email: String? = null
+)

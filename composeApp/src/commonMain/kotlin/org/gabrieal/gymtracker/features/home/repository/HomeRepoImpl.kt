@@ -35,15 +35,4 @@ class HomeRepoImpl(private val spotifyService: SpotifyService) : HomeRepo {
                     }
             }
     }
-
-    override suspend fun getExchangeToken(accessToken: String, codeVerifier: String): Flow<SpotifyRefreshTokenResponse> {
-        return spotifyService.exchangeToken(accessToken, codeVerifier)
-            .map { result ->
-                runCatching { result.getOrThrow() }
-                    .getOrElse { e ->
-                        println("Error requesting Spotify token: ${e.message}")
-                        throw e
-                    }
-            }
-    }
 }

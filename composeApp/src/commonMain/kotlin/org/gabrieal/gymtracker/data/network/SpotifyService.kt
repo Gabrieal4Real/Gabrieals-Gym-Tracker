@@ -15,6 +15,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import org.gabrieal.gymtracker.data.model.SpotifyProfile
 import org.gabrieal.gymtracker.data.model.SpotifyRefreshTokenResponse
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 
@@ -66,6 +67,24 @@ class SpotifyService(private val client: HttpClient) {
                 }
 
                 response.body<Any>()
+            }
+        )
+    }
+
+    fun getSpotifyProfile(accessToken: String): Flow<Result<SpotifyProfile>> = flow {
+        emit(
+            runCatching {
+                val response: HttpResponse = client.request(APIService.spotifyUserProfilePath()) {
+                    method = HttpMethod.Get
+                    header("Authorization", "Bearer $accessToken")
+                }
+
+                if (!response.status.isSuccess()) {
+                    val errorBody = response.bodyAsText()
+                    throw Exception("HTTP ${response.status.value}: ${response.status.description} - $errorBody")
+                }
+
+                response.body<SpotifyProfile>()
             }
         )
     }

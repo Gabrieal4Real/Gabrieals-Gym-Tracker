@@ -169,7 +169,8 @@ fun setProfileToDB(profile: Profile) {
         age = profile.age?.toLong(),
         goal = profile.goal,
         activityLevel = profile.activityLevel,
-        gender = profile.gender
+        gender = profile.gender,
+        profileImage = profile.profileImage
     )
 }
 
@@ -185,7 +186,8 @@ fun getProfileFromDB(): Profile {
             age = it.age?.toInt(),
             goal = it.goal,
             activityLevel = it.activityLevel,
-            gender = it.gender
+            gender = it.gender,
+            profileImage = it.profileImage
         )
     }
 
@@ -199,7 +201,8 @@ fun getSpotifyTokenFromDB(): SpotifyRefreshTokenResponse? {
             SpotifyRefreshTokenResponse(
                 access_token = it.accessToken,
                 expires_in = it.expiresIn?.toInt(),
-                token_type = it.tokenType
+                token_type = it.tokenType,
+                refresh_token = it.refreshToken
             )
         }
 }
@@ -208,6 +211,11 @@ fun updateSpotifyTokenToDB(spotifyRefreshTokenResponse: SpotifyRefreshTokenRespo
     spotifyQuery.insertOrReplaceSpotifyRefreshToken(
         accessToken = spotifyRefreshTokenResponse.access_token,
         expiresIn = spotifyRefreshTokenResponse.expires_in?.toLong(),
-        tokenType = spotifyRefreshTokenResponse.token_type
+        tokenType = spotifyRefreshTokenResponse.token_type,
+        refreshToken = spotifyRefreshTokenResponse.refresh_token
     )
+}
+
+fun deleteSpotifyTokenFromDB() {
+    spotifyQuery.deleteSpotifyRefreshToken()
 }

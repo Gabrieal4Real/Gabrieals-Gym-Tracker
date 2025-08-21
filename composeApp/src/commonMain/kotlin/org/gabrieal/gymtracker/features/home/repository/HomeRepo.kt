@@ -7,8 +7,4 @@ import org.gabrieal.gymtracker.data.model.SpotifyTracks
 interface HomeRepo {
     suspend fun getTrackInfo(spotifyUrls: List<String>, accessToken: String): Flow<SpotifyTracks>
     suspend fun getCurrentPlayback(accessToken: String): Flow<Any>
-    suspend fun getExchangeToken(
-        accessToken: String,
-        codeVerifier: String
-    ): Flow<SpotifyRefreshTokenResponse>
 }

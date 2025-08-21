@@ -13,6 +13,8 @@ object APIService {
     fun spotifyPlaybackPath(): String = "https://api.spotify.com/v1/me/player"
     fun spotifyRequestTokenUrl(): String = "https://accounts.spotify.com/api/token"
 
+    fun spotifyUserProfilePath(): String = "https://api.spotify.com/v1/me"
+
     fun authUrl(codeChallenge: String): String =
         buildString {
             append("https://accounts.spotify.com/authorize?")
@@ -25,7 +27,9 @@ object APIService {
             append(listOf(
                 "user-read-playback-state",
                 "user-modify-playback-state",
-                "user-read-currently-playing"
+                "user-read-currently-playing",
+                "user-read-private",
+                "user-read-email"
             ).joinToString("%20"))
         }
 }

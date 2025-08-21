@@ -11,6 +11,8 @@ import org.gabrieal.gymtracker.features.home.repository.HomeRepoImpl
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
 import org.gabrieal.gymtracker.features.landing.viewmodel.LandingViewModel
 import org.gabrieal.gymtracker.features.makeAPlan.viewmodel.MakeAPlanViewModel
+import org.gabrieal.gymtracker.features.profile.repository.ProfileRepo
+import org.gabrieal.gymtracker.features.profile.repository.ProfileRepoImpl
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.features.startWorkout.viewmodel.StartWorkoutViewModel
 import org.gabrieal.gymtracker.features.viewAllWorkouts.viewmodel.ViewAllWorkoutViewModel
@@ -24,6 +26,7 @@ val appModule = module {
 
     //repositories
     single<HomeRepo> { HomeRepoImpl(get()) }
+    single<ProfileRepo> { ProfileRepoImpl(get()) }
 
     //viewmodels
     factory { CalculatorViewModel() }

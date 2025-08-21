@@ -13,12 +13,13 @@ import org.gabrieal.gymtracker.data.model.CalorieInput
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.network.APIService
+import org.gabrieal.gymtracker.data.sqldelight.deleteSpotifyTokenFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getProfileFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
 import org.gabrieal.gymtracker.data.sqldelight.getSpotifyTokenFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setProfileToDB
 import org.gabrieal.gymtracker.data.sqldelight.updateSpotifyTokenToDB
-import org.gabrieal.gymtracker.features.home.repository.HomeRepo
+import org.gabrieal.gymtracker.features.profile.repository.ProfileRepo
 import org.gabrieal.gymtracker.util.app.generateGoalBreakdown
 import org.gabrieal.gymtracker.util.enums.ActivityLevel
 import org.gabrieal.gymtracker.util.enums.Gender
@@ -26,7 +27,7 @@ import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.PKCE
 import org.gabrieal.gymtracker.util.systemUtil.SpotifyRedirectHandler
 
-class ProfileViewModel(private val homeRepo: HomeRepo) {
+class ProfileViewModel(private val profileRepo: ProfileRepo) {
 
     private val viewModelScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -120,12 +121,39 @@ class ProfileViewModel(private val homeRepo: HomeRepo) {
         AppNavigator.showLoading()
 
         viewModelScope.launch {
-            homeRepo.getExchangeToken(accessToken, currentVerifier)
+            profileRepo.getExchangeToken(accessToken, currentVerifier)
                 .catch { e ->
                     _uiState.update { it.copy(error = e.message) }
                 }
                 .collect { response ->
                     updateSpotifyTokenToDB(response)
+                    getSpotifyUserInfo()
+                }
+            AppNavigator.hideLoading()
+        }
+    }
+
+    fun getSpotifyUserInfo() {
+        val spotifyToken = getSpotifyTokenFromDB()
+
+        if (spotifyToken == null || spotifyToken.access_token.isNullOrBlank()) {
+            return
+        }
+
+        AppNavigator.showLoading()
+        viewModelScope.launch {
+            profileRepo.getSpotifyProfile(spotifyToken.access_token)
+                .catch { e ->
+                    _uiState.update { it.copy(error = e.message) }
+                }
+                .collect { userInfo ->
+                    updateProfile {
+                        it.copy(
+                            userName = userInfo.display_name,
+                            email = userInfo.email,
+                            profileImage = userInfo.images?.firstOrNull()?.url
+                        )
+                    }
                 }
             AppNavigator.hideLoading()
         }
@@ -134,6 +162,15 @@ class ProfileViewModel(private val homeRepo: HomeRepo) {
     fun setLoggingOut(loggingOut: Boolean) = _uiState.update { it.copy(loggingOut = loggingOut) }
 
     fun logout() {
+        deleteSpotifyTokenFromDB()
+        updateProfile {
+            it.copy(
+                userName = null,
+                email = null,
+                profileImage = null
+            )
+        }
+
         setLoggingOut(false)
     }
 }
