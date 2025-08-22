@@ -65,7 +65,7 @@ class LandingViewModel(private val homeRepo: HomeRepo, private val landingRepo: 
         if (spotifyToken?.access_token.isNullOrBlank()) return
 
         viewModelScope.launch {
-            homeRepo.getCurrentPlayback(spotifyToken.access_token)
+            homeRepo.getCurrentPlayback()
                 .catch { e ->
 
                 }
@@ -83,9 +83,9 @@ class LandingViewModel(private val homeRepo: HomeRepo, private val landingRepo: 
         if (spotifyToken?.access_token.isNullOrBlank()) return
 
         viewModelScope.launch {
-            landingRepo.postPlayerState(spotifyToken.access_token, playerState)
+            landingRepo.postPlayerState(playerState, uiState.value.spotifyPlayback?.device?.id)
                 .catch { e ->
-
+                    getCurrentPlayback()
                 }
                 .collect {
                     getCurrentPlayback()

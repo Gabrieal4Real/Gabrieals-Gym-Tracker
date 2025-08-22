@@ -19,8 +19,8 @@ class ProfileRepoImpl(private val spotifyService: SpotifyService) : ProfileRepo 
             }
     }
 
-    override suspend fun getSpotifyProfile(accessToken: String): Flow<SpotifyProfile> {
-        return spotifyService.getSpotifyProfile(accessToken)
+    override suspend fun getSpotifyProfile(): Flow<SpotifyProfile> {
+        return spotifyService.getSpotifyProfile()
             .map { result ->
                 runCatching { result.getOrThrow() }
                     .getOrElse { e ->

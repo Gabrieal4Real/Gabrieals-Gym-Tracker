@@ -1,6 +1,12 @@
 package org.gabrieal.gymtracker.data.network
 
+import io.ktor.client.call.body
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.Parameters
 import io.ktor.http.encodeURLParameter
+import io.ktor.http.formUrlEncode
+import io.ktor.http.isSuccess
 import org.gabrieal.gymtracker.util.systemUtil.SPOTIFY_CLIENT_ID
 import org.gabrieal.gymtracker.util.systemUtil.SPOTIFY_CLIENT_SECRET
 
@@ -9,8 +15,10 @@ object APIService {
     internal const val spotifyClientSecret = SPOTIFY_CLIENT_SECRET
 
     internal const val spotifyRedirectUri = "gabriealgymtracker://callback"
+
+    fun spotifyRefreshTokenPath(): String = "https://accounts.spotify.com/api/token"
     fun spotifyTrackPath(trackId: String): String = "https://api.spotify.com/v1/tracks?ids=$trackId"
-    fun spotifyPlaybackPath(): String = "https://api.spotify.com/v1/me/player/currently-playing"
+    fun spotifyPlaybackPath(): String = "https://api.spotify.com/v1/me/player"
     fun spotifyRequestTokenUrl(): String = "https://accounts.spotify.com/api/token"
 
     fun spotifyUserProfilePath(): String = "https://api.spotify.com/v1/me"
@@ -36,4 +44,19 @@ object APIService {
                 ).joinToString("%20")
             )
         }
+
+    fun refreshParams(refreshToken: String): String = Parameters.build {
+        append("grant_type", "refresh_token")
+        append("refresh_token", refreshToken)
+        append("client_id", spotifyClientId)
+    }.formUrlEncode()
+
+
+    suspend inline fun <reified T> HttpResponse.handleResponse(): T {
+        if (!status.isSuccess()) {
+            val errorBody = bodyAsText()
+            throw Exception("HTTP ${status.value}: ${status.description} - $errorBody")
+        }
+        return body()
+    }
 }

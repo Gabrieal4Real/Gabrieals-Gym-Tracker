@@ -8,10 +8,10 @@ import org.gabrieal.gymtracker.data.network.SpotifyService
 class LandingRepoImpl(private val spotifyService: SpotifyService) : LandingRepo {
 
     override suspend fun postPlayerState(
-        accessToken: String,
-        playerState: SpotifyPlayerState
+        playerState: SpotifyPlayerState,
+        deviceId: String?
     ): Flow<Any> {
-        return spotifyService.postPlayerState(accessToken, playerState)
+        return spotifyService.postPlayerState(playerState, deviceId)
             .map { result ->
                 runCatching { result.getOrThrow() }
                     .getOrElse { e ->

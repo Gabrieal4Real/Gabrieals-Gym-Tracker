@@ -51,7 +51,11 @@ data class SpotifyProfile(
 
 @Serializable
 data class SpotifyPlayback(
+    val device: Device? = null,
     val is_playing: Boolean? = null,
     val item: SpotifyTrack? = null,
     val progress_ms: Long? = null
 )
+
+@Serializable
+data class Device(val id: String? = null)

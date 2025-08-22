@@ -10,5 +10,5 @@ interface ProfileRepo {
         codeVerifier: String
     ): Flow<SpotifyRefreshTokenResponse>
 
-    suspend fun getSpotifyProfile(accessToken: String): Flow<SpotifyProfile>
+    suspend fun getSpotifyProfile(): Flow<SpotifyProfile>
 }

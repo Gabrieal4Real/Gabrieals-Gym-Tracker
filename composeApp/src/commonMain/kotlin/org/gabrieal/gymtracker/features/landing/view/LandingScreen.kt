@@ -71,6 +71,7 @@ import org.gabrieal.gymtracker.util.navigation.AppNavigator
 import org.gabrieal.gymtracker.util.systemUtil.ShowToast
 import org.gabrieal.gymtracker.util.widgets.CustomHorizontalDivider
 import org.gabrieal.gymtracker.util.widgets.DotsIndicator
+import org.gabrieal.gymtracker.util.widgets.MarqueeSubtitleText
 import org.gabrieal.gymtracker.util.widgets.MarqueeTinyItalicText
 import org.gabrieal.gymtracker.util.widgets.SubtitleText
 import org.gabrieal.gymtracker.util.widgets.TinyItalicText
@@ -285,13 +286,13 @@ object LandingScreen : Screen, KoinComponent {
                         .padding(vertical = 12.dp, horizontal = 16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column {
-                        SubtitleText(text = playback.item?.name.orEmpty())
+                    Column(modifier = Modifier.weight(1f)) {
+                        MarqueeSubtitleText(text = playback.item?.name.orEmpty())
                         Spacer(modifier = Modifier.height(2.dp))
                         TinyItalicText(text = playback.item?.artists?.firstOrNull()?.name.orEmpty())
                     }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Icon(
                         imageVector = Icons.Rounded.SkipPrevious,

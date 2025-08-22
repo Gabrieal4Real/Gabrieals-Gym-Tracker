@@ -143,7 +143,7 @@ class ProfileViewModel(private val profileRepo: ProfileRepo) {
 
         AppNavigator.showLoading()
         viewModelScope.launch {
-            profileRepo.getSpotifyProfile(spotifyToken.access_token)
+            profileRepo.getSpotifyProfile()
                 .catch { e ->
                     _uiState.update { it.copy(error = e.message) }
                 }

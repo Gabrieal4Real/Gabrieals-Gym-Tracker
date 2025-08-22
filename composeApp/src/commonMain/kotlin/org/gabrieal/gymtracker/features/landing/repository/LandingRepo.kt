@@ -4,5 +4,5 @@ import kotlinx.coroutines.flow.Flow
 import org.gabrieal.gymtracker.data.model.SpotifyPlayerState
 
 interface LandingRepo {
-    suspend fun postPlayerState(accessToken: String, playerState: SpotifyPlayerState): Flow<Any>
+    suspend fun postPlayerState(playerState: SpotifyPlayerState, deviceId: String?): Flow<Any>
 }

@@ -5,6 +5,6 @@ import org.gabrieal.gymtracker.data.model.SpotifyPlayback
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 
 interface HomeRepo {
-    suspend fun getTrackInfo(spotifyUrls: List<String>, accessToken: String): Flow<SpotifyTracks>
-    suspend fun getCurrentPlayback(accessToken: String): Flow<SpotifyPlayback?>
+    suspend fun getTrackInfo(spotifyUrls: List<String>): Flow<SpotifyTracks>
+    suspend fun getCurrentPlayback(): Flow<SpotifyPlayback?>
 }

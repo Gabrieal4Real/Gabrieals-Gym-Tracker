@@ -12,10 +12,10 @@ class HomeRepoImpl(private val spotifyService: SpotifyService) : HomeRepo {
         return regex.find(spotifyUrl)?.groupValues?.get(1)
     }
 
-    override suspend fun getTrackInfo(spotifyUrls: List<String>, accessToken: String): Flow<SpotifyTracks> {
+    override suspend fun getTrackInfo(spotifyUrls: List<String>): Flow<SpotifyTracks> {
         val trackIds = spotifyUrls.mapNotNull { extractTrackId(it) }
 
-        return spotifyService.getTracks(trackIds, accessToken)
+        return spotifyService.getTracks(trackIds)
             .map { result ->
                 runCatching { result.getOrThrow() }
                     .getOrElse { e ->
@@ -25,8 +25,8 @@ class HomeRepoImpl(private val spotifyService: SpotifyService) : HomeRepo {
             }
     }
 
-    override suspend fun getCurrentPlayback(accessToken: String): Flow<SpotifyPlayback> {
-        return spotifyService.getSpotifyPlayback(accessToken)
+    override suspend fun getCurrentPlayback(): Flow<SpotifyPlayback> {
+        return spotifyService.getSpotifyPlayback()
             .map { result ->
                 runCatching { result.getOrThrow() }
                     .getOrElse { e ->
