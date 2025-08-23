@@ -107,7 +107,6 @@ object HomeTab : Tab, KoinComponent {
 
         LaunchedEffect(Unit) {
             viewModel.updateContext()
-            viewModel.updateSpotifyInfo()
         }
 
         Column(

@@ -99,12 +99,14 @@ actual fun ShowInputDialog(
                         when (type) {
                             KeyboardType.Decimal -> {
                                 text =
-                                    it.takeIf { input -> input.isEmpty() || input.isValidDecimal() } ?: text
+                                    it.takeIf { input -> input.isEmpty() || input.isValidDecimal() }
+                                        ?: text
                             }
 
                             KeyboardType.Number -> {
                                 text =
-                                    it.takeIf { input -> input.isEmpty() || input.isValidNumber() } ?: text
+                                    it.takeIf { input -> input.isEmpty() || input.isValidNumber() }
+                                        ?: text
                             }
 
                             else -> {
@@ -216,4 +218,21 @@ actual fun keepScreenOn() {
 
 actual fun allowScreenSleep() {
     activityReference?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+}
+
+actual fun openNowPlaying() {
+    runCatching {
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            data = "spotify:".toUri()
+            `package` = "com.spotify.music"
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        }
+        activityReference?.startActivity(intent)
+    }.getOrElse {
+        val playStoreIntent = Intent(
+            Intent.ACTION_VIEW,
+            "market://details?id=com.spotify.music".toUri()
+        )
+        activityReference?.startActivity(playStoreIntent)
+    }
 }

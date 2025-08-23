@@ -41,8 +41,6 @@ class LandingViewModel(private val homeRepo: HomeRepo, private val landingRepo: 
 
         if (spotifyToken?.access_token.isNullOrBlank()) return
 
-        println("Refreshing playback...")
-
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
             getCurrentPlayback()
@@ -51,12 +49,16 @@ class LandingViewModel(private val homeRepo: HomeRepo, private val landingRepo: 
 
     private fun getCurrentWaitTimeInMillis(): Long {
         val currentPlayback = _uiState.value.spotifyPlayback
-        if (currentPlayback == null || currentPlayback.is_playing == false) return 20_000L
+        if (currentPlayback == null || currentPlayback.is_playing == false) return 25_000L
 
         val currentWaitTime = currentPlayback.progress_ms ?: 0L
-        val currentTrackDuration = currentPlayback.item?.duration_ms ?: 20_000L
+        val currentTrackDuration = currentPlayback.item?.duration_ms ?: 25_000L
 
-        return currentTrackDuration - currentWaitTime
+        val remainingTime = currentTrackDuration - currentWaitTime
+        val refreshTime =
+            if (remainingTime >= 25_000L && remainingTime == 0L) 25_000L else remainingTime
+
+        return refreshTime
     }
 
     fun getCurrentPlayback() {
@@ -65,9 +67,12 @@ class LandingViewModel(private val homeRepo: HomeRepo, private val landingRepo: 
         if (spotifyToken?.access_token.isNullOrBlank()) return
 
         viewModelScope.launch {
+            delay(500L)
+
             homeRepo.getCurrentPlayback()
                 .catch { e ->
-
+                    delay(getCurrentWaitTimeInMillis())
+                    needRefreshCurrentPlayback()
                 }
                 .collect { currentPlayback ->
                     _uiState.update { it.copy(spotifyPlayback = currentPlayback) }
@@ -85,10 +90,10 @@ class LandingViewModel(private val homeRepo: HomeRepo, private val landingRepo: 
         viewModelScope.launch {
             landingRepo.postPlayerState(playerState, uiState.value.spotifyPlayback?.device?.id)
                 .catch { e ->
-                    getCurrentPlayback()
+                    needRefreshCurrentPlayback()
                 }
                 .collect {
-                    getCurrentPlayback()
+                    needRefreshCurrentPlayback()
                 }
         }
     }

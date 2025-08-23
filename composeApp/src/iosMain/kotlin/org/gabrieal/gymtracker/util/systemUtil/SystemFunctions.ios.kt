@@ -260,3 +260,14 @@ actual fun keepScreenOn() {
 actual fun allowScreenSleep() {
     UIApplication.sharedApplication.idleTimerDisabled = false
 }
+
+actual fun openNowPlaying() {
+    val url = NSURL(string = "spotify://")
+    val app = UIApplication.sharedApplication
+    if (app.canOpenURL(url)) {
+        app.openURL(url)
+    } else {
+        val appStoreUrl = NSURL(string = "https://apps.apple.com/app/spotify-music-and-podcasts/id324684580")
+        app.openURL(appStoreUrl)
+    }
+}
