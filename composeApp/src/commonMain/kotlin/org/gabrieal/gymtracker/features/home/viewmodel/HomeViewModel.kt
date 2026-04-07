@@ -19,7 +19,6 @@ import gymtracker.composeapp.generated.resources.workout_8
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,9 +28,9 @@ import kotlinx.coroutines.launch
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 import org.gabrieal.gymtracker.data.sqldelight.getSelectedRoutineListFromDB
+import org.gabrieal.gymtracker.data.sqldelight.getSpotifyTokenFromDB
 import org.gabrieal.gymtracker.data.sqldelight.setSelectedRoutineListToDB
 import org.gabrieal.gymtracker.features.home.repository.HomeRepo
-import org.gabrieal.gymtracker.features.home.view.HomeTab.viewModel
 import org.gabrieal.gymtracker.util.navigation.AppNavigator
 
 class HomeViewModel(private val homeRepo: HomeRepo) {
@@ -39,16 +38,6 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
-
-    init {
-        requestSpotifyToken(
-            listOf(
-                "https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d",
-                "https://open.spotify.com/track/0iaa1DkqOki4FFGq3QjGs3?si=65c78c9b834642d0",
-                "https://open.spotify.com/track/3K5KXm1uZjiyQk0J7op1xf?si=01468c515fe14746"
-            )
-        )
-    }
 
     val listOfInfluencers = listOf(
         Res.drawable.workout_1 to "Lean Beef Patty • Female fitness influencer known for strength training and high-intensity workouts",
@@ -126,21 +115,27 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
         }
     }
 
-    private fun requestSpotifyToken(trackId: List<String>) {
-        viewModelScope.launch {
-            homeRepo.requestSpotifyToken()
-                .catch { e ->
-                    _uiState.update { it.copy(error = e.message) }
-                }
-                .collect { token ->
-                    getTrackInfo(trackId, token.access_token)
-                }
+    fun updateSpotifyInfo() {
+        val spotifyToken = getSpotifyTokenFromDB()
+
+        if (spotifyToken?.access_token.isNullOrBlank() || _uiState.value.spotifyTracks != null) {
+            return
         }
+
+        getTrackInfo(
+            listOf(
+                "https://open.spotify.com/track/5Js7i1H7S2fNe1sbWfihyr?si=de46fdd55efd4c1d",
+                "https://open.spotify.com/track/0iaa1DkqOki4FFGq3QjGs3?si=65c78c9b834642d0",
+                "https://open.spotify.com/track/3K5KXm1uZjiyQk0J7op1xf?si=01468c515fe14746"
+            )
+        )
     }
 
-    private fun getTrackInfo(trackId: List<String>, token: String) {
+    private fun getTrackInfo(trackId: List<String>) {
+        AppNavigator.showLoading()
+
         viewModelScope.launch {
-            homeRepo.getTrackInfo(trackId, token)
+            homeRepo.getTrackInfo(trackId)
                 .catch { e ->
                     _uiState.update { it.copy(error = e.message) }
                 }
@@ -155,7 +150,11 @@ class HomeViewModel(private val homeRepo: HomeRepo) {
 
     fun getSpotifyAlbumDescription(spotifyTracks: SpotifyTracks?): List<Pair<String?, String>> {
         return spotifyTracks?.tracks?.map { it ->
-            it.album.images.firstOrNull()?.url to "${it.name} • ${it.album.name} • ${it.artists.joinToString(", ") { it.name }}"
+            it.album?.images?.firstOrNull()?.url to "${it.name} • ${it.album?.name} • ${
+                it.artists?.joinToString(
+                    ", "
+                ) { it.name.toString() }
+            }"
         } ?: emptyList()
     }
 }

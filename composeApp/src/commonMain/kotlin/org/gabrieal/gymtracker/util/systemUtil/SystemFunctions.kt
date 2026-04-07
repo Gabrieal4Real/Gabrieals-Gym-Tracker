@@ -70,3 +70,5 @@ expect fun getMondayOrSameInstant(instant: Instant): Instant
 expect fun keepScreenOn()
 
 expect fun allowScreenSleep()
+
+expect fun openNowPlaying()

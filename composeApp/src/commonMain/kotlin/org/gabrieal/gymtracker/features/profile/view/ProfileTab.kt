@@ -1,6 +1,12 @@
 package org.gabrieal.gymtracker.features.profile.view
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
@@ -39,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,11 +54,12 @@ import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
 import cafe.adriel.voyager.navigator.internal.BackHandler
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import coil3.compose.AsyncImage
 import org.gabrieal.gymtracker.colors
-import org.gabrieal.gymtracker.data.model.FirebaseInfo
 import org.gabrieal.gymtracker.data.model.Profile
 import org.gabrieal.gymtracker.features.profile.viewmodel.ProfileViewModel
 import org.gabrieal.gymtracker.util.app.getBMISummary
+import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.gabrieal.gymtracker.util.systemUtil.ShowAlertDialog
 import org.gabrieal.gymtracker.util.systemUtil.ShowInputDialog
 import org.gabrieal.gymtracker.util.widgets.CustomCard
@@ -74,8 +83,12 @@ object ProfileTab : Tab, KoinComponent {
         val routines = uiState.selectedRoutineList
         val profile = uiState.profile
         val weightHeightBMIClicked = uiState.weightHeightBMIClicked
-        val firebaseInfo = uiState.firebaseInfo
         val loggingOut = uiState.loggingOut
+
+        uiState.spotifyUrl?.let { url ->
+            OpenURL(url)
+            viewModel.setSpotifyUrl(null)
+        }
 
         BackHandler(enabled = true) {}
 
@@ -97,7 +110,7 @@ object ProfileTab : Tab, KoinComponent {
                     modifier = Modifier.fillMaxSize().animateContentSize()
                 ) {
                     item {
-                        ProfileCard(profile, firebaseInfo)
+                        ProfileCard(profile)
                     }
 
                     item {
@@ -223,7 +236,7 @@ object ProfileTab : Tab, KoinComponent {
     }
 
     @Composable
-    fun ProfileCard(profile: Profile?, firebaseInfo: FirebaseInfo?) {
+    fun ProfileCard(profile: Profile?) {
         val weight = profile?.weight
         val height = profile?.height
         val age = profile?.age
@@ -246,49 +259,45 @@ object ProfileTab : Tab, KoinComponent {
                 Column(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().clickable {
-                            if (firebaseInfo?.uid == null || firebaseInfo.token == null) {
-                                viewModel.navigateToLoginRegister()
-                            }
-                        },
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.AccountCircle,
-                            contentDescription = "Profile",
-                            tint = colors.textPrimary,
-                            modifier = Modifier.size(60.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Column {
-                            val name = profile?.userName ?: "Not Logged In"
-                            val gender = profile?.gender?.name ?: "Gender Unspecified"
-
-                            SubtitleText(name.uppercase())
-                            TinyText(gender)
-
-                            if (firebaseInfo?.uid == null || firebaseInfo.token == null) {
-                                LinkText("You're not logged in")
-                            }
+                    AnimatedContent(
+                        targetState = profile?.userName,
+                        label = "profile_animation",
+                        transitionSpec = {
+                            (slideInHorizontally { it } + fadeIn()) togetherWith (slideOutHorizontally { -it } + fadeOut())
                         }
-                        if (firebaseInfo?.uid != null && firebaseInfo.token != null) {
+                    ) { userName ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().clickable {
+                                if (userName == null)
+                                    viewModel.launchSpotifyAuthBrowser()
+                            },
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            ProfileIcon(profile?.profileImage ?: "")
+
                             Spacer(modifier = Modifier.width(8.dp))
-                            Spacer(modifier = Modifier.weight(1f))
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.Logout,
-                                contentDescription = "Logout",
-                                tint = colors.white,
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(colors.deleteRed)
-                                    .clickable {
-                                        viewModel.setLoggingOut(true)
-                                    }
-                                    .padding(6.dp)
-                            )
+                            Column {
+                                SubtitleText((userName ?: "Not Logged In").uppercase())
+                                userName?.let { TinyText(profile?.email ?: "") }
+                                    ?: LinkText("Login with Spotify")
+                            }
+
+                            userName?.let {
+                                Spacer(modifier = Modifier.weight(1f))
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Rounded.Logout,
+                                    contentDescription = "Logout",
+                                    tint = colors.white,
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(colors.deleteRed)
+                                        .clickable {
+                                            viewModel.setLoggingOut(true)
+                                        }
+                                        .padding(6.dp)
+                                )
+                            }
                         }
                     }
 
@@ -332,6 +341,31 @@ object ProfileTab : Tab, KoinComponent {
         )
 
         Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    @Composable
+    fun ProfileIcon(
+        imageUrl: String?,
+        contentDescription: String = "Profile",
+    ) {
+        if (!imageUrl.isNullOrEmpty()) {
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = contentDescription,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(60.dp)
+                    .padding(4.dp)
+                    .clip(CircleShape)
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Rounded.AccountCircle,
+                contentDescription = contentDescription,
+                tint = colors.textPrimary,
+                modifier = Modifier.size(60.dp)
+            )
+        }
     }
 
     override val options: TabOptions

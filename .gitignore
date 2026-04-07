@@ -16,3 +16,4 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+composeApp/src/commonMain/kotlin/org/gabrieal/gymtracker/util/systemUtil/Secrets.kt

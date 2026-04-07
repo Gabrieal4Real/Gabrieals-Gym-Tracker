@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS spotifyRefreshTokenEntity (
+    id INTEGER NOT NULL PRIMARY KEY,
+    accessToken TEXT,
+    expiresIn INTEGER,
+    tokenType TEXT
+);

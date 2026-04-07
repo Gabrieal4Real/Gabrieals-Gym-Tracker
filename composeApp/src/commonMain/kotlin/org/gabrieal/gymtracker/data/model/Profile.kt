@@ -15,4 +15,5 @@ data class Profile(
     var gender: Gender? = null,
     var email: String? = null,
     var userName: String? = null,
+    var profileImage: String? = null
 )

@@ -11,7 +11,8 @@ CREATE TABLE profileEntity (
     activityLevel TEXT AS ActivityLevel,
     gender TEXT AS Gender,
     email TEXT,
-    userName TEXT
+    userName TEXT,
+    profileImage TEXT
 );
 
 selectProfile:
@@ -20,7 +21,7 @@ WHERE id = 1;
 
 insertOrReplaceProfile:
 INSERT OR REPLACE INTO profileEntity (
-    id, weight, height, age, goal, activityLevel, gender, email, userName
+    id, weight, height, age, goal, activityLevel, gender, email, userName, profileImage
 ) VALUES (
-    1, ?, ?, ?, ?, ?, ?, ?, ?
+    1, ?, ?, ?, ?, ?, ?, ?, ?, ?
 );

@@ -50,8 +50,11 @@ import org.gabrieal.gymtracker.colors
 import org.gabrieal.gymtracker.data.model.SelectedExerciseList
 import org.gabrieal.gymtracker.data.model.SpotifyTracks
 import org.gabrieal.gymtracker.features.home.viewmodel.HomeViewModel
+import org.gabrieal.gymtracker.features.viewAllWorkouts.view.ViewAllWorkoutTabScreen
 import org.gabrieal.gymtracker.util.app.longFormDays
+import org.gabrieal.gymtracker.util.systemUtil.OpenURL
 import org.gabrieal.gymtracker.util.systemUtil.Resources
+import org.gabrieal.gymtracker.util.systemUtil.SpotifyRedirectHandler
 import org.gabrieal.gymtracker.util.systemUtil.getTodayDayName
 import org.gabrieal.gymtracker.util.widgets.BiggerText
 import org.gabrieal.gymtracker.util.widgets.CustomCard
@@ -122,9 +125,6 @@ object HomeTab : Tab, KoinComponent {
                 ) {
                     LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
                         stickyHeader {
-                            println("stickyHeader")
-                            println(spotifyTracks)
-
                             WorkoutHeader(
                                 animateCurrentAspectRatio,
                                 animateCurrentBackgroundOpacity,
@@ -321,7 +321,7 @@ object HomeTab : Tab, KoinComponent {
         } else {
             workoutImages.size
         }
-        val pagerState = rememberPagerState(pageCount = { pageCount })
+        val pagerState = rememberPagerState( pageCount = { pageCount })
 
         Box(
             modifier = Modifier
@@ -365,7 +365,7 @@ object HomeTab : Tab, KoinComponent {
             }
 
             DotsIndicator(
-                totalDots = pageCount ?: 0,
+                totalDots = pageCount,
                 selectedIndex = pagerState.currentPage,
                 modifier = Modifier.align(Alignment.TopCenter).padding(12.dp)
             )

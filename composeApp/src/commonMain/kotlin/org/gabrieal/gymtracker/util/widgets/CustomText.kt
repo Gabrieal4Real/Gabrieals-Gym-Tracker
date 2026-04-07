@@ -100,6 +100,53 @@ fun SubtitleText(
 }
 
 /**
+ * Poppins Semi Bold with size 16, with marquee and auto scrolling
+ */
+@Composable
+fun MarqueeSubtitleText(
+    text: String,
+    modifier: Modifier = Modifier,
+    color: Color = colors.textSecondary,
+    textAlign: TextAlign = TextAlign.Start
+) {
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(text) {
+        delay(1000)
+        while (true) {
+            val maxScroll = scrollState.maxValue
+            if (maxScroll > 0) {
+                while (scrollState.value < maxScroll) {
+                    scrollState.scrollBy(1.5f)
+                    delay(16L)
+                }
+                delay(1000)
+                scrollState.scrollTo(0)
+                delay(1000)
+            } else {
+                delay(500)
+            }
+        }
+    }
+
+    Row(
+        modifier = modifier
+            .horizontalScroll(scrollState, enabled = false)
+            .clipToBounds()
+    ) {
+        Text(
+            text = text,
+            color = color,
+            fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Visible,
+            style = TextStyle(fontFamily = SemiBoldText(), lineHeight = 22.sp),
+            textAlign = textAlign
+        )
+    }
+}
+
+/**
  * Poppins Medium with size 14
  */
 @Composable

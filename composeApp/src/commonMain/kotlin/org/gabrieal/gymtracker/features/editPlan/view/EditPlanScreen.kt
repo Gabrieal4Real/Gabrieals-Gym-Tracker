@@ -124,7 +124,7 @@ object EditPlanScreen : Screen, KoinComponent {
         }
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().background(colors.background),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BackButtonRow("Edit Plan")
